@@ -1,5 +1,14 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import {
+    BookOpen,
+    HelpCircle,
+    LayoutGrid,
+    Package,
+    ShieldCheck,
+    ShoppingBag,
+    Store,
+    Wallet,
+} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -18,22 +27,42 @@ import type { NavItem } from '@/types';
 
 const mainNavItems: NavItem[] = [
     {
-        title: 'Dashboard',
+        title: 'Ringkasan Toko',
         href: dashboard(),
         icon: LayoutGrid,
+    },
+    {
+        title: 'Katalog & Stok Cabang',
+        href: '/#katalog',
+        icon: Store,
+    },
+    {
+        title: 'Pesanan Pick N Go',
+        href: dashboard(),
+        icon: ShoppingBag,
+    },
+    {
+        title: 'Dompet Dropship',
+        href: dashboard(),
+        icon: Wallet,
+    },
+    {
+        title: 'Klaim Garansi & RMA',
+        href: dashboard(),
+        icon: ShieldCheck,
     },
 ];
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
+        title: 'Panduan Mitra Dropship',
+        href: '/#dropship',
+        icon: BookOpen,
     },
     {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Bantuan & Lokasi Cabang',
+        href: '/#cabang',
+        icon: HelpCircle,
     },
 ];
 
