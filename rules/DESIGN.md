@@ -1,423 +1,138 @@
-## Overview
-
-MongoDB carries a strong dual-mode visual identity — dark deep-teal hero bands with the unmistakable bright MongoDB green ({colors.brand-green}) CTA pill paired with stark white documentation and pricing surfaces. The homepage opens with "One data platform. Unlimited AI potential." headline over a deep navy hero, the green pill sitting at the visual center as the primary CTA. Lower on the page, embedded code mockup cards (terminal-aesthetic) sit on the dark hero band, breaking out into white feature cards below. The pricing page renders a 3-tier comparison (Free / Flex / Dedicated) with a featured tier highlighted in soft mint background and bright green border. The MongoDB University page presents a course catalog grid where each tile carries a colored category tag (orange, purple, green, teal) — these are MongoDB's category-encoding accent colors and are the only place outside the brand green where saturated color appears.
-
-The system uses Euclid Circular A as its display face. The face is contemporary geometric — confident but not overly playful — and pairs naturally with both the developer-tool aesthetic of the database product and the educational positioning of the learning surfaces. Cards use `{rounded.lg}` (12px) corners; buttons use `{rounded.full}` pills universally. The brand-teal palette ({colors.brand-teal-deep}) anchors hero bands, footer, code mockups, and the dark CTA banners.
-
-**Key Characteristics:**
-
-- Deep navy/teal hero bands ({colors.brand-teal-deep}) with bright MongoDB green ({colors.brand-green}) CTA pills
-- Stark white pricing/documentation surfaces with colored category tags for course tiles (purple, orange, green, teal)
-- Euclid Circular A across every UI surface
-- Pill-shaped buttons ({rounded.full}) and 12px-rounded cards
-- 3-tier pricing comparison (Free / Flex / Dedicated) with featured-mint highlight tier
-- Code mockup cards with terminal-aesthetic dark canvas
-
-## Colors
-
-> Source pages: mongodb.com/ (homepage), /products/platform/atlas-database (Atlas product), /products/self-managed/community-edition, learn.mongodb.com/ (MongoDB University), /solutions/use-cases/artificial-intelligence (AI), /pricing (3-tier comparison). Token coverage was identical across all six pages.
-
-### Brand & Accent
-
-- **MongoDB Green** ({colors.brand-green}): The brand's most recognizable signal — bright pill-CTA color
-- **Green Dark** ({colors.brand-green-dark}): Inline link color, secondary green
-- **Green Mid** ({colors.brand-green-mid}): Mid-spectrum green for atmospheric tints
-- **Green Soft** ({colors.brand-green-soft}): Pale-mint background tint for success badges and featured pricing tier
-- **Brand Teal Deep** ({colors.brand-teal-deep}): Deep navy-teal for hero bands, footer
-- **Brand Teal** ({colors.brand-teal}): Mid-spectrum teal
-- **Brand Teal Mid** ({colors.brand-teal-mid}): Lighter teal for hero platform cards
-
-### Category Accent (Course Tags)
-
-- **Accent Purple** ({colors.accent-purple}): Course tag for "Database & Security"
-- **Accent Orange** ({colors.accent-orange}): Course tag for "Search"
-- **Accent Pink** ({colors.accent-pink}): Course tag variant
-- **Accent Blue** ({colors.accent-blue}): Course tag variant for atlas/cloud topics
-
-### Surface
-
-- **Canvas White** ({colors.canvas}): Page background and primary card surface
-- **Canvas Dark** ({colors.canvas-dark}): Code-block backgrounds, dark mockup canvas
-- **Surface** ({colors.surface}): Subtle section backgrounds, search-pill rest
-- **Surface Soft** ({colors.surface-soft}): Quieter section divisions
-- **Surface Feature** ({colors.surface-feature}): Pale mint background for featured pricing tier
-- **Hairline** ({colors.hairline}): 1px borders and primary dividers
-- **Hairline Soft** ({colors.hairline-soft}): Quieter dividers
-- **Hairline Strong** ({colors.hairline-strong}): Stronger 1px border for inputs
-- **Hairline Dark** ({colors.hairline-dark}): Border on dark surfaces
-
-### Text
-
-- **Ink** ({colors.ink}): Primary headlines and body text (deep navy-teal)
-- **Charcoal** ({colors.charcoal}): Body emphasis
-- **Slate** ({colors.slate}): Secondary text
-- **Steel** ({colors.steel}): Tertiary text, captions
-- **Stone** ({colors.stone}): Muted labels
-- **Muted** ({colors.muted}): Disabled, placeholders
-- **On Dark** ({colors.on-dark}): White text on dark surfaces
-- **On Dark Muted** ({colors.on-dark-muted}): Reduced-opacity white
-
-### Semantic
-
-- **Warning Background** ({colors.semantic-warning-bg}): Pale yellow callout bg
-- **Warning Text** ({colors.semantic-warning-text}): Warning state copy color
-
-## Typography
-
-### Font Family
-
-**Euclid Circular A** (primary): MongoDB's geometric sans-serif. Fallbacks: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif.
-**Source Code Pro** (code): Monospace for code mockups. Fallbacks: 'SF Mono', Menlo, Consolas, monospace.
-
-### Hierarchy
-
-| Token                          | Size | Weight | Line Height | Letter Spacing | Use                                    |
-| ------------------------------ | ---- | ------ | ----------- | -------------- | -------------------------------------- |
-| `{typography.hero-display}`    | 72px | 500    | 1.10        | -1.5px         | Hero ("One data platform")             |
-| `{typography.display-lg}`      | 56px | 500    | 1.15        | -1px           | Major section openers                  |
-| `{typography.heading-1}`       | 48px | 500    | 1.20        | -0.5px         | Page-level headlines                   |
-| `{typography.heading-2}`       | 36px | 500    | 1.25        | -0.5px         | Subsection headlines                   |
-| `{typography.heading-3}`       | 28px | 500    | 1.30        | 0              | Card titles                            |
-| `{typography.heading-4}`       | 22px | 500    | 1.35        | 0              | Feature tile titles                    |
-| `{typography.heading-5}`       | 18px | 600    | 1.40        | 0              | Smaller card titles, FAQ questions     |
-| `{typography.subtitle}`        | 18px | 400    | 1.50        | 0              | Hero subtitle, lead body               |
-| `{typography.body-md}`         | 16px | 400    | 1.55        | 0              | Primary body text                      |
-| `{typography.body-sm}`         | 14px | 400    | 1.50        | 0              | Secondary body, table cells            |
-| `{typography.body-sm-medium}`  | 14px | 500    | 1.50        | 0              | Active sidebar, button labels          |
-| `{typography.caption-bold}`    | 13px | 600    | 1.40        | 0              | Badge labels                           |
-| `{typography.micro-uppercase}` | 11px | 600    | 1.40        | 1px            | Section eyebrows, course category tags |
-| `{typography.button-md}`       | 14px | 600    | 1.30        | 0              | Pill button labels                     |
-| `{typography.code-md}`         | 14px | 400    | 1.55        | 0              | Code mockups                           |
-
-### Principles
-
-- Tight hero leading (1.10) on 72px display
-- Negative letter-spacing on display sizes (-1.5px to -0.5px)
-- 600 weight reserved for buttons and small emphasis (FAQ headings, badges)
-- Generous body leading (1.55) for technical documentation readability
-
-## Layout
-
-### Spacing System
-
-- **Base unit**: 4px (8px primary increment)
-- **Tokens**: `{spacing.xxs}` (4px) through `{spacing.hero}` (120px)
-- **Section rhythm**: Marketing pages use `{spacing.section-lg}` (96px); pricing tightens to `{spacing.section}` (64px)
-
-### Grid & Container
-
-- 1280px max-width with 32px gutters
-- Pricing: 3-tier card row, dense feature comparison table below
-- Learn catalog: 3-up course tile grid, 4-up certification grid
-- AI use cases: 2-column hero with atmospheric illustration
-
-### Whitespace Philosophy
-
-Marketing surfaces give content generous breathing room — `{spacing.hero}` (120px) hero padding for deep teal bands. Pricing/learn surfaces tighten dramatically.
-
-## Elevation & Depth
-
-| Level      | Treatment                                  | Use                       |
-| ---------- | ------------------------------------------ | ------------------------- |
-| 0 (flat)   | No shadow; `{colors.hairline}` border      | Default cards, table rows |
-| 1 (subtle) | `rgba(0, 30, 43, 0.04) 0px 1px 2px 0px`    | Hover-elevated tiles      |
-| 2 (card)   | `rgba(0, 30, 43, 0.08) 0px 4px 12px 0px`   | Feature cards             |
-| 3 (mockup) | `rgba(0, 30, 43, 0.12) 0px 12px 24px -4px` | Code mockup over hero     |
-| 4 (modal)  | `rgba(0, 30, 43, 0.16) 0px 16px 48px -8px` | Modals, dropdowns         |
-
-### Decorative Depth
-
-- Dark teal hero bands carry atmospheric gradient depth
-- Code mockup cards on hero use canvas-dark surface with terminal aesthetic
-- Pale-mint pricing-feature tier uses brand-tinted shadow
-
-## Shapes
-
-### Border Radius Scale
-
-| Token            | Value  | Use                                |
-| ---------------- | ------ | ---------------------------------- |
-| `{rounded.xs}`   | 4px    | Course category tags               |
-| `{rounded.sm}`   | 6px    | Type badges, code chips            |
-| `{rounded.md}`   | 8px    | Inputs, search-pill, code blocks   |
-| `{rounded.lg}`   | 12px   | Cards, pricing tiers, course tiles |
-| `{rounded.xl}`   | 16px   | Larger feature panels              |
-| `{rounded.xxl}`  | 24px   | Featured product showcases         |
-| `{rounded.full}` | 9999px | All buttons, status badges         |
-
-### Photography Geometry
-
-- Hero illustrations sit on full-bleed dark backgrounds
-- Course tile thumbnails use `{rounded.lg}` corners
-- Customer logos wall: wordmarks at consistent 60–80px height
-
-## Components
-
-> Per the no-hover policy, hover states are NOT documented. Default and pressed/active states only.
-
-### Buttons
-
-**`button-primary`** — Bright MongoDB green pill primary CTA, the dominant action.
-
-- Background `{colors.brand-green}`, text `{colors.on-primary}` (deep navy), typography `{typography.button-md}`, padding `10px 22px`, rounded `{rounded.full}`.
-- Pressed state `button-primary-pressed` deepens to `{colors.primary-pressed}`.
-- Disabled state `button-primary-disabled` uses `{colors.hairline}` background.
-
-**`button-secondary`** — Outlined pill for secondary actions.
-
-- Background transparent, text `{colors.ink}`, border `1px solid {colors.hairline-strong}`, typography `{typography.button-md}`, padding `10px 22px`, rounded `{rounded.full}`.
-
-**`button-on-dark`** — Bright green pill on dark hero bands.
-
-- Background `{colors.brand-green}`, text `{colors.on-primary}`, typography `{typography.button-md}`, padding `10px 22px`, rounded `{rounded.full}`.
-
-**`button-secondary-on-dark`** — Outlined pill on dark backgrounds.
-
-- Background transparent, text `{colors.on-dark}`, border `1px solid {colors.hairline-dark}`, typography `{typography.button-md}`, padding `10px 22px`, rounded `{rounded.full}`.
-
-**`button-ghost`** — Quieter rectangular ghost button.
-
-- Background transparent, text `{colors.ink}`, typography `{typography.button-md}`, padding `8px 12px`, rounded `{rounded.md}`.
-
-**`button-link`** — Inline green text link.
-
-- Background transparent, text `{colors.brand-green-dark}`, typography `{typography.body-sm-medium}`, padding `0`.
-
-### Cards & Containers
-
-**`card-base`** — Standard content card.
-
-- Background `{colors.canvas}`, rounded `{rounded.lg}`, padding `{spacing.xl}`, border `1px solid {colors.hairline}`.
-
-**`card-feature`** — Feature card with larger padding.
-
-- Background `{colors.canvas}`, rounded `{rounded.lg}`, padding `{spacing.xxl}`, border `1px solid {colors.hairline}`.
-
-**`card-product-deploy`** — Product deployment card ("MongoDB Atlas / Community").
-
-- Background `{colors.canvas}`, rounded `{rounded.lg}`, padding `{spacing.xxl}`, border `1px solid {colors.hairline}`.
-
-**`card-feature-dark`** — Dark teal feature card on hero band.
-
-- Background `{colors.brand-teal-deep}`, text `{colors.on-dark}`, rounded `{rounded.lg}`, padding `{spacing.xxl}`.
-
-**`card-course`** — MongoDB University course tile.
-
-- Background `{colors.canvas}`, rounded `{rounded.lg}`, padding `{spacing.xl}`, border `1px solid {colors.hairline}`.
-- Top: colored category tag. Below: title `{typography.heading-5}`, description `{typography.body-sm}`, "Get Started →" link.
-
-**`card-cert`** — Certification card.
-
-- Background `{colors.canvas}`, rounded `{rounded.lg}`, padding `{spacing.xl}`, border `1px solid {colors.hairline}`.
-
-**`pricing-card`** — Standard pricing tier card.
-
-- Background `{colors.canvas}`, rounded `{rounded.lg}`, padding `{spacing.xxl}`, border `1px solid {colors.hairline}`.
-
-**`pricing-card-featured`** — Featured pricing tier (Flex tier, mint background + green border).
-
-- Background `{colors.surface-feature}`, rounded `{rounded.lg}`, padding `{spacing.xxl}`, border `2px solid {colors.brand-green}`.
-
-### Inputs & Forms
-
-**`text-input`** — Standard text field.
-
-- Background `{colors.canvas}`, text `{colors.ink}`, border `1px solid {colors.hairline-strong}`, rounded `{rounded.md}`, padding `{spacing.sm} {spacing.md}`, height 44px.
-
-**`text-input-focused`** — Activated state.
-
-- Border switches to `2px solid {colors.brand-green-dark}`.
-
-**`search-pill`** — Standard 44px search bar.
-
-- Background `{colors.surface}`, text `{colors.steel}`, typography `{typography.body-md}`, rounded `{rounded.md}`, height 44px, border `1px solid {colors.hairline-strong}`.
-
-**`search-pill-large`** — Large 56px search bar (top of MongoDB University catalog).
-
-- Background `{colors.canvas}`, text `{colors.steel}`, typography `{typography.body-md}`, rounded `{rounded.md}`, height 56px, border `1px solid {colors.hairline-strong}`.
-
-### Tabs
-
-**`pill-tab`** + **`pill-tab-active`** — Pill-style tab nav (top of pricing: "MongoDB Atlas / Enterprise Advanced").
-
-- Inactive: text `{colors.steel}`, border `1px solid {colors.hairline}`, padding `{spacing.xs} {spacing.md}`, rounded `{rounded.full}`.
-- Active: background `{colors.ink}`, text `{colors.on-dark}`.
-
-**`segmented-tab`** + **`segmented-tab-active`** — Underline-style tab navigation.
-
-- Inactive: text `{colors.steel}`, no border. Active: text `{colors.brand-green-dark}`, 2px bottom border in `{colors.brand-green-dark}`.
-
-### Badges & Status
-
-**`badge-green`** — Bright green badge for new product highlights.
-
-- Background `{colors.brand-green}`, text `{colors.on-primary}`, typography `{typography.caption-bold}`, rounded `{rounded.sm}`, padding `2px 8px`.
-
-**`badge-green-soft`** — Pale-mint pill for success/free indicators.
-
-- Background `{colors.brand-green-soft}`, text `{colors.brand-green-dark}`, typography `{typography.caption-bold}`, rounded `{rounded.full}`, padding `4px 10px`.
-
-**`badge-purple`** — Purple course category tag.
-
-- Background `{colors.accent-purple}`, text `{colors.on-dark}`, typography `{typography.caption-bold}`, rounded `{rounded.sm}`, padding `2px 8px`.
-
-**`badge-orange`** — Orange course category tag.
-
-- Background `{colors.accent-orange}`, text `{colors.on-dark}`, typography `{typography.caption-bold}`, rounded `{rounded.sm}`, padding `2px 8px`.
-
-**`badge-popular`** — "Most Popular" tier indicator (dark teal pill with green text).
-
-- Background `{colors.brand-teal-deep}`, text `{colors.brand-green}`, typography `{typography.caption-bold}`, rounded `{rounded.full}`, padding `4px 10px`.
-
-**`promo-banner`** — Dark teal sticky promo strip ABOVE the top nav.
-
-- Background `{colors.brand-teal-deep}`, text `{colors.on-dark}`, typography `{typography.body-sm-medium}`, padding `{spacing.sm} {spacing.md}`.
-
-### Code
-
-**`code-block`** — Code container.
-
-- Background `{colors.canvas-dark}`, text `{colors.on-dark}`, typography `{typography.code-md}`, rounded `{rounded.md}`, padding `{spacing.md}`.
-
-**`code-mockup-card`** — Embedded code mockup on hero band.
-
-- Background `{colors.canvas-dark}`, text `{colors.on-dark}`, rounded `{rounded.lg}`, padding `{spacing.lg}`. Carries terminal-aesthetic code snippet.
-
-### Tables
-
-**`comparison-table`** — Pricing feature comparison table.
-
-- Background `{colors.canvas}`, text `{colors.ink}`, typography `{typography.body-sm}`, rounded `{rounded.md}`, border `1px solid {colors.hairline}`.
-
-**`comparison-row`** — Individual feature row.
-
-- Background `{colors.canvas}`, text `{colors.ink}`, padding `{spacing.md} {spacing.lg}`, bottom border `1px solid {colors.hairline-soft}`.
-
-### Documentation Components
-
-**`service-tile`** — Tile in "Customize your deployment" 6-up grid.
-
-- Background `{colors.canvas}`, rounded `{rounded.lg}`, padding `{spacing.xl}`, border `1px solid {colors.hairline}`.
-
-**`why-card`** — "Loved by builders" feature card.
-
-- Background `{colors.surface}`, rounded `{rounded.lg}`, padding `{spacing.xl}`.
-
-**`customer-testimonial-card`** — Customer quote card.
-
-- Background `{colors.canvas}`, rounded `{rounded.lg}`, padding `{spacing.xxl}`, border `1px solid {colors.hairline}`.
-
-**`logo-wall-item`** — Customer logo wordmark cell.
-
-- Background transparent, text `{colors.steel}`, typography `{typography.body-md-medium}`, padding `{spacing.lg}`.
-
-**`faq-accordion-item`** — FAQ panel.
-
-- Background `{colors.canvas}`, rounded `{rounded.md}`, padding `{spacing.xl}`, bottom border `1px solid {colors.hairline}`.
-
-### Navigation
-
-**Top Navigation (Marketing)** — Sticky white bar.
-
-- Background `{colors.canvas}`, height ~64px, bottom border `1px solid {colors.hairline}`.
-- Left: MongoDB leaf logo + "Solutions / Resources / Company / Pricing" links.
-- Right: "Sign In" link + bright-green pill "Try Free" CTA.
-
-### Signature Components
-
-**`hero-band-dark`** — Deep teal hero band with embedded code mockup.
-
-- Background `{colors.brand-teal-deep}`, text `{colors.on-dark}`, padding `{spacing.hero}`.
-- Layout: centered headline `{typography.hero-display}`, subtitle, button row, `code-mockup-card` below.
-
-**`hero-platform-card`** — Lighter-teal platform showcase card on dark hero.
-
-- Background `{colors.brand-teal-mid}`, text `{colors.on-dark}`, rounded `{rounded.xl}`, padding `{spacing.xxl}`.
-
-**`cta-banner-dark`** — Dark CTA banner at the bottom of feature pages.
-
-- Background `{colors.brand-teal-deep}`, text `{colors.on-dark}`, rounded `{rounded.lg}`, padding `{spacing.section}`.
-
-**`footer-region`** — Dark teal multi-column footer.
-
-- Background `{colors.brand-teal-deep}`, padding `{spacing.section} {spacing.xxl}`.
-- 6-column link grid.
-- Section headings in `{typography.body-sm-medium}` `{colors.on-dark}`.
-
-**`footer-link`** — Individual footer link.
-
-- Background transparent, text `{colors.on-dark-muted}`, typography `{typography.body-sm}`, padding `{spacing.xxs} 0`.
-
-## Do's and Don'ts
-
-### Do
-
-- Use `{colors.brand-green}` (bright MongoDB green) for primary CTAs everywhere
-- Pair dark-teal hero bands with bright green CTA pills
-- Apply `{rounded.full}` to every button, every status badge
-- Apply `{rounded.lg}` (12px) to cards consistently
-- Use category accent colors (purple, orange, green, teal) ONLY for course tags
-- Maintain Euclid Circular A across every UI surface
-- Use code mockup cards with terminal-aesthetic content for product showcases
-
-### Don't
-
-- Don't use the bright green for body text or large surfaces
-- Don't introduce additional accent colors beyond the brand green and category-encoding palette
-- Don't soften corners on buttons; the pill is a brand signature
-- Don't replace deep teal hero bands with white hero bands
-- Don't apply heavy shadows on flat documentation cards; reserve elevation for code mockups
-- Don't use Source Code Pro for prose
-
-## Responsive Behavior
-
-### Breakpoints
-
-| Name           | Width         | Key Changes                                                  |
-| -------------- | ------------- | ------------------------------------------------------------ |
-| Mobile (small) | < 480px       | Single column. Hero 36px. Pricing 1-up. Course catalog 1-up. |
-| Mobile (large) | 480 – 767px   | Course tiles 2-up. Hero 48px.                                |
-| Tablet         | 768 – 1023px  | 2-column feature grids. Hero 56px.                           |
-| Desktop        | 1024 – 1279px | 3-tier pricing card row. 3-up course catalog. Hero 64px.     |
-| Wide Desktop   | ≥ 1280px      | Full 72px hero presentation.                                 |
-
-### Touch Targets
-
-- Pill buttons render at 40–44px effective height
-- Form inputs render at 44px height
-- Search pill (large) renders at 56px
-- Pill tabs ~32px → 44px on mobile
-
-### Collapsing Strategy
-
-- **Promo banner** stays full-width; truncates at < 480px
-- **Top nav** below 1024px collapses to hamburger
-- **Hero band**: code mockup card moves below text on mobile
-- **Pricing tiers**: 3-column → 2-column tablet → 1-column mobile
-- **Course catalog**: 3-up → 2-up tablet → 1-up mobile
-- **Hero typography**: 72px → 56px → 48px → 36px
-- **Footer**: 6-column desktop → 3-column tablet → accordion mobile
-
-### Image Behavior
-
-- Atmospheric AI imagery uses 16:9 ratio with full-bleed scaling
-- Code mockup card content remains readable across breakpoints
-- Customer logo wall: wordmarks at consistent 60–80px height
-
-## Iteration Guide
-
-1. Focus on ONE component at a time
-2. Reference component names and tokens directly
-3. Run `npx @google/design.md lint DESIGN.md` after edits
-4. Add new variants as separate `components:` entries
-5. Default to `{typography.body-md}` for body
-6. Keep `{colors.brand-green}` as the primary CTA across all surfaces
-7. Pill-shaped buttons (`{rounded.full}`) always
-8. Dark-teal hero bands frame primary CTAs
-
-## Known Gaps
-
-- Specific dark-mode token values for canvas/surface beyond hero bands not surfaced
-- Animation/transition timings not extracted; recommend 150–200ms ease
-- Form validation success state not explicitly captured
-- Course-tile category color mappings are observation-based
+# JakartaNotebook / MakassarNotebook Design System
+
+> **100% Fidelity Specification for MakassarNotebook (MKN)**
+> Replicated directly from JakartaNotebook (jakartanotebook.com live production audit & high-density omnichannel retail design system).
+
+---
+
+## 1. Design Philosophy & Overview
+
+MakassarNotebook employs JakartaNotebook's signature **high-speed, ultra-high-density omnichannel retail design language**. Unlike typical generic e-commerce templates that use excessive white space and bloated cards, JakartaNotebook's design system is engineered for power shoppers, tech enthusiasts, resellers, and Pick N Go branch visitors who want instant product scannability, transparent warehouse pricing, and real-time branch inventory.
+
+### Key Characteristics:
+1. **High Information Density**: 8 products per row on desktop/widescreen, 10 categories per row, 6 video shopping reels per row.
+2. **Signature Colorway**:
+   - **Primary Action Blue**: `#0099FF` (`rgb(0, 153, 255)`) with hover `#007ACC`.
+   - **Brand Accent Orange**: `#FF6000` / `#F05A22` (used on the slogan `#SudahPastiMurahnya`, Shopping Cart badge, star ratings, and card hover highlights).
+   - **Discount / Urgency Red**: `#FF0000` / `#D32F2F` (used on Flash Sale countdown badges, discount percentage `-%`, and clearance tags).
+   - **Deep Teal Navy**: `#166397` / `#12527D` (used on the Contact Center header and institutional trust cards).
+3. **Clean Crisp Neutral Surfaces**: Pure `#FFFFFF` card containers on a `#F0F0F0` / `#F7F7F7` neutral canvas, bordered with subtle `#E5E5E5` / `#CCCCCC` hairlines.
+4. **Optimized Screen Real Estate**: Fluid scaling from mobile (360px) to standard desktop (1200px) and wide monitors (`max-w-[1620px]` at 1920px+).
+
+---
+
+## 2. Color System
+
+### 2.1 Brand & Action Colors
+| Token | Hex | RGB | Purpose & Usage |
+|---|---|---|---|
+| `color-primary` | `#0099FF` | `rgb(0, 153, 255)` | Primary interactive buttons, links, active state, icons |
+| `color-primary-hover` | `#007ACC` | `rgb(0, 122, 204)` | Button hover, link hover |
+| `color-primary-light` | `#E6F5FF` | `rgb(230, 245, 255)` | Outlined button hover, active category pill background |
+| `color-orange-brand` | `#FF6000` | `rgb(255, 96, 0)` | `#SudahPastiMurahnya`, Cart badge, rating stars, card border hover |
+| `color-red-discount` | `#D32F2F` | `rgb(211, 47, 47)` | Flash sale timer boxes, discount `%` tags (`-46%`), clearance badges |
+| `color-red-light` | `#FFE6E6` | `rgb(255, 230, 230)` | Flash sale and promo background tints |
+| `color-contact-navy` | `#166397` | `rgb(22, 99, 151)` | Contact center card header, offline branch service bar |
+| `color-contact-deep` | `#12527D` | `rgb(18, 82, 125)` | Contact center header accent |
+
+### 2.2 Surface & Neutral Canvas
+| Token | Hex | RGB | Purpose & Usage |
+|---|---|---|---|
+| `surface-canvas` | `#F7F7F7` | `rgb(247, 247, 247)` | Overall application background behind cards |
+| `surface-card` | `#FFFFFF` | `rgb(255, 255, 255)` | White card surfaces, section backgrounds, header |
+| `surface-subtle` | `#FAFAFA` | `rgb(250, 250, 250)` | Product image containers, search pill background |
+| `surface-input` | `#F0F0F0` | `rgb(240, 240, 240)` | Search input background, variant tag chips |
+| `border-standard` | `#E5E5E5` | `rgb(229, 229, 229)` | Default 1px card and divider border |
+| `border-medium` | `#CCCCCC` | `rgb(204, 204, 204)` | Search input border, input controls, table borders |
+| `border-subtle` | `#F0F0F0` | `rgb(240, 240, 240)` | Section header bottom dividers |
+
+### 2.3 Typography Colors
+| Token | Hex | RGB | Purpose & Usage |
+|---|---|---|---|
+| `text-primary` | `#222222` | `rgb(34, 34, 34)` | Product titles, card headers, prices, main headings |
+| `text-secondary` | `#444444` | `rgb(68, 68, 68)` | Category names, sub-navigation, footer links |
+| `text-muted` | `#666666` | `rgb(102, 102, 102)` | Top header branch hours, article descriptions, body paragraphs |
+| `text-strikethrough`| `#999999` | `rgb(153, 153, 153)` | Original crossed-out price, timestamp labels |
+| `text-placeholder` | `#B3B3B3` | `rgb(179, 179, 179)` | Form field placeholder text |
+
+---
+
+## 3. Typography Scale & Fonts
+
+### Font Families
+- **Primary Body & Titles**: `"inter-ui", "poppins", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`
+- **Buttons & Badges**: `"poppins", "inter-ui", sans-serif`
+- **Numbers & Prices**: `"inter-ui", sans-serif` (tabular numbers with clear punctuation)
+
+### Hierarchy Table
+| Context | Size | Weight | Line Height | Color | Usage |
+|---|---|---|---|---|---|
+| **Header Logo** | `24px` | 900 (Black) | 1.1 | `#222222` + `#0099FF` | Brand name MakassarNotebook |
+| **Slogan** | `10px` | 700 (Bold) | 1.0 | `#FF6000` | `#SudahPastiMurahnya` |
+| **Section Title** | `14px` | 700 (Bold) | 1.2 | `#222222` | Flash Sale, Rekomendasi, Kategori Populer |
+| **Section Action** | `11px` | 600 (Semibold)| 1.2 | `#0099FF` | "Lihat Semua", "Ganti Cabang" |
+| **Product Title** | `11px - 12px` | 500 (Medium) | 1.3 | `#222222` | 2-line clamp product title |
+| **Product Price** | `13px - 14px` | 700 (Bold) | 1.2 | `#222222` | Current discounted retail price |
+| **Original Price** | `10px - 11px` | 400 (Regular)| 1.2 | `#999999` | Strikethrough price |
+| **Discount Badge** | `10px - 11px` | 700 (Bold) | 1.0 | `#D32F2F` | `-46%` discount percentage |
+| **Category Label** | `11px` | 600 (Semibold)| 1.2 | `#444444` | Category text under icon |
+| **Article Excerpt** | `11px` | 400 (Regular)| 1.4 | `#777777` | 2-line clamp info blog summary |
+
+---
+
+## 4. Components & Micro-interactions
+
+### 4.1 Buttons
+- **Contained Primary (`data-variant="contained" data-color="primary"`)**:
+  - `bg-[#0099FF] text-white font-medium rounded-lg px-4 py-2 hover:bg-[#007ACC] transition-all`
+- **Outlined Primary (`data-variant="outlined" data-color="primary"`)**:
+  - `border border-[#0099FF] text-[#0099FF] bg-white rounded-lg px-6 py-2 hover:bg-[#E6F5FF] transition-all`
+- **Category Trigger Button**:
+  - `border border-[#D6D6D6] bg-[#FAFAFA] rounded px-3.5 py-2 text-xs font-semibold text-[#444444] hover:bg-[#F0F0F0]`
+  - Features hamburger icon with orange accent `#FF6000`.
+
+### 4.2 Product Cards (Signature 8-Column Grid)
+- **Container**: `bg-white rounded-lg border border-[#E9E9E9] p-2 hover:border-[#FF6000] hover:shadow-xs transition-all flex flex-col justify-between`
+- **Image Area**: `aspect-square overflow-hidden rounded bg-[#FAFAFA] relative group-hover:scale-102`
+- **Category Badge**: `absolute top-1 left-1 bg-[#0099FF] text-white text-[8px] font-bold px-1 py-0.5 rounded uppercase`
+- **Variant Pill**: `bg-[#F2F2F2] text-[#666666] text-[9px] px-1.5 py-0.5 rounded inline-block mt-1`
+- **Price Block**:
+  - Main price: `text-xs 2xl:text-sm font-bold text-[#222222]`
+  - Discount line: `text-[10px] text-[#999999] line-through mr-1`
+  - Discount tag: `text-[10px] font-bold text-[#D32F2F]`
+
+### 4.3 Flash Sale Countdown Timer
+- Red rectangular blocks: `bg-[#D32F2F] text-white rounded px-1.5 py-0.5 font-mono text-xs font-bold`
+- Separator colon: `text-[#D32F2F] font-bold`
+
+### 4.4 Video Shopping Reels (Produk Viral)
+- Aspect Ratio: `aspect-9/16`
+- Dark gradient overlay: `bg-gradient-to-t from-black/90 via-black/40 to-transparent`
+- Play button indicator: `size-6 rounded-full bg-white/70 text-black flex items-center justify-center top-3 left-3`
+- Highlight yellow category tag: `text-[#FFD166] text-[10px] font-bold uppercase`
+
+### 4.5 Branch Contact Center Card
+- Deep blue top bar: `bg-[#166397] p-3 text-white font-bold text-sm`
+- Border: `border border-[#005580]`
+- Interactive branch dropdown: updates phone number, WhatsApp sales link, physical address, and Google Maps direction pin.
+- Offline opening hours breakdown: Senin - Sabtu 09:00 - 20:00, Minggu / Libur Nasional 12:00 - 20:00.
+
+---
+
+## 5. Responsive Grid & Container Breakpoints
+
+| Breakpoint | Container `max-width` | Product Columns | Category Columns |
+|---|---|---|---|
+| `< 640px` (Mobile) | `100%` (padding `12px`) | 2 columns | 2 columns |
+| `>= 640px` (Tablet) | `640px` | 4 columns | 5 columns |
+| `>= 768px` (Small Laptop) | `768px` | 4 columns | 5 columns |
+| `>= 1024px` (Desktop) | `1024px` | 8 columns | 10 columns |
+| `>= 1200px` (Full HD) | `1200px` - `1440px` | 8 columns | 10 columns |
+| `>= 1920px` (Wide Monitor) | `1620px` | 8 columns (spacious density) | 10 columns |
+
+---
+
+## 6. Omnichannel Retail Touchpoints (Makassar Specific)
+- **Pick N Go Makassar**: Maricaya Baru (Jl. Kijang No. 5C), Panakkukang (Jl. Pengayoman No. 42), AP Pettarani (Ruko Blok B-7), and Perintis Kemerdekaan KM 10.
+- **Service Center**: Hotline `(0411) 39 700 200`, WhatsApp CS `0899 721 7050`, WhatsApp Sales/COD `0896 135 222 00`.
+- **Dropshipper Feature**: Blind drop-shipping with neutral shipping label (`resi netral`) without MKN logos for reseller orders across South Sulawesi and Eastern Indonesia.

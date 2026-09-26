@@ -9,7 +9,7 @@
 
 @theme {
     --font-sans:
-        'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Inter', 'Poppins', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
 
@@ -59,6 +59,19 @@
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-ring: var(--sidebar-ring);
+
+    --color-jaknote-blue: #0099FF;
+    --color-jaknote-blue-hover: #007ACC;
+    --color-jaknote-blue-light: #E6F5FF;
+    --color-jaknote-orange: #FF6000;
+    --color-jaknote-red: #D32F2F;
+    --color-jaknote-red-light: #FFE6E6;
+    --color-jaknote-navy: #166397;
+    --color-jaknote-navy-deep: #12527D;
+    --color-jaknote-bg: #F7F7F7;
+    --color-jaknote-card: #FFFFFF;
+    --color-jaknote-border: #E5E5E5;
+    --color-jaknote-border-subtle: #F0F0F0;
 
     --color-brand-green: #00ED64;
     --color-brand-green-dark: #00684A;
