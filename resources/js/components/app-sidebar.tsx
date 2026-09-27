@@ -27,6 +27,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import { useCurrentUrl } from '@/hooks/use-current-url';
 import * as CategoryController from '@/actions/App/Http/Controllers/Admin/CategoryController';
 import * as SubCategoryController from '@/actions/App/Http/Controllers/Admin/SubCategoryController';
 import type { NavItem } from '@/types';
@@ -86,6 +87,8 @@ const footerNavItems: NavItem[] = [
 ];
 
 export function AppSidebar() {
+    const { isCurrentOrParentUrl } = useCurrentUrl();
+
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -114,6 +117,7 @@ export function AppSidebar() {
                             <SidebarMenuItem key={item.title}>
                                 <SidebarMenuButton
                                     asChild
+                                    isActive={isCurrentOrParentUrl(item.href)}
                                     tooltip={{ children: item.title }}
                                 >
                                     <Link href={item.href} prefetch>
