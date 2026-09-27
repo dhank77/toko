@@ -29,6 +29,7 @@ import {
 import { dashboard } from '@/routes';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import * as CategoryController from '@/actions/App/Http/Controllers/Admin/CategoryController';
+import * as ProductController from '@/actions/App/Http/Controllers/Admin/ProductController';
 import * as SubCategoryController from '@/actions/App/Http/Controllers/Admin/SubCategoryController';
 import type { NavItem } from '@/types';
 
@@ -61,6 +62,11 @@ const mainNavItems: NavItem[] = [
 ];
 
 const masterDataNavItems: NavItem[] = [
+    {
+        title: 'Produk',
+        href: ProductController.index().url,
+        icon: Package,
+    },
     {
         title: 'Kategori',
         href: CategoryController.index().url,

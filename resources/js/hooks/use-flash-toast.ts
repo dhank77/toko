@@ -125,21 +125,16 @@ export function useFlashToast(): void {
             }
         });
 
-        const offSuccess = router.on(
-            'success',
-            (event: unknown & { detail?: { page?: InertiaPageProps } }) => {
-                const flash =
-                    (event as { detail?: { page?: InertiaPageProps } }).detail
-                        ?.page?.props?.flash ??
-                    (event as { detail?: { page?: InertiaPageProps } }).detail
-                        ?.page?.flash;
-                const data = normalizeFlash(flash);
+        const offSuccess = router.on('success', (event: any) => {
+            const flash =
+                event.detail?.page?.props?.flash ??
+                event.detail?.page?.flash;
+            const data = normalizeFlash(flash);
 
-                if (data) {
-                    showToast(data, lastShownKey);
-                }
-            },
-        );
+            if (data) {
+                showToast(data, lastShownKey);
+            }
+        });
 
         return () => {
             offFlash();
