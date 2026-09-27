@@ -19,7 +19,7 @@ class SubCategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->unique()->randomElement([
+        $base = fake()->randomElement([
             'Keyboard', 'Mouse', 'Cooling Pad', 'Webcam', 'USB Hub',
             'Kabel Charger', 'Power Bank', 'Screen Protector', 'Holder HP',
             'Bracket TV', 'Antena Digital', 'Android TV Box',
@@ -29,6 +29,7 @@ class SubCategoryFactory extends Factory
             'Rubik', 'Drone Camera', 'Action Figure',
             'Oximeter', 'Nebulizer', 'Kacamata Baca',
         ]);
+        $name = $base.' '.fake()->unique()->numberBetween(1, 999999);
 
         return [
             'category_id' => Category::inRandomOrder()->value('id') ?? Category::factory(),

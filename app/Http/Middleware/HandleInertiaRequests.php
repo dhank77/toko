@@ -42,6 +42,39 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            // Sonner: jembatani session flash Laravel lama (->with('success', ...))
+            // menjadi prop Inertia `flash` agar otomatis jadi toast.
+            'flash' => fn () => $this->resolveToastFlash($request),
         ];
+    }
+
+    /**
+     * @return array{toast?: array{type: string, message: string}}
+     */
+    private function resolveToastFlash(Request $request): array
+    {
+        if (! $request->hasSession()) {
+            return [];
+        }
+
+        $toast = $request->session()->get('toast');
+
+        if (is_array($toast) && isset($toast['message'])) {
+            return ['toast' => [
+                'type' => (string) ($toast['type'] ?? 'success'),
+                'message' => (string) $toast['message'],
+            ]];
+        }
+
+        foreach (['success', 'error', 'info', 'warning'] as $type) {
+            if ($request->session()->has($type)) {
+                return ['toast' => [
+                    'type' => $type,
+                    'message' => (string) $request->session()->get($type),
+                ]];
+            }
+        }
+
+        return [];
     }
 }
