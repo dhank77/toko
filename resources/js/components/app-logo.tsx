@@ -1,22 +1,17 @@
-import { usePage } from '@inertiajs/react';
-import { Laptop } from 'lucide-react';
+import AppLogoIcon from '@/components/app-logo-icon';
 
 export default function AppLogo() {
-    const { name } = usePage().props;
-
     return (
-        <>
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-[#001E2B] text-[#00ED64] shadow-xs">
-                <Laptop className="size-4.5" />
-            </div>
-            <div className="ml-1.5 grid flex-1 text-left text-sm">
-                <span className="mb-0.5 truncate leading-tight font-bold text-[#001E2B] dark:text-white">
-                    Makassar<span className="text-[#00A35C] dark:text-[#00ED64]">Notebook</span>
+        <div className="flex items-center gap-2">
+            <AppLogoIcon className="size-7 shrink-0" />
+            <div className="flex flex-col text-left">
+                <span className="text-base font-black tracking-tight text-[#222222] dark:text-white leading-none">
+                    makassar<span className="text-[#0099FF]">notebook</span>
                 </span>
-                <span className="text-[10px] text-[#8998A5] leading-none">
-                    MKN Omnichannel
+                <span className="text-[9px] font-bold text-[#FF6000] tracking-tight leading-tight mt-0.5">
+                    #SudahPastiMurahnya
                 </span>
             </div>
-        </>
+        </div>
     );
 }

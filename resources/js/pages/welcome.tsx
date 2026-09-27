@@ -793,7 +793,7 @@ export default function Welcome() {
                 {/* --- TOAST NOTIFICATION --- */}
                 {cartToast && (
                     <div className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-[#222222] px-4 py-3 text-xs font-semibold text-white shadow-xl animate-fade-in border border-[#0099ff]">
-                        <ShoppingCart className="size-4 text-[#00ed64]" />
+                        <ShoppingCart className="size-4 text-[#0099ff]" />
                         <span>{cartToast}</span>
                     </div>
                 )}
@@ -1898,7 +1898,7 @@ export default function Welcome() {
                             <div id="toko-kami" className="lg:col-span-4 rounded-xl border border-[#166397]/40 bg-white overflow-hidden shadow-xs">
                                 <div className="bg-[#166397] p-3.5 text-white font-bold text-sm flex items-center justify-between">
                                     <div className="flex items-center gap-2">
-                                        <Store className="size-4 text-[#00ed64]" />
+                                        <Store className="size-4 text-[#FF6000]" />
                                         <span>Contact Center</span>
                                     </div>
                                     <span className="text-[10px] font-normal text-white/80">#SudahPastiMurahnya</span>

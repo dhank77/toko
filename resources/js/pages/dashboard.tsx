@@ -51,7 +51,7 @@ const recentTransactions = [
         date: '25 Sep 2026, 14:20',
         total: 175000,
         status: 'Selesai Diambil',
-        statusColor: 'bg-[#00ED64]/20 text-[#00684A] border-[#00ED64]',
+        statusColor: 'bg-[#E6F5FF] text-[#0099FF] border-[#0099FF]/40',
     },
     {
         id: 'MKN-20260922-0391',
@@ -60,7 +60,7 @@ const recentTransactions = [
         date: '22 Sep 2026, 10:15',
         total: 734000,
         status: 'Terkirim (Resi Terbit)',
-        statusColor: 'bg-[#7928CA]/15 text-[#7928CA] border-[#7928CA]/30',
+        statusColor: 'bg-[#FFF3EB] text-[#FF6000] border-[#FF6000]/40',
     },
     {
         id: 'MKN-20260919-0114',
@@ -69,7 +69,7 @@ const recentTransactions = [
         date: '19 Sep 2026, 18:45',
         total: 389000,
         status: 'Selesai Diambil',
-        statusColor: 'bg-[#00ED64]/20 text-[#00684A] border-[#00ED64]',
+        statusColor: 'bg-[#E6F5FF] text-[#0099FF] border-[#0099FF]/40',
     },
 ];
 
@@ -84,65 +84,66 @@ export default function Dashboard() {
 
     return (
         <AppLayout breadcrumbs={[{ title: 'Dashboard', href: dashboard() }]}>
-            <Head title="Ringkasan Toko - MakassarNotebook" />
+            <Head title="Member &amp; Reseller Dashboard - MakassarNotebook" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8 bg-[#F9FBFA] text-[#001E2B]">
-                {/* Header Greeting Banner */}
-                <div className="rounded-xl border border-[#1C3B47] bg-[#001E2B] p-6 text-white shadow-sm sm:p-8">
+            <div className="flex h-full flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8 bg-[#F7F7F7] text-[#222222]">
+                {/* Header Greeting Banner with JakartaNotebook Navy Accent */}
+                <div className="rounded-xl border border-[#166397]/30 bg-gradient-to-r from-[#166397] to-[#12527D] p-6 text-white shadow-xs sm:p-8">
                     <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                         <div>
-                            <div className="inline-flex items-center gap-2 rounded-full bg-[#00ED64]/20 px-3 py-0.5 text-xs font-semibold text-[#00ED64]">
+                            <div className="inline-flex items-center gap-2 rounded-full bg-[#FF6000] px-3 py-0.5 text-[11px] font-bold text-white shadow-xs">
                                 <Sparkles className="size-3.5" />
-                                <span>Mitra Dropshipper Aktif - Tier Gold</span>
+                                <span>Mitra Reseller &amp; Dropshipper - Tier Gold</span>
                             </div>
-                            <h1 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
+                            <h1 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">
                                 Halo, Mitra MakassarNotebook!
                             </h1>
-                            <p className="mt-1 text-xs text-[#8998A5] sm:text-sm">
-                                Kelola pesanan Pick N Go, periksa saldo dompet dropship, dan pantau stok multi-cabang secara instan.
+                            <p className="mt-1 text-xs text-white/80 sm:text-sm">
+                                Kelola pesanan Pick N Go, periksa saldo dompet dropship, dan pantau stok toko offline secara instan #SudahPastiMurahnya.
                             </p>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-3">
                             <a
-                                href="/#katalog"
-                                className="inline-flex h-10 items-center justify-center gap-2 rounded-full bg-[#00ED64] px-5 text-xs font-bold text-[#001E2B] transition-all hover:bg-[#00C351] active:scale-98"
+                                href="/"
+                                className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-[#0099FF] px-4 text-xs font-bold text-white transition-all hover:bg-[#007ACC] shadow-xs active:scale-98"
                             >
-                                <Plus className="size-4" /> Buat Pesanan Baru
+                                <Plus className="size-4" /> Belanja Produk Baru
                             </a>
                             <button
                                 type="button"
-                                className="inline-flex h-10 items-center justify-center gap-2 rounded-full border border-[#1C3B47] px-4 text-xs font-semibold text-white transition-colors hover:bg-white/10"
+                                className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-4 text-xs font-semibold text-white transition-colors hover:bg-white/20"
                             >
-                                <FileText className="size-4 text-[#00ED64]" /> Cetak Resi Netral
+                                <FileText className="size-4 text-[#FFD166]" /> Cetak Resi Netral
                             </button>
                         </div>
                     </div>
                 </div>
 
-                {/* 3 Metric Cards (DESIGN.md: 12px rounded cards, featured mint tier styling) */}
+                {/* 3 Metric Cards */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                    {/* Card 1: Dompet Saldo Dropship (Featured Mint Card) */}
-                    <div className="rounded-xl border-2 border-[#00ED64] bg-[#E8FCF4] p-6 shadow-xs">
-                        <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold tracking-wider text-[#00684A] uppercase">
+                    {/* Card 1: Dompet Saldo Dropship */}
+                    <div className="rounded-xl border border-[#0099FF]/40 bg-white p-6 shadow-xs relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-24 h-24 bg-[#E6F5FF] rounded-bl-full pointer-events-none" />
+                        <div className="flex items-center justify-between relative z-10">
+                            <span className="text-xs font-bold tracking-wider text-[#0099FF] uppercase">
                                 Saldo Dompet Dropship
                             </span>
-                            <div className="flex size-8 items-center justify-center rounded-lg bg-[#001E2B] text-[#00ED64]">
+                            <div className="flex size-8 items-center justify-center rounded-lg bg-[#0099FF] text-white">
                                 <Wallet className="size-4.5" />
                             </div>
                         </div>
-                        <div className="mt-4 text-3xl font-bold text-[#001E2B]">
+                        <div className="mt-4 text-3xl font-bold text-[#222222] relative z-10">
                             Rp 2.450.000
                         </div>
-                        <p className="mt-1 text-xs text-[#00684A]">
+                        <p className="mt-1 text-xs text-[#666666] relative z-10">
                             Otomatis terpotong saat pesanan dropship masuk
                         </p>
-                        <div className="mt-5 border-t border-[#00ED64]/30 pt-4 flex items-center justify-between">
-                            <span className="text-xs text-[#001E2B] font-medium">Bebas Fee Gateway</span>
+                        <div className="mt-5 border-t border-[#F0F0F0] pt-4 flex items-center justify-between">
+                            <span className="text-xs text-[#666666] font-medium">Bebas Biaya Admin</span>
                             <button
                                 type="button"
-                                className="inline-flex h-8 items-center justify-center rounded-full bg-[#001E2B] px-4 text-xs font-semibold text-[#00ED64] hover:bg-[#093B47]"
+                                className="inline-flex h-8 items-center justify-center rounded-lg bg-[#0099FF] px-4 text-xs font-bold text-white hover:bg-[#007ACC] transition-colors"
                             >
                                 Top Up Saldo
                             </button>
@@ -150,158 +151,152 @@ export default function Dashboard() {
                     </div>
 
                     {/* Card 2: Pick N Go Status */}
-                    <div className="rounded-xl border border-[#E8EDEB] bg-white p-6 shadow-xs">
+                    <div className="rounded-xl border border-[#E5E5E5] bg-white p-6 shadow-xs">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold tracking-wider text-[#5C768D] uppercase">
+                            <span className="text-xs font-bold tracking-wider text-[#FF6000] uppercase">
                                 Pesanan Siap Diambil
                             </span>
-                            <div className="flex size-8 items-center justify-center rounded-lg bg-[#001E2B] text-white">
+                            <div className="flex size-8 items-center justify-center rounded-lg bg-[#FF6000] text-white">
                                 <ShoppingBag className="size-4.5" />
                             </div>
                         </div>
-                        <div className="mt-4 text-3xl font-bold text-[#001E2B]">
+                        <div className="mt-4 text-3xl font-bold text-[#222222]">
                             1 Pesanan
                         </div>
-                        <p className="mt-1 text-xs text-[#5C768D]">
-                            Di Cabang Panakkukang (Batas ambil 23:59 WITA)
+                        <p className="mt-1 text-xs text-[#666666]">
+                            Cabang Panakkukang (Batas ambil 23:59 WITA)
                         </p>
-                        <div className="mt-5 border-t border-[#E8EDEB] pt-4 flex items-center justify-between text-xs text-[#5C768D]">
-                            <span>PIN: <strong className="font-mono text-[#001E2B]">739-102</strong></span>
-                            <span className="font-semibold text-[#00A35C]">● Siap di Rak</span>
+                        <div className="mt-5 border-t border-[#F0F0F0] pt-4 flex items-center justify-between text-xs text-[#666666]">
+                            <span>PIN: <strong className="font-mono text-[#0099FF] font-bold">739-102</strong></span>
+                            <span className="font-semibold text-[#0099FF]">● Siap di Rak</span>
                         </div>
                     </div>
 
                     {/* Card 3: Total Transaksi Bulan Ini */}
-                    <div className="rounded-xl border border-[#E8EDEB] bg-white p-6 shadow-xs">
+                    <div className="rounded-xl border border-[#E5E5E5] bg-white p-6 shadow-xs">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs font-bold tracking-wider text-[#5C768D] uppercase">
-                                Transaksi Bulan September
+                            <span className="text-xs font-bold tracking-wider text-[#666666] uppercase">
+                                Transaksi Bulan Ini
                             </span>
-                            <div className="flex size-8 items-center justify-center rounded-lg bg-[#001E2B] text-white">
-                                <CreditCard className="size-4.5" />
+                            <div className="flex size-8 items-center justify-center rounded-lg bg-[#166397] text-white">
+                                <Package className="size-4.5" />
                             </div>
                         </div>
-                        <div className="mt-4 text-3xl font-bold text-[#001E2B]">
-                            Rp 18.620.000
+                        <div className="mt-4 text-3xl font-bold text-[#222222]">
+                            14 Pesanan
                         </div>
-                        <p className="mt-1 text-xs text-[#5C768D]">
-                            34 pesanan selesai (28 dropship, 6 pick n go)
+                        <p className="mt-1 text-xs text-[#666666]">
+                            Akumulasi omzet: <strong className="text-[#222222]">Rp 4.820.000</strong>
                         </p>
-                        <div className="mt-5 border-t border-[#E8EDEB] pt-4 flex items-center justify-between text-xs text-[#5C768D]">
-                            <span>Margin Untung Bersih</span>
-                            <strong className="text-[#00A35C]">+Rp 3.840.000</strong>
+                        <div className="mt-5 border-t border-[#F0F0F0] pt-4 flex items-center justify-between text-xs text-[#666666]">
+                            <span>Status Pengiriman</span>
+                            <span className="font-semibold text-[#0099FF]">100% On Time</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Active Pick N Go Quick Ticket Card */}
-                <div className="rounded-xl border border-[#E8EDEB] bg-white p-6 shadow-xs">
-                    <div className="flex flex-col justify-between gap-4 border-b border-[#E8EDEB] pb-4 sm:flex-row sm:items-center">
+                {/* Active Pick N Go Locker Highlight Card */}
+                <div className="rounded-xl border border-[#0099FF]/30 bg-white p-6 shadow-xs">
+                    <div className="flex flex-col justify-between gap-4 border-b border-[#F0F0F0] pb-5 md:flex-row md:items-center">
                         <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-xl bg-[#00ED64]/20 text-[#00684A]">
-                                <QrCode className="size-6" />
+                            <div className="flex size-10 items-center justify-center rounded-xl bg-[#E6F5FF] text-[#0099FF]">
+                                <Store className="size-5" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2">
-                                    <h2 className="text-base font-bold text-[#001E2B]">
-                                        Tiket Pengambilan: {activePickNGo.orderNumber}
-                                    </h2>
-                                    <span className="rounded-full bg-[#00ED64] px-2 py-0.5 text-[10px] font-bold text-[#001E2B]">
-                                        SIAP DIAMBIL
+                                    <h3 className="text-base font-bold text-[#222222]">
+                                        Ambil di Toko (Pick N Go)
+                                    </h3>
+                                    <span className="rounded bg-[#E6F5FF] px-2 py-0.5 text-[10px] font-bold text-[#0099FF]">
+                                        {activePickNGo.status}
                                     </span>
                                 </div>
-                                <p className="text-xs text-[#5C768D]">
-                                    Tunjukkan PIN ini ke kasir toko cabang {activePickNGo.branch}
+                                <p className="text-xs text-[#666666]">
+                                    No. Pesanan: <strong className="text-[#222222]">{activePickNGo.orderNumber}</strong> &bull; {activePickNGo.branch}
                                 </p>
                             </div>
                         </div>
 
-                        {/* PIN Code Box */}
+                        {/* PIN Code Box with Copy Button */}
                         <div className="flex items-center gap-3">
-                            <div className="rounded-lg border-2 border-dashed border-[#00ED64] bg-[#F9FBFA] px-4 py-2 text-center">
-                                <div className="text-[10px] font-bold uppercase tracking-wider text-[#5C768D]">
-                                    PIN PENGAMBILAN
+                            <div className="rounded-lg border border-[#0099FF] bg-[#E6F5FF] px-4 py-2 text-center">
+                                <div className="text-[10px] font-bold uppercase tracking-wider text-[#007ACC]">
+                                    PIN Pengambilan
                                 </div>
-                                <div className="font-mono text-2xl font-black tracking-widest text-[#001E2B]">
+                                <div className="font-mono text-xl font-black text-[#0099FF]">
                                     {activePickNGo.pickupPin}
                                 </div>
                             </div>
                             <button
+                                type="button"
                                 onClick={copyPin}
-                                className="inline-flex h-10 items-center justify-center rounded-full bg-[#001E2B] px-4 text-xs font-semibold text-white hover:bg-[#093B47]"
+                                className="inline-flex h-11 items-center justify-center rounded-lg bg-[#0099FF] px-4 text-xs font-bold text-white hover:bg-[#007ACC] transition-all cursor-pointer"
                             >
-                                {copiedPin ? '✓ Tersalin' : 'Salin PIN'}
+                                {copiedPin ? 'Tersalin!' : 'Salin PIN'}
                             </button>
                         </div>
                     </div>
 
-                    {/* Order Item List */}
-                    <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        {activePickNGo.items.map((item, idx) => (
-                            <div
-                                key={idx}
-                                className="flex items-center justify-between rounded-lg border border-[#F0F4F2] bg-[#F9FBFA] p-3 text-xs"
-                            >
-                                <div>
-                                    <div className="font-semibold text-[#001E2B]">{item.name}</div>
-                                    <div className="font-mono text-[10px] text-[#8998A5]">
-                                        SKU: {item.sku} • Qty: {item.qty}
+                    {/* Items List in Locker */}
+                    <div className="mt-5 space-y-3">
+                        <div className="text-xs font-bold text-[#222222]">Detail Barang dalam Pesanan:</div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            {activePickNGo.items.map((item, i) => (
+                                <div
+                                    key={i}
+                                    className="flex items-center justify-between rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] p-3 text-xs"
+                                >
+                                    <div>
+                                        <div className="font-semibold text-[#222222]">{item.name}</div>
+                                        <div className="text-[10px] text-[#666666]">SKU: {item.sku} &bull; Qty: {item.qty} pcs</div>
+                                    </div>
+                                    <div className="font-bold text-[#222222]">
+                                        Rp {item.price.toLocaleString('id-ID')}
                                     </div>
                                 </div>
-                                <div className="font-bold text-[#001E2B]">
-                                    Rp {item.price.toLocaleString('id-ID')}
-                                </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
                 </div>
 
-                {/* Recent Transaction Table (DESIGN.md: comparison-table styling) */}
-                <div className="rounded-xl border border-[#E8EDEB] bg-white p-6 shadow-xs">
-                    <div className="flex items-center justify-between border-b border-[#E8EDEB] pb-4">
+                {/* Recent Transactions Table */}
+                <div className="rounded-xl border border-[#E5E5E5] bg-white p-6 shadow-xs">
+                    <div className="flex items-center justify-between border-b border-[#F0F0F0] pb-4 mb-4">
                         <div>
-                            <h2 className="text-base font-bold text-[#001E2B]">
-                                Riwayat Pesanan Terbaru
-                            </h2>
-                            <p className="text-xs text-[#5C768D]">
-                                Transaksi pembelian langsung, Pick N Go toko fisik, dan pesanan dropshipper.
-                            </p>
+                            <h3 className="text-base font-bold text-[#222222]">Riwayat Transaksi Terkini</h3>
+                            <p className="text-xs text-[#666666]">Daftar pesanan offline Pick N Go dan blind-dropship kurir</p>
                         </div>
-                        <a
-                            href="/#katalog"
-                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#00684A] hover:underline"
+                        <Link
+                            href="/"
+                            className="text-xs font-bold text-[#0099FF] hover:underline"
                         >
-                            Belanja Lagi <ArrowUpRight className="size-3.5" />
-                        </a>
+                            Lihat Semua
+                        </Link>
                     </div>
 
-                    <div className="mt-4 overflow-x-auto">
+                    <div className="overflow-x-auto">
                         <table className="w-full text-left text-xs">
                             <thead>
-                                <tr className="border-b border-[#E8EDEB] text-[#8998A5]">
-                                    <th className="py-3 pr-4 font-semibold uppercase tracking-wider">No. Pesanan</th>
-                                    <th className="py-3 px-4 font-semibold uppercase tracking-wider">Tipe</th>
-                                    <th className="py-3 px-4 font-semibold uppercase tracking-wider">Cabang / Gudang</th>
-                                    <th className="py-3 px-4 font-semibold uppercase tracking-wider">Waktu</th>
-                                    <th className="py-3 px-4 font-semibold uppercase tracking-wider">Total</th>
-                                    <th className="py-3 pl-4 font-semibold uppercase tracking-wider text-right">Status</th>
+                                <tr className="border-b border-[#E5E5E5] text-[#666666] bg-[#FAFAFA]">
+                                    <th className="py-2.5 px-3 font-semibold">ID Pesanan</th>
+                                    <th className="py-2.5 px-3 font-semibold">Tipe Layanan</th>
+                                    <th className="py-2.5 px-3 font-semibold">Cabang / Jalur</th>
+                                    <th className="py-2.5 px-3 font-semibold">Waktu Transaksi</th>
+                                    <th className="py-2.5 px-3 font-semibold">Total Pembayaran</th>
+                                    <th className="py-2.5 px-3 font-semibold">Status</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-[#F0F4F2]">
-                                {recentTransactions.map((trx) => (
-                                    <tr key={trx.id} className="hover:bg-[#F9FBFA] transition-colors">
-                                        <td className="py-3.5 pr-4 font-mono font-bold text-[#001E2B]">{trx.id}</td>
-                                        <td className="py-3.5 px-4 text-[#001E2B] font-medium">{trx.type}</td>
-                                        <td className="py-3.5 px-4 text-[#5C768D]">{trx.branch}</td>
-                                        <td className="py-3.5 px-4 text-[#8998A5]">{trx.date}</td>
-                                        <td className="py-3.5 px-4 font-bold text-[#001E2B]">
-                                            Rp {trx.total.toLocaleString('id-ID')}
-                                        </td>
-                                        <td className="py-3.5 pl-4 text-right">
-                                            <span
-                                                className={`inline-block rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${trx.statusColor}`}
-                                            >
-                                                {trx.status}
+                            <tbody className="divide-y divide-[#F0F0F0]">
+                                {recentTransactions.map((tx) => (
+                                    <tr key={tx.id} className="hover:bg-[#FAFAFA] transition-colors">
+                                        <td className="py-3 px-3 font-mono font-bold text-[#0099FF]">{tx.id}</td>
+                                        <td className="py-3 px-3 font-medium text-[#222222]">{tx.type}</td>
+                                        <td className="py-3 px-3 text-[#666666]">{tx.branch}</td>
+                                        <td className="py-3 px-3 text-[#666666]">{tx.date}</td>
+                                        <td className="py-3 px-3 font-bold text-[#222222]">Rp {tx.total.toLocaleString('id-ID')}</td>
+                                        <td className="py-3 px-3">
+                                            <span className={`inline-block rounded-md px-2.5 py-0.5 text-[10px] font-bold border ${tx.statusColor}`}>
+                                                {tx.status}
                                             </span>
                                         </td>
                                     </tr>
