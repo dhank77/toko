@@ -32,7 +32,21 @@ import {
 import { useEffect, useRef, useState } from 'react';
 import { dashboard, login, register } from '@/routes';
 
-export default function Welcome() {
+type SubCategoryItem = { id: number; name: string; slug: string };
+type CategoryItem = { id: number; name: string; slug: string; icon: string | null; sub_categories: SubCategoryItem[] };
+
+const STATIC_DEPARTMENTS = [
+    { name: 'Komputer & Laptop', items: ['Keyboard', 'Mouse', 'Cooling Pad', 'Stand Laptop', 'Webcam', 'USB Hub & Converter', 'Kabel HDMI & DP', 'SSD & Enclosure'] },
+    { name: 'Handphone & Tablet', items: ['Kabel Charger & Data', 'Holder HP Mobil & Motor', 'Fast Charger GaN', 'Power Bank', 'Screen Protector'] },
+    { name: 'TV & Elektronik', items: ['Bracket TV LED & Monitor', 'Antena Digital DVB-T2', 'Remote TV Universal', 'Android TV Box'] },
+    { name: 'Outdoor & Olahraga', items: ['Kursi Lipat Camping', 'Tenda Camping', 'Kompor Gas Portable', 'Senter Tactical LED'] },
+    { name: 'Rumah Tangga & Dapur', items: ['Timbangan Dapur Digital', 'Dispenser Sabun Otomatis', 'Lampu Meja LED'] },
+    { name: 'Otomotif & Motor', items: ['Holder HP Motor Waterproof', 'Pompa Ban Elektrik Portable', 'Lap Microfiber Mobil'] },
+    { name: 'Hobi & Mainan', items: ['Rubik Carbon Fiber', 'Drone Camera 4K', 'Piano Mainan Anak'] },
+    { name: 'Kesehatan & Personal Care', items: ['Oximeter Saturasi Oksigen', 'Nebulizer Portable', 'Kacamata Baca Anti Radiasi'] },
+];
+
+export default function Welcome({ categories = [] }: { categories?: CategoryItem[] }) {
     const { auth } = usePage().props;
 
     // --- Branch state & data ---
@@ -740,41 +754,13 @@ export default function Welcome() {
         },
     ];
 
-    // --- Category Mega-Menu Departments ---
-    const departments = [
-        {
-            name: 'Komputer & Laptop',
-            items: ['Keyboard', 'Mouse', 'Cooling Pad', 'Stand Laptop', 'Webcam', 'Pelindung Laptop', 'USB Hub & Converter', 'Kabel HDMI & DP', 'SSD & Enclosure'],
-        },
-        {
-            name: 'Handphone & Tablet',
-            items: ['Kabel Charger & Data', 'Holder HP Mobil & Motor', 'Fast Charger GaN', 'Stylus Pen', 'Power Bank', 'Cooler HP Gaming', 'Screen Protector'],
-        },
-        {
-            name: 'TV & Elektronik',
-            items: ['Bracket TV LED & Monitor', 'Antena Digital DVB-T2', 'Remote TV Universal', 'Android TV Box', 'Kabel Audio Optik', 'Converter Audio DAC'],
-        },
-        {
-            name: 'Outdoor & Olahraga',
-            items: ['Kursi Lipat Camping', 'Tenda Camping', 'Kompor Gas Portable', 'Soft Flask & Water Bladder', 'Karabiner & Paracord', 'Senter Tactical LED'],
-        },
-        {
-            name: 'Rumah Tangga & Dapur',
-            items: ['Alat Masak Camping', 'Timbangan Dapur Digital', 'Dispenser Sabun Otomatis', 'Rak Organizer Serbaguna', 'Lampu Meja LED', 'Perangkap Nyamuk'],
-        },
-        {
-            name: 'Otomotif & Motor',
-            items: ['Holder HP Motor Waterproof', 'Cover Jok Motor & Mobil', 'Pompa Ban Elektrik Portable', 'Tutup Pentil Glow in Dark', 'Lap Microfiber Mobil'],
-        },
-        {
-            name: 'Hobi & Mainan',
-            items: ['Rubik Carbon Fiber', 'Bricks & Balok Susun', 'Drone Camera 4K', 'Display Box Action Figure', 'Piano Mainan Anak', 'Boneka Talking Parrot'],
-        },
-        {
-            name: 'Kesehatan & Personal Care',
-            items: ['Oximeter Saturasi Oksigen', 'Alat Bantu Tongkat Lipat', 'Gunting Kuku Set Stainless', 'Nebulizer Portable', 'Kacamata Baca Anti Radiasi'],
-        },
-    ];
+    // --- Category Mega-Menu Departments (dynamic from DB, fallback to static) ---
+    const departments = categories.length > 0
+        ? categories.map(cat => ({
+            name: `${cat.icon ?? ''} ${cat.name}`.trim(),
+            items: cat.sub_categories.map(sub => sub.name),
+          }))
+        : STATIC_DEPARTMENTS;
 
     const [activeDepartment, setActiveDepartment] = useState(0);
 
