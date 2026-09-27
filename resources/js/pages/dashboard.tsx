@@ -1,23 +1,14 @@
 import { Head, Link } from '@inertiajs/react';
 import {
-    ArrowUpRight,
-    CheckCircle2,
-    Clock,
-    CreditCard,
     FileText,
-    MapPin,
     Package,
     Plus,
-    QrCode,
-    RefreshCw,
-    ShieldCheck,
     ShoppingBag,
     Sparkles,
     Store,
     Wallet,
 } from 'lucide-react';
 import { useState } from 'react';
-import AppLayout from '@/layouts/app-layout';
 import { dashboard } from '@/routes';
 
 const activePickNGo = {
@@ -77,36 +68,42 @@ export default function Dashboard() {
     const [copiedPin, setCopiedPin] = useState(false);
 
     const copyPin = () => {
-        navigator.clipboard.writeText(activePickNGo.pickupPin.replace('-', ''));
+        void navigator.clipboard.writeText(
+            activePickNGo.pickupPin.replace('-', ''),
+        );
         setCopiedPin(true);
         setTimeout(() => setCopiedPin(false), 2000);
     };
 
     return (
-        <AppLayout breadcrumbs={[{ title: 'Dashboard', href: dashboard() }]}>
+        <>
             <Head title="Member &amp; Reseller Dashboard - MakassarNotebook" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 p-4 sm:p-6 lg:p-8 bg-[#F7F7F7] text-[#222222]">
+            <div className="flex h-full flex-1 flex-col gap-6 bg-[#F7F7F7] p-4 text-[#222222] sm:p-6 lg:p-8">
                 {/* Header Greeting Banner with JakartaNotebook Navy Accent */}
                 <div className="rounded-xl border border-[#166397]/30 bg-gradient-to-r from-[#166397] to-[#12527D] p-6 text-white shadow-xs sm:p-8">
                     <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                         <div>
                             <div className="inline-flex items-center gap-2 rounded-full bg-[#FF6000] px-3 py-0.5 text-[11px] font-bold text-white shadow-xs">
                                 <Sparkles className="size-3.5" />
-                                <span>Mitra Reseller &amp; Dropshipper - Tier Gold</span>
+                                <span>
+                                    Mitra Reseller &amp; Dropshipper - Tier Gold
+                                </span>
                             </div>
                             <h1 className="mt-2 text-2xl font-bold tracking-tight text-white sm:text-3xl">
                                 Halo, Mitra MakassarNotebook!
                             </h1>
                             <p className="mt-1 text-xs text-white/80 sm:text-sm">
-                                Kelola pesanan Pick N Go, periksa saldo dompet dropship, dan pantau stok toko offline secara instan #SudahPastiMurahnya.
+                                Kelola pesanan Pick N Go, periksa saldo dompet
+                                dropship, dan pantau stok toko offline secara
+                                instan #SudahPastiMurahnya.
                             </p>
                         </div>
 
                         <div className="flex flex-wrap items-center gap-3">
                             <a
                                 href="/"
-                                className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-[#0099FF] px-4 text-xs font-bold text-white transition-all hover:bg-[#007ACC] shadow-xs active:scale-98"
+                                className="inline-flex h-9 items-center justify-center gap-2 rounded-lg bg-[#0099FF] px-4 text-xs font-bold text-white shadow-xs transition-all hover:bg-[#007ACC] active:scale-98"
                             >
                                 <Plus className="size-4" /> Belanja Produk Baru
                             </a>
@@ -114,7 +111,8 @@ export default function Dashboard() {
                                 type="button"
                                 className="inline-flex h-9 items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-4 text-xs font-semibold text-white transition-colors hover:bg-white/20"
                             >
-                                <FileText className="size-4 text-[#FFD166]" /> Cetak Resi Netral
+                                <FileText className="size-4 text-[#FFD166]" />{' '}
+                                Cetak Resi Netral
                             </button>
                         </div>
                     </div>
@@ -123,9 +121,9 @@ export default function Dashboard() {
                 {/* 3 Metric Cards */}
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {/* Card 1: Dompet Saldo Dropship */}
-                    <div className="rounded-xl border border-[#0099FF]/40 bg-white p-6 shadow-xs relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-[#E6F5FF] rounded-bl-full pointer-events-none" />
-                        <div className="flex items-center justify-between relative z-10">
+                    <div className="relative overflow-hidden rounded-xl border border-[#0099FF]/40 bg-white p-6 shadow-xs">
+                        <div className="pointer-events-none absolute top-0 right-0 h-24 w-24 rounded-bl-full bg-[#E6F5FF]" />
+                        <div className="relative z-10 flex items-center justify-between">
                             <span className="text-xs font-bold tracking-wider text-[#0099FF] uppercase">
                                 Saldo Dompet Dropship
                             </span>
@@ -133,17 +131,19 @@ export default function Dashboard() {
                                 <Wallet className="size-4.5" />
                             </div>
                         </div>
-                        <div className="mt-4 text-3xl font-bold text-[#222222] relative z-10">
+                        <div className="relative z-10 mt-4 text-3xl font-bold text-[#222222]">
                             Rp 2.450.000
                         </div>
-                        <p className="mt-1 text-xs text-[#666666] relative z-10">
+                        <p className="relative z-10 mt-1 text-xs text-[#666666]">
                             Otomatis terpotong saat pesanan dropship masuk
                         </p>
-                        <div className="mt-5 border-t border-[#F0F0F0] pt-4 flex items-center justify-between">
-                            <span className="text-xs text-[#666666] font-medium">Bebas Biaya Admin</span>
+                        <div className="mt-5 flex items-center justify-between border-t border-[#F0F0F0] pt-4">
+                            <span className="text-xs font-medium text-[#666666]">
+                                Bebas Biaya Admin
+                            </span>
                             <button
                                 type="button"
-                                className="inline-flex h-8 items-center justify-center rounded-lg bg-[#0099FF] px-4 text-xs font-bold text-white hover:bg-[#007ACC] transition-colors"
+                                className="inline-flex h-8 items-center justify-center rounded-lg bg-[#0099FF] px-4 text-xs font-bold text-white transition-colors hover:bg-[#007ACC]"
                             >
                                 Top Up Saldo
                             </button>
@@ -166,9 +166,16 @@ export default function Dashboard() {
                         <p className="mt-1 text-xs text-[#666666]">
                             Cabang Panakkukang (Batas ambil 23:59 WITA)
                         </p>
-                        <div className="mt-5 border-t border-[#F0F0F0] pt-4 flex items-center justify-between text-xs text-[#666666]">
-                            <span>PIN: <strong className="font-mono text-[#0099FF] font-bold">739-102</strong></span>
-                            <span className="font-semibold text-[#0099FF]">● Siap di Rak</span>
+                        <div className="mt-5 flex items-center justify-between border-t border-[#F0F0F0] pt-4 text-xs text-[#666666]">
+                            <span>
+                                PIN:{' '}
+                                <strong className="font-mono font-bold text-[#0099FF]">
+                                    739-102
+                                </strong>
+                            </span>
+                            <span className="font-semibold text-[#0099FF]">
+                                ● Siap di Rak
+                            </span>
                         </div>
                     </div>
 
@@ -186,11 +193,16 @@ export default function Dashboard() {
                             14 Pesanan
                         </div>
                         <p className="mt-1 text-xs text-[#666666]">
-                            Akumulasi omzet: <strong className="text-[#222222]">Rp 4.820.000</strong>
+                            Akumulasi omzet:{' '}
+                            <strong className="text-[#222222]">
+                                Rp 4.820.000
+                            </strong>
                         </p>
-                        <div className="mt-5 border-t border-[#F0F0F0] pt-4 flex items-center justify-between text-xs text-[#666666]">
+                        <div className="mt-5 flex items-center justify-between border-t border-[#F0F0F0] pt-4 text-xs text-[#666666]">
                             <span>Status Pengiriman</span>
-                            <span className="font-semibold text-[#0099FF]">100% On Time</span>
+                            <span className="font-semibold text-[#0099FF]">
+                                100% On Time
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -212,7 +224,11 @@ export default function Dashboard() {
                                     </span>
                                 </div>
                                 <p className="text-xs text-[#666666]">
-                                    No. Pesanan: <strong className="text-[#222222]">{activePickNGo.orderNumber}</strong> &bull; {activePickNGo.branch}
+                                    No. Pesanan:{' '}
+                                    <strong className="text-[#222222]">
+                                        {activePickNGo.orderNumber}
+                                    </strong>{' '}
+                                    &bull; {activePickNGo.branch}
                                 </p>
                             </div>
                         </div>
@@ -220,7 +236,7 @@ export default function Dashboard() {
                         {/* PIN Code Box with Copy Button */}
                         <div className="flex items-center gap-3">
                             <div className="rounded-lg border border-[#0099FF] bg-[#E6F5FF] px-4 py-2 text-center">
-                                <div className="text-[10px] font-bold uppercase tracking-wider text-[#007ACC]">
+                                <div className="text-[10px] font-bold tracking-wider text-[#007ACC] uppercase">
                                     PIN Pengambilan
                                 </div>
                                 <div className="font-mono text-xl font-black text-[#0099FF]">
@@ -230,7 +246,7 @@ export default function Dashboard() {
                             <button
                                 type="button"
                                 onClick={copyPin}
-                                className="inline-flex h-11 items-center justify-center rounded-lg bg-[#0099FF] px-4 text-xs font-bold text-white hover:bg-[#007ACC] transition-all cursor-pointer"
+                                className="inline-flex h-11 cursor-pointer items-center justify-center rounded-lg bg-[#0099FF] px-4 text-xs font-bold text-white transition-all hover:bg-[#007ACC]"
                             >
                                 {copiedPin ? 'Tersalin!' : 'Salin PIN'}
                             </button>
@@ -239,16 +255,23 @@ export default function Dashboard() {
 
                     {/* Items List in Locker */}
                     <div className="mt-5 space-y-3">
-                        <div className="text-xs font-bold text-[#222222]">Detail Barang dalam Pesanan:</div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="text-xs font-bold text-[#222222]">
+                            Detail Barang dalam Pesanan:
+                        </div>
+                        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                             {activePickNGo.items.map((item, i) => (
                                 <div
                                     key={i}
                                     className="flex items-center justify-between rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] p-3 text-xs"
                                 >
                                     <div>
-                                        <div className="font-semibold text-[#222222]">{item.name}</div>
-                                        <div className="text-[10px] text-[#666666]">SKU: {item.sku} &bull; Qty: {item.qty} pcs</div>
+                                        <div className="font-semibold text-[#222222]">
+                                            {item.name}
+                                        </div>
+                                        <div className="text-[10px] text-[#666666]">
+                                            SKU: {item.sku} &bull; Qty:{' '}
+                                            {item.qty} pcs
+                                        </div>
                                     </div>
                                     <div className="font-bold text-[#222222]">
                                         Rp {item.price.toLocaleString('id-ID')}
@@ -261,10 +284,15 @@ export default function Dashboard() {
 
                 {/* Recent Transactions Table */}
                 <div className="rounded-xl border border-[#E5E5E5] bg-white p-6 shadow-xs">
-                    <div className="flex items-center justify-between border-b border-[#F0F0F0] pb-4 mb-4">
+                    <div className="mb-4 flex items-center justify-between border-b border-[#F0F0F0] pb-4">
                         <div>
-                            <h3 className="text-base font-bold text-[#222222]">Riwayat Transaksi Terkini</h3>
-                            <p className="text-xs text-[#666666]">Daftar pesanan offline Pick N Go dan blind-dropship kurir</p>
+                            <h3 className="text-base font-bold text-[#222222]">
+                                Riwayat Transaksi Terkini
+                            </h3>
+                            <p className="text-xs text-[#666666]">
+                                Daftar pesanan offline Pick N Go dan
+                                blind-dropship kurir
+                            </p>
                         </div>
                         <Link
                             href="/"
@@ -277,25 +305,53 @@ export default function Dashboard() {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-xs">
                             <thead>
-                                <tr className="border-b border-[#E5E5E5] text-[#666666] bg-[#FAFAFA]">
-                                    <th className="py-2.5 px-3 font-semibold">ID Pesanan</th>
-                                    <th className="py-2.5 px-3 font-semibold">Tipe Layanan</th>
-                                    <th className="py-2.5 px-3 font-semibold">Cabang / Jalur</th>
-                                    <th className="py-2.5 px-3 font-semibold">Waktu Transaksi</th>
-                                    <th className="py-2.5 px-3 font-semibold">Total Pembayaran</th>
-                                    <th className="py-2.5 px-3 font-semibold">Status</th>
+                                <tr className="border-b border-[#E5E5E5] bg-[#FAFAFA] text-[#666666]">
+                                    <th className="px-3 py-2.5 font-semibold">
+                                        ID Pesanan
+                                    </th>
+                                    <th className="px-3 py-2.5 font-semibold">
+                                        Tipe Layanan
+                                    </th>
+                                    <th className="px-3 py-2.5 font-semibold">
+                                        Cabang / Jalur
+                                    </th>
+                                    <th className="px-3 py-2.5 font-semibold">
+                                        Waktu Transaksi
+                                    </th>
+                                    <th className="px-3 py-2.5 font-semibold">
+                                        Total Pembayaran
+                                    </th>
+                                    <th className="px-3 py-2.5 font-semibold">
+                                        Status
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-[#F0F0F0]">
                                 {recentTransactions.map((tx) => (
-                                    <tr key={tx.id} className="hover:bg-[#FAFAFA] transition-colors">
-                                        <td className="py-3 px-3 font-mono font-bold text-[#0099FF]">{tx.id}</td>
-                                        <td className="py-3 px-3 font-medium text-[#222222]">{tx.type}</td>
-                                        <td className="py-3 px-3 text-[#666666]">{tx.branch}</td>
-                                        <td className="py-3 px-3 text-[#666666]">{tx.date}</td>
-                                        <td className="py-3 px-3 font-bold text-[#222222]">Rp {tx.total.toLocaleString('id-ID')}</td>
-                                        <td className="py-3 px-3">
-                                            <span className={`inline-block rounded-md px-2.5 py-0.5 text-[10px] font-bold border ${tx.statusColor}`}>
+                                    <tr
+                                        key={tx.id}
+                                        className="transition-colors hover:bg-[#FAFAFA]"
+                                    >
+                                        <td className="px-3 py-3 font-mono font-bold text-[#0099FF]">
+                                            {tx.id}
+                                        </td>
+                                        <td className="px-3 py-3 font-medium text-[#222222]">
+                                            {tx.type}
+                                        </td>
+                                        <td className="px-3 py-3 text-[#666666]">
+                                            {tx.branch}
+                                        </td>
+                                        <td className="px-3 py-3 text-[#666666]">
+                                            {tx.date}
+                                        </td>
+                                        <td className="px-3 py-3 font-bold text-[#222222]">
+                                            Rp{' '}
+                                            {tx.total.toLocaleString('id-ID')}
+                                        </td>
+                                        <td className="px-3 py-3">
+                                            <span
+                                                className={`inline-block rounded-md border px-2.5 py-0.5 text-[10px] font-bold ${tx.statusColor}`}
+                                            >
                                                 {tx.status}
                                             </span>
                                         </td>
@@ -306,6 +362,15 @@ export default function Dashboard() {
                     </div>
                 </div>
             </div>
-        </AppLayout>
+        </>
     );
 }
+
+Dashboard.layout = {
+    breadcrumbs: [
+        {
+            title: 'Dashboard',
+            href: dashboard(),
+        },
+    ],
+};
