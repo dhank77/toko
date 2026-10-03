@@ -909,23 +909,47 @@ export default function Welcome({
 
                                 {/* Right Subcategories Grid */}
                                 <div className="col-span-7 p-6 overflow-y-auto bg-white">
-                                    <div className="text-sm font-bold text-[#222222] mb-4 pb-2 border-b border-[#f0f0f0]">
-                                        {departments[activeDepartment].name}
+                                    <div className="flex items-center justify-between border-b border-[#f0f0f0] pb-2 mb-4">
+                                        <span className="text-sm font-bold text-[#222222]">
+                                            {departments[activeDepartment].name}
+                                        </span>
+                                        {categories[activeDepartment] && (
+                                            <Link
+                                                href={`/categories/${categories[activeDepartment].slug}`}
+                                                onClick={() => setIsCategoryDrawerOpen(false)}
+                                                className="text-xs font-semibold text-[#0099ff] hover:underline"
+                                            >
+                                                Lihat Semua &rarr;
+                                            </Link>
+                                        )}
                                     </div>
                                     <div className="grid grid-cols-2 gap-3">
-                                        {departments[activeDepartment].items.map((sub, sIdx) => (
-                                            <button
-                                                key={sIdx}
-                                                type="button"
-                                                onClick={() => {
-                                                    setSearchKeyword(sub);
-                                                    setIsCategoryDrawerOpen(false);
-                                                }}
-                                                className="text-left text-xs text-[#555555] hover:text-[#0099ff] hover:underline p-1.5 rounded transition-colors"
-                                            >
-                                                {sub}
-                                            </button>
-                                        ))}
+                                        {categories[activeDepartment]?.sub_categories && categories[activeDepartment].sub_categories.length > 0 ? (
+                                            categories[activeDepartment].sub_categories.map((sub) => (
+                                                <Link
+                                                    key={sub.id}
+                                                    href={`/categories/${categories[activeDepartment].slug}?sub_category=${sub.slug}`}
+                                                    onClick={() => setIsCategoryDrawerOpen(false)}
+                                                    className="text-left text-xs text-[#555555] hover:text-[#0099ff] hover:underline p-1.5 rounded transition-colors"
+                                                >
+                                                    {sub.name}
+                                                </Link>
+                                            ))
+                                        ) : (
+                                            departments[activeDepartment].items.map((sub, sIdx) => (
+                                                <button
+                                                    key={sIdx}
+                                                    type="button"
+                                                    onClick={() => {
+                                                        setSearchKeyword(sub);
+                                                        setIsCategoryDrawerOpen(false);
+                                                    }}
+                                                    className="text-left text-xs text-[#555555] hover:text-[#0099ff] hover:underline p-1.5 rounded transition-colors"
+                                                >
+                                                    {sub}
+                                                </button>
+                                            ))
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -1240,11 +1264,12 @@ export default function Welcome({
                                 const displayBadge = p.brand || p.badge;
                                 const original = p.original_price ?? p.originalPrice;
                                 const discountVal = p.discount_percent ?? p.discount;
+                                const productHref = p.slug ? `/products/${p.slug}` : '#';
 
                                 return (
-                                    <div
+                                    <Link
                                         key={p.id}
-                                        onClick={() => handleAddToCart(displayName)}
+                                        href={productHref}
                                         className="group flex flex-col justify-between rounded-lg border border-transparent p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white cursor-pointer"
                                     >
                                         <div>
@@ -1284,7 +1309,7 @@ export default function Welcome({
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 );
                             })}
                         </div>
@@ -1348,12 +1373,12 @@ export default function Welcome({
                                                 cat.name.toLowerCase().includes(c.name.toLowerCase())
                                         );
                                         if (matched) {
-                                            handleSelectCategory(matched.slug);
+                                            router.visit(`/categories/${matched.slug}`);
                                         } else {
                                             setSearchKeyword(cat.name);
+                                            const el = document.getElementById('rekomendasi-section');
+                                            if (el) el.scrollIntoView({ behavior: 'smooth' });
                                         }
-                                        const el = document.getElementById('rekomendasi-section');
-                                        if (el) el.scrollIntoView({ behavior: 'smooth' });
                                     }}
                                     className="flex flex-col items-center justify-center min-w-[92px] p-2 rounded-lg border border-[#efefef] hover:border-[#0099ff] hover:shadow-xs transition-all text-center group cursor-pointer shrink-0"
                                 >
@@ -1511,6 +1536,16 @@ export default function Welcome({
                                         </button>
                                     );
                                 })}
+
+                                {activeCategoryTab !== 'all' && (
+                                    <Link
+                                        href={`/categories/${activeCategoryTab}`}
+                                        className="rounded-full px-3 py-1 font-semibold text-[#0099ff] bg-[#e6f5ff] hover:bg-[#d0ebff] transition-all whitespace-nowrap flex items-center gap-1 shrink-0"
+                                    >
+                                        <span>Buka Halaman Kategori</span>
+                                        <ChevronRight className="size-3" />
+                                    </Link>
+                                )}
                             </div>
                         </div>
 
@@ -1525,10 +1560,12 @@ export default function Welcome({
                                     const original = item.original_price ?? item.originalPrice;
                                     const discountVal = item.discount_percent ?? item.discount;
 
+                                    const productHref = item.slug ? `/products/${item.slug}` : '#';
+
                                     return (
-                                        <div
+                                        <Link
                                             key={item.id}
-                                            onClick={() => handleAddToCart(displayName)}
+                                            href={productHref}
                                             className="cursor-pointer group flex flex-col justify-between rounded-lg border border-[#e9e9e9] p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white"
                                         >
                                             <div>
@@ -1574,7 +1611,7 @@ export default function Welcome({
                                                     )}
                                                 </div>
                                             </div>
-                                        </div>
+                                        </Link>
                                     );
                                 })
                             ) : (
