@@ -4,6 +4,8 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\SubCategory;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
 
 test('guests are redirected from product admin pages', function () {
@@ -329,4 +331,76 @@ test('authenticated users can delete a product', function () {
     $response->assertSessionHas('success');
 
     $this->assertModelMissing($product);
+});
+
+test('authenticated users can store a product with uploaded thumbnail and gallery images', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $category = Category::factory()->create();
+
+    $thumbnail = UploadedFile::fake()->image('main.jpg', 600, 600);
+    $gallery1 = UploadedFile::fake()->image('gallery1.png', 800, 800);
+    $gallery2 = UploadedFile::fake()->image('gallery2.webp', 800, 800);
+
+    $response = $this->actingAs($user)->post(route('admin.products.store'), [
+        'category_id' => $category->id,
+        'name' => 'Produk Tes Upload',
+        'sku' => 'TESTUPLOAD1',
+        'brand' => 'Taffware',
+        'price' => 50000,
+        'stock' => 10,
+        'weight_grams' => 200,
+        'warranty' => '7 Hari',
+        'thumbnail' => $thumbnail,
+        'images' => [$gallery1, $gallery2],
+        'is_active' => true,
+    ]);
+
+    $response->assertRedirect(route('admin.products.index'));
+    $response->assertSessionHas('success');
+
+    $product = Product::where('sku', 'TESTUPLOAD1')->first();
+    expect($product)->not->toBeNull();
+    expect($product->thumbnail)->toStartWith('/storage/products/thumbnails/');
+    expect($product->images)->toHaveCount(2);
+    expect($product->images[0])->toStartWith('/storage/products/gallery/');
+    expect($product->images[1])->toStartWith('/storage/products/gallery/');
+
+    $thumbPath = str_replace('/storage/', '', $product->thumbnail);
+    Storage::disk('public')->assertExists($thumbPath);
+
+    $gal1Path = str_replace('/storage/', '', $product->images[0]);
+    $gal2Path = str_replace('/storage/', '', $product->images[1]);
+    Storage::disk('public')->assertExists($gal1Path);
+    Storage::disk('public')->assertExists($gal2Path);
+});
+
+test('authenticated users can update a product with new uploaded images', function () {
+    Storage::fake('public');
+
+    $user = User::factory()->create();
+    $product = Product::factory()->create();
+
+    $newThumbnail = UploadedFile::fake()->image('new_thumb.jpg');
+    $newGallery = UploadedFile::fake()->image('new_gal.jpg');
+
+    $response = $this->actingAs($user)->put(route('admin.products.update', $product), [
+        'name' => 'Updated Product Name',
+        'price' => 60000,
+        'thumbnail' => $newThumbnail,
+        'images' => [$newGallery],
+    ]);
+
+    $response->assertRedirect(route('admin.products.index'));
+
+    $product->refresh();
+    expect($product->thumbnail)->toStartWith('/storage/products/thumbnails/');
+    expect($product->images)->toHaveCount(1);
+    expect($product->images[0])->toStartWith('/storage/products/gallery/');
+
+    $thumbPath = str_replace('/storage/', '', $product->thumbnail);
+    $galPath = str_replace('/storage/', '', $product->images[0]);
+    Storage::disk('public')->assertExists($thumbPath);
+    Storage::disk('public')->assertExists($galPath);
 });

@@ -6,8 +6,9 @@ import {
     Plus,
     Save,
     Trash2,
+    Upload,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as ProductController from '@/actions/App/Http/Controllers/Admin/ProductController';
 
 type SubCategory = { id: number; name: string };
@@ -43,6 +44,12 @@ type ProductData = {
     is_featured: boolean;
 };
 
+type GalleryPreviewItem = {
+    id: string;
+    url: string;
+    file?: File;
+};
+
 export default function ProductsEdit({
     product,
     categories,
@@ -54,7 +61,8 @@ export default function ProductsEdit({
     presetBrands: string[];
     presetWarranties: string[];
 }) {
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm({
+        _method: 'put',
         sku: product.sku,
         name: product.name,
         slug: product.slug,
@@ -73,14 +81,21 @@ export default function ProductsEdit({
         features: (product.features ?? []) as FeatureItem[],
         specifications: (product.specifications ?? []) as SpecItem[],
         whats_in_the_box: (product.whats_in_the_box ?? []) as string[],
-        thumbnail: product.thumbnail ?? '',
-        images: (product.images ?? []) as string[],
+        thumbnail: product.thumbnail as File | string | null,
+        images: (product.images ?? []) as (File | string)[],
         is_active: product.is_active,
         is_featured: product.is_featured,
     });
 
     const [newBoxItem, setNewBoxItem] = useState('');
-    const [newGalleryUrl, setNewGalleryUrl] = useState('');
+    const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(product.thumbnail ?? null);
+    const [galleryPreviews, setGalleryPreviews] = useState<GalleryPreviewItem[]>(
+        (product.images ?? []).map((url, i) => ({ id: `existing-${i}`, url }))
+    );
+    const [isDraggingThumbnail, setIsDraggingThumbnail] = useState(false);
+    const [isDraggingGallery, setIsDraggingGallery] = useState(false);
+    const thumbnailInputRef = useRef<HTMLInputElement>(null);
+    const galleryInputRef = useRef<HTMLInputElement>(null);
 
     const selectedCategory = categories.find((c) => String(c.id) === String(data.category_id));
     const availableSubCategories = selectedCategory?.sub_categories || [];
@@ -92,7 +107,7 @@ export default function ProductsEdit({
 
     function handleSubmit(e: React.FormEvent) {
         e.preventDefault();
-        put(ProductController.update(product.id).url);
+        post(ProductController.update(product.id).url);
     }
 
     function addFeature() {
@@ -128,14 +143,99 @@ export default function ProductsEdit({
         setData('whats_in_the_box', data.whats_in_the_box.filter((_, i) => i !== index));
     }
 
-    function addGalleryImage() {
-        if (!newGalleryUrl.trim()) return;
-        setData('images', [...data.images, newGalleryUrl.trim()]);
-        setNewGalleryUrl('');
+    function formatFileSize(bytes: number): string {
+        if (bytes < 1024) return bytes + ' B';
+        if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+        return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
     }
+
+    function handleThumbnailFile(file?: File) {
+        if (!file) return;
+        if (!file.type.startsWith('image/')) {
+            alert('Harap pilih file gambar (JPG, PNG, WEBP, GIF)');
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Ukuran file foto utama melebihi 5MB');
+            return;
+        }
+        if (thumbnailPreview && thumbnailPreview.startsWith('blob:')) {
+            URL.revokeObjectURL(thumbnailPreview);
+        }
+        setData('thumbnail', file);
+        setThumbnailPreview(URL.createObjectURL(file));
+    }
+
+    function handleThumbnailChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        handleThumbnailFile(file);
+        e.target.value = '';
+    }
+
+    function removeThumbnail() {
+        if (thumbnailPreview && thumbnailPreview.startsWith('blob:')) {
+            URL.revokeObjectURL(thumbnailPreview);
+        }
+        setData('thumbnail', null);
+        setThumbnailPreview(null);
+        if (thumbnailInputRef.current) {
+            thumbnailInputRef.current.value = '';
+        }
+    }
+
+    function handleGalleryFiles(files?: FileList | File[]) {
+        if (!files || files.length === 0) return;
+        const validFiles = Array.from(files).filter((file) => {
+            if (!file.type.startsWith('image/')) {
+                return false;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                alert(`File ${file.name} melebihi batas 5MB.`);
+                return false;
+            }
+            return true;
+        });
+
+        if (validFiles.length === 0) return;
+
+        const newPreviews: GalleryPreviewItem[] = validFiles.map((file) => ({
+            id: Math.random().toString(36).substring(2, 9),
+            file,
+            url: URL.createObjectURL(file),
+        }));
+
+        const updated = [...galleryPreviews, ...newPreviews];
+        setGalleryPreviews(updated);
+        setData('images', updated.map((item) => item.file ?? item.url));
+    }
+
+    function handleGalleryChange(e: React.ChangeEvent<HTMLInputElement>) {
+        handleGalleryFiles(e.target.files ?? undefined);
+        e.target.value = '';
+    }
+
     function removeGalleryImage(index: number) {
-        setData('images', data.images.filter((_, i) => i !== index));
+        const itemToRemove = galleryPreviews[index];
+        if (itemToRemove?.url && itemToRemove.url.startsWith('blob:')) {
+            URL.revokeObjectURL(itemToRemove.url);
+        }
+        const updated = galleryPreviews.filter((_, i) => i !== index);
+        setGalleryPreviews(updated);
+        setData('images', updated.map((item) => item.file ?? item.url));
     }
+
+    useEffect(() => {
+        return () => {
+            if (thumbnailPreview && thumbnailPreview.startsWith('blob:')) {
+                URL.revokeObjectURL(thumbnailPreview);
+            }
+            galleryPreviews.forEach((item) => {
+                if (item.url.startsWith('blob:')) {
+                    URL.revokeObjectURL(item.url);
+                }
+            });
+        };
+    }, []);
 
     return (
         <>
@@ -524,82 +624,200 @@ export default function ProductsEdit({
 
                     {/* Right Column */}
                     <div className="space-y-6">
-                        {/* Media */}
+                        {/* Media / Foto Produk */}
                         <div className="rounded-xl border border-[#E5E5E5] bg-white p-5 shadow-2xs">
-                            <h2 className="mb-3 flex items-center gap-2 text-sm font-bold text-[#222222]">
-                                <Image className="size-4 text-[#0099FF]" />
-                                Foto Produk
-                            </h2>
-
-                            <div>
-                                <label className="block text-xs font-semibold text-[#333]">
-                                    URL Foto Utama (Thumbnail)
-                                </label>
-                                <input
-                                    type="url"
-                                    value={data.thumbnail}
-                                    onChange={(e) => setData('thumbnail', e.target.value)}
-                                    className="mt-1.5 h-8 w-full rounded border border-[#E5E5E5] bg-[#FBFBFB] px-2.5 text-xs text-[#222] outline-none focus:border-[#0099FF]"
-                                />
-                                {data.thumbnail && (
-                                    <div className="mt-2.5 flex justify-center rounded-lg border border-[#E5E5E5] bg-white p-2">
-                                        <img
-                                            src={data.thumbnail}
-                                            alt="Preview Utama"
-                                            className="h-36 w-full object-contain"
-                                        />
-                                    </div>
-                                )}
+                            <div className="mb-3.5 flex items-center justify-between">
+                                <h2 className="flex items-center gap-2 text-sm font-bold text-[#222222]">
+                                    <Image className="size-4 text-[#0099FF]" />
+                                    Foto Produk
+                                </h2>
+                                <span className="rounded bg-[#E6F5FF] px-2 py-0.5 text-[10px] font-semibold text-[#0099FF]">
+                                    Upload File
+                                </span>
                             </div>
 
-                            <div className="mt-4 border-t border-[#F0F0F0] pt-3">
-                                <label className="block text-xs font-semibold text-[#333]">
-                                    Foto Galeri Tambahan
-                                </label>
-                                <div className="mt-1.5 flex gap-1.5">
-                                    <input
-                                        type="url"
-                                        value={newGalleryUrl}
-                                        onChange={(e) => setNewGalleryUrl(e.target.value)}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter') {
-                                                e.preventDefault();
-                                                addGalleryImage();
-                                            }
-                                        }}
-                                        placeholder="https://..."
-                                        className="h-8 flex-1 rounded border border-[#E5E5E5] bg-[#FBFBFB] px-2 text-xs text-[#222] outline-none focus:border-[#0099FF]"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={addGalleryImage}
-                                        className="h-8 rounded bg-[#444] px-2.5 text-xs font-semibold text-white hover:bg-[#222]"
-                                    >
-                                        +
-                                    </button>
+                            {/* Foto Utama (Thumbnail) */}
+                            <div>
+                                <div className="flex items-center justify-between">
+                                    <label className="block text-xs font-semibold text-[#333]">
+                                        Foto Utama (Thumbnail) <span className="text-[#D32F2F]">*</span>
+                                    </label>
+                                    <span className="text-[10px] text-[#888]">Maks 5MB</span>
                                 </div>
 
-                                <div className="mt-3 grid grid-cols-3 gap-2">
-                                    {data.images.map((imgUrl, idx) => (
-                                        <div
-                                            key={idx}
-                                            className="group relative size-20 overflow-hidden rounded-lg border border-[#E5E5E5] bg-white p-1"
-                                        >
+                                <input
+                                    ref={thumbnailInputRef}
+                                    type="file"
+                                    accept="image/png,image/jpeg,image/webp,image/jpg,image/gif"
+                                    onChange={handleThumbnailChange}
+                                    className="hidden"
+                                />
+
+                                {thumbnailPreview ? (
+                                    <div className="mt-2 overflow-hidden rounded-lg border border-[#E5E5E5] bg-[#FAFAFA] p-3">
+                                        <div className="relative flex items-center justify-center rounded-md border border-[#EBEBEB] bg-white p-2">
                                             <img
-                                                src={imgUrl}
-                                                alt={`Galeri ${idx + 1}`}
-                                                className="size-full object-contain"
+                                                src={thumbnailPreview}
+                                                alt="Preview Foto Utama"
+                                                className="h-40 w-full object-contain"
                                             />
                                             <button
                                                 type="button"
-                                                onClick={() => removeGalleryImage(idx)}
-                                                className="absolute right-1 top-1 rounded bg-[#D32F2F] p-1 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                                                onClick={removeThumbnail}
+                                                className="absolute right-2 top-2 flex size-7 items-center justify-center rounded-md bg-white/90 text-[#D32F2F] shadow-xs transition-colors hover:bg-[#D32F2F] hover:text-white"
+                                                title="Hapus foto utama"
                                             >
-                                                <Trash2 className="size-3" />
+                                                <Trash2 className="size-3.5" />
                                             </button>
                                         </div>
-                                    ))}
+                                        <div className="mt-2.5 flex items-center justify-between px-0.5">
+                                            <div className="min-w-0 flex-1 pr-2">
+                                                <p className="truncate text-xs font-medium text-[#222]">
+                                                    {data.thumbnail instanceof File
+                                                        ? data.thumbnail.name
+                                                        : 'Foto Tersimpan'}
+                                                </p>
+                                                <p className="text-[10px] text-[#888]">
+                                                    {data.thumbnail instanceof File
+                                                        ? formatFileSize(data.thumbnail.size)
+                                                        : 'Tersimpan di server'}
+                                                </p>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => thumbnailInputRef.current?.click()}
+                                                className="rounded border border-[#E5E5E5] bg-white px-2.5 py-1 text-[11px] font-medium text-[#444] shadow-2xs transition-colors hover:border-[#0099FF] hover:text-[#0099FF]"
+                                            >
+                                                Ganti Foto
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div
+                                        onClick={() => thumbnailInputRef.current?.click()}
+                                        onDragOver={(e) => {
+                                            e.preventDefault();
+                                            setIsDraggingThumbnail(true);
+                                        }}
+                                        onDragLeave={(e) => {
+                                            e.preventDefault();
+                                            setIsDraggingThumbnail(false);
+                                        }}
+                                        onDrop={(e) => {
+                                            e.preventDefault();
+                                            setIsDraggingThumbnail(false);
+                                            const file = e.dataTransfer.files?.[0];
+                                            handleThumbnailFile(file);
+                                        }}
+                                        className={`mt-2 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center transition-colors ${
+                                            isDraggingThumbnail
+                                                ? 'border-[#0099FF] bg-[#F0F8FF]'
+                                                : 'border-[#D9D9D9] bg-[#FAFAFA] hover:border-[#0099FF] hover:bg-[#F9FCFF]'
+                                        }`}
+                                    >
+                                        <div className="mb-2 flex size-10 items-center justify-center rounded-full bg-[#E6F5FF] text-[#0099FF]">
+                                            <Upload className="size-5" />
+                                        </div>
+                                        <p className="text-xs font-semibold text-[#222]">
+                                            Pilih atau geser foto utama ke sini
+                                        </p>
+                                        <p className="mt-1 text-[10px] text-[#888]">
+                                            Format PNG, JPG, JPEG, WEBP hingga 5MB
+                                        </p>
+                                    </div>
+                                )}
+                                {errors.thumbnail && (
+                                    <p className="mt-1 text-[11px] text-[#D32F2F]">{errors.thumbnail}</p>
+                                )}
+                            </div>
+
+                            {/* Foto Galeri Tambahan */}
+                            <div className="mt-5 border-t border-[#F0F0F0] pt-4">
+                                <div className="flex items-center justify-between">
+                                    <label className="block text-xs font-semibold text-[#333]">
+                                        Foto Galeri Tambahan
+                                    </label>
+                                    <span className="text-[10px] text-[#888]">
+                                        {galleryPreviews.length} foto terpilih
+                                    </span>
                                 </div>
+
+                                <input
+                                    ref={galleryInputRef}
+                                    type="file"
+                                    multiple
+                                    accept="image/png,image/jpeg,image/webp,image/jpg,image/gif"
+                                    onChange={handleGalleryChange}
+                                    className="hidden"
+                                />
+
+                                <div
+                                    onClick={() => galleryInputRef.current?.click()}
+                                    onDragOver={(e) => {
+                                        e.preventDefault();
+                                        setIsDraggingGallery(true);
+                                    }}
+                                    onDragLeave={(e) => {
+                                        e.preventDefault();
+                                        setIsDraggingGallery(false);
+                                    }}
+                                    onDrop={(e) => {
+                                        e.preventDefault();
+                                        setIsDraggingGallery(false);
+                                        handleGalleryFiles(e.dataTransfer.files);
+                                    }}
+                                    className={`mt-2 flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed px-3 py-3 text-center transition-colors ${
+                                        isDraggingGallery
+                                            ? 'border-[#0099FF] bg-[#F0F8FF]'
+                                            : 'border-[#D9D9D9] bg-[#FAFAFA] hover:border-[#0099FF] hover:bg-[#F9FCFF]'
+                                    }`}
+                                >
+                                    <Plus className="size-4 text-[#0099FF]" />
+                                    <span className="text-xs font-medium text-[#333]">
+                                        Upload Foto Galeri (Bisa Banyak)
+                                    </span>
+                                </div>
+
+                                {galleryPreviews.length > 0 && (
+                                    <div className="mt-3 grid grid-cols-3 gap-2">
+                                        {galleryPreviews.map((item, idx) => (
+                                            <div
+                                                key={item.id}
+                                                className="group relative flex flex-col overflow-hidden rounded-lg border border-[#E5E5E5] bg-white p-1 shadow-2xs"
+                                            >
+                                                <div className="relative aspect-square w-full overflow-hidden rounded bg-[#FAFAFA]">
+                                                    <img
+                                                        src={item.url}
+                                                        alt={`Galeri ${idx + 1}`}
+                                                        className="size-full object-contain"
+                                                    />
+                                                    <span className="absolute left-1 top-1 rounded bg-[#222]/70 px-1 py-0.2 text-[9px] font-bold text-white">
+                                                        #{idx + 1}
+                                                    </span>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeGalleryImage(idx)}
+                                                        className="absolute right-1 top-1 flex size-6 items-center justify-center rounded bg-[#D32F2F] text-white opacity-0 transition-opacity hover:bg-[#b71c1c] group-hover:opacity-100"
+                                                        title="Hapus foto galeri ini"
+                                                    >
+                                                        <Trash2 className="size-3" />
+                                                    </button>
+                                                </div>
+                                                <div className="mt-1 px-0.5">
+                                                    <p className="truncate text-[10px] font-medium text-[#333]">
+                                                        {item.file ? item.file.name : `Foto ${idx + 1}`}
+                                                    </p>
+                                                    <p className="text-[9px] text-[#888]">
+                                                        {item.file ? formatFileSize(item.file.size) : 'Server'}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                {errors.images && (
+                                    <p className="mt-1 text-[11px] text-[#D32F2F]">{errors.images}</p>
+                                )}
                             </div>
                         </div>
 

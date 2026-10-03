@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -142,12 +143,58 @@ class ProductController extends Controller
             'specifications.*.value' => ['required_with:specifications', 'string'],
             'whats_in_the_box' => ['nullable', 'array'],
             'whats_in_the_box.*' => ['string'],
-            'thumbnail' => ['nullable', 'string', 'max:500'],
+            'thumbnail' => $request->hasFile('thumbnail')
+                ? ['nullable', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120']
+                : ['nullable', 'string', 'max:500'],
             'images' => ['nullable', 'array'],
-            'images.*' => ['string', 'max:500'],
             'is_active' => ['boolean'],
             'is_featured' => ['boolean'],
         ]);
+
+        if ($request->has('images') && is_array($request->all()['images'] ?? null)) {
+            $request->validate([
+                'images.*' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        if ($value instanceof UploadedFile) {
+                            if (! in_array(strtolower($value->getClientOriginalExtension()), ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+                                $fail('File pada galeri harus berupa gambar (jpg, jpeg, png, webp, gif).');
+                            }
+                            if ($value->getSize() > 5120 * 1024) {
+                                $fail('Ukuran file galeri tidak boleh lebih dari 5MB.');
+                            }
+                        } elseif (is_string($value)) {
+                            if (strlen($value) > 500) {
+                                $fail('Teks gambar galeri terlalu panjang.');
+                            }
+                        } else {
+                            $fail('Format file galeri tidak valid.');
+                        }
+                    },
+                ],
+            ]);
+        }
+
+        if ($request->hasFile('thumbnail')) {
+            $path = $request->file('thumbnail')->store('products/thumbnails', 'public');
+            $validated['thumbnail'] = '/storage/'.$path;
+        }
+
+        if ($request->has('images')) {
+            $gallery = [];
+            $rawImages = $request->all()['images'] ?? [];
+            if (is_array($rawImages)) {
+                foreach ($rawImages as $img) {
+                    if ($img instanceof UploadedFile) {
+                        $path = $img->store('products/gallery', 'public');
+                        $gallery[] = '/storage/'.$path;
+                    } elseif (is_string($img) && ! empty($img)) {
+                        $gallery[] = $img;
+                    }
+                }
+            }
+            $validated['images'] = $gallery;
+        }
 
         if (empty($validated['slug'])) {
             $validated['slug'] = Str::slug($validated['name']).'-'.strtolower($validated['sku']);
@@ -214,12 +261,58 @@ class ProductController extends Controller
             'specifications.*.value' => ['required_with:specifications', 'string'],
             'whats_in_the_box' => ['nullable', 'array'],
             'whats_in_the_box.*' => ['string'],
-            'thumbnail' => ['nullable', 'string', 'max:500'],
+            'thumbnail' => $request->hasFile('thumbnail')
+                ? ['nullable', 'file', 'image', 'mimes:jpeg,png,jpg,webp,gif', 'max:5120']
+                : ['nullable', 'string', 'max:500'],
             'images' => ['nullable', 'array'],
-            'images.*' => ['string', 'max:500'],
             'is_active' => ['sometimes', 'boolean'],
             'is_featured' => ['sometimes', 'boolean'],
         ]);
+
+        if ($request->has('images') && is_array($request->all()['images'] ?? null)) {
+            $request->validate([
+                'images.*' => [
+                    'nullable',
+                    function ($attribute, $value, $fail) {
+                        if ($value instanceof UploadedFile) {
+                            if (! in_array(strtolower($value->getClientOriginalExtension()), ['jpg', 'jpeg', 'png', 'webp', 'gif'])) {
+                                $fail('File pada galeri harus berupa gambar (jpg, jpeg, png, webp, gif).');
+                            }
+                            if ($value->getSize() > 5120 * 1024) {
+                                $fail('Ukuran file galeri tidak boleh lebih dari 5MB.');
+                            }
+                        } elseif (is_string($value)) {
+                            if (strlen($value) > 500) {
+                                $fail('Teks gambar galeri terlalu panjang.');
+                            }
+                        } else {
+                            $fail('Format file galeri tidak valid.');
+                        }
+                    },
+                ],
+            ]);
+        }
+
+        if ($request->hasFile('thumbnail')) {
+            $path = $request->file('thumbnail')->store('products/thumbnails', 'public');
+            $validated['thumbnail'] = '/storage/'.$path;
+        }
+
+        if ($request->has('images')) {
+            $gallery = [];
+            $rawImages = $request->all()['images'] ?? [];
+            if (is_array($rawImages)) {
+                foreach ($rawImages as $img) {
+                    if ($img instanceof UploadedFile) {
+                        $path = $img->store('products/gallery', 'public');
+                        $gallery[] = '/storage/'.$path;
+                    } elseif (is_string($img) && ! empty($img)) {
+                        $gallery[] = $img;
+                    }
+                }
+            }
+            $validated['images'] = $gallery;
+        }
 
         $product->update($validated);
 
