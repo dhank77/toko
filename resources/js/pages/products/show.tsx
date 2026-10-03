@@ -25,6 +25,7 @@ import {
     Zap,
 } from 'lucide-react';
 import { useState } from 'react';
+import { StoreAccountMenu } from '@/components/store-account-menu';
 import { formatRupiah } from '@/lib/utils';
 import { dashboard, login } from '@/routes';
 
@@ -108,8 +109,22 @@ export default function ProductDetail({ product, relatedProducts = [], categorie
     };
 
     const handleAddToCart = () => {
-        setCartCount((c) => c + quantity);
-        triggerToast(`Berhasil menambahkan ${quantity}x "${product.name}" ke keranjang!`);
+        if (auth.user) {
+            router.post(
+                '/client/cart',
+                { product_id: product.id, quantity, branch: selectedBranch },
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        setCartCount((c) => c + quantity);
+                        triggerToast(`Berhasil menambahkan ${quantity}x "${product.name}" ke keranjang!`);
+                    },
+                },
+            );
+        } else {
+            setCartCount((c) => c + quantity);
+            triggerToast(`Berhasil menambahkan ${quantity}x "${product.name}" ke keranjang!`);
+        }
     };
 
     // Tabs inside details
@@ -238,7 +253,10 @@ export default function ProductDetail({ product, relatedProducts = [], categorie
 
                         {/* Cart & Account */}
                         <div className="flex items-center gap-4 text-xs font-semibold shrink-0">
-                            <div className="flex items-center gap-2 text-[#333333] hover:text-[#ff6000] transition-colors cursor-pointer">
+                            <Link
+                                href="/client?tab=cart"
+                                className="flex items-center gap-2 text-[#333333] hover:text-[#ff6000] transition-colors cursor-pointer"
+                            >
                                 <div className="relative">
                                     <ShoppingCart className="size-5 text-[#ff6000]" />
                                     {cartCount > 0 && (
@@ -248,26 +266,11 @@ export default function ProductDetail({ product, relatedProducts = [], categorie
                                     )}
                                 </div>
                                 <span className="hidden lg:inline text-xs font-medium">Keranjang ({cartCount})</span>
-                            </div>
+                            </Link>
 
                             <span className="text-gray-300 hidden sm:inline">|</span>
 
-                            {auth.user ? (
-                                <Link
-                                    href={dashboard()}
-                                    className="flex items-center gap-1.5 rounded-lg bg-[#0099ff] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#007acc] transition-colors"
-                                >
-                                    <User className="size-3.5" />
-                                    <span>Akun Saya</span>
-                                </Link>
-                            ) : (
-                                <Link
-                                    href={login()}
-                                    className="flex items-center gap-1.5 text-[#333333] hover:text-[#0099ff] font-medium transition-colors"
-                                >
-                                    <span>Masuk</span>
-                                </Link>
-                            )}
+                            <StoreAccountMenu />
                         </div>
                     </div>
                 </header>

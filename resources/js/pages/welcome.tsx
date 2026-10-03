@@ -30,6 +30,7 @@ import {
     Zap,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { StoreAccountMenu } from '@/components/store-account-menu';
 import { formatRupiah } from '@/lib/utils';
 import { dashboard, login, register } from '@/routes';
 
@@ -817,9 +818,8 @@ export default function Welcome({
                         {/* Right: Cart & User Account */}
                         <div className="flex items-center gap-4 text-xs font-semibold shrink-0">
                             {/* Shopping Cart Button */}
-                            <button
-                                type="button"
-                                onClick={() => handleAddToCart('Keranjang Belanja')}
+                            <Link
+                                href="/client?tab=cart"
                                 className="flex items-center gap-2 text-[#333333] hover:text-[#ff6000] transition-colors cursor-pointer"
                             >
                                 <div className="relative">
@@ -830,31 +830,13 @@ export default function Welcome({
                                         </span>
                                     )}
                                 </div>
-                                <span className="hidden lg:inline text-xs font-medium">My Cart</span>
-                            </button>
+                                <span className="hidden lg:inline text-xs font-medium">Keranjang Belanja</span>
+                            </Link>
 
                             <span className="text-gray-300 hidden sm:inline">|</span>
 
-                            {/* Auth Status */}
-                            {auth.user ? (
-                                <Link
-                                    href={dashboard()}
-                                    className="flex items-center gap-1.5 rounded-lg bg-[#0099ff] px-4 py-2 text-xs font-bold text-white hover:bg-[#007acc] transition-colors"
-                                >
-                                    <User className="size-3.5" />
-                                    <span>Akun Saya</span>
-                                </Link>
-                            ) : (
-                                <div className="flex items-center gap-2">
-                                    <Link
-                                        href={login()}
-                                        className="flex items-center gap-1.5 text-[#333333] hover:text-[#0099ff] font-medium transition-colors"
-                                    >
-                                        <User className="size-4 text-[#777777]" />
-                                        <span>Masuk / Daftar</span>
-                                    </Link>
-                                </div>
-                            )}
+                            {/* Akun Saya Dropdown / Login */}
+                            <StoreAccountMenu />
                         </div>
                     </div>
                 </header>

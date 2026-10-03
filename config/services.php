@@ -35,4 +35,11 @@ return [
         ],
     ],
 
+    'rajaongkir' => [
+        'key' => env('RAJAONGKIR_API_KEY'),
+        'base_url' => env('RAJAONGKIR_BASE_URL', 'https://rajaongkir.komerce.id/api/v1'),
+        'origin_district_id' => (int) env('RAJAONGKIR_ORIGIN_DISTRICT_ID', 6736),
+        'origin_district_name' => env('RAJAONGKIR_ORIGIN_DISTRICT_NAME', 'Panakkukang'),
+    ],
+
 ];

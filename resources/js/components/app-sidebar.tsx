@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import {
     BookOpen,
     FolderOpen,
@@ -7,8 +7,10 @@ import {
     Package,
     ShieldCheck,
     ShoppingBag,
+    ShoppingCart,
     Store,
     Tag,
+    User,
     Wallet,
 } from 'lucide-react';
 import AppLogo from '@/components/app-logo';
@@ -31,9 +33,9 @@ import { useCurrentUrl } from '@/hooks/use-current-url';
 import * as CategoryController from '@/actions/App/Http/Controllers/Admin/CategoryController';
 import * as ProductController from '@/actions/App/Http/Controllers/Admin/ProductController';
 import * as SubCategoryController from '@/actions/App/Http/Controllers/Admin/SubCategoryController';
-import type { NavItem } from '@/types';
+import type { NavItem, User as UserType } from '@/types';
 
-const mainNavItems: NavItem[] = [
+const adminNavItems: NavItem[] = [
     {
         title: 'Ringkasan Toko',
         href: dashboard(),
@@ -58,6 +60,29 @@ const mainNavItems: NavItem[] = [
         title: 'Klaim Garansi & RMA',
         href: dashboard(),
         icon: ShieldCheck,
+    },
+];
+
+const clientNavItems: NavItem[] = [
+    {
+        title: 'Profil Saya',
+        href: '/client?tab=profile',
+        icon: User,
+    },
+    {
+        title: 'Riwayat Pesanan',
+        href: '/client?tab=orders',
+        icon: Package,
+    },
+    {
+        title: 'Keranjang Belanja',
+        href: '/client?tab=cart',
+        icon: ShoppingCart,
+    },
+    {
+        title: 'Katalog & Belanja',
+        href: '/',
+        icon: Store,
     },
 ];
 
@@ -94,6 +119,8 @@ const footerNavItems: NavItem[] = [
 
 export function AppSidebar() {
     const { isCurrentOrParentUrl } = useCurrentUrl();
+    const { auth } = usePage().props as { auth: { user: UserType | null } };
+    const isAdmin = auth?.user?.role === 'admin' || auth?.user?.role === 'super_admin';
 
     return (
         <Sidebar collapsible="icon" variant="inset">
@@ -101,7 +128,7 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch>
+                            <Link href={isAdmin ? dashboard() : '/client'} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
@@ -110,31 +137,33 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={isAdmin ? adminNavItems : clientNavItems} />
 
-                {/* Master Data Group */}
-                <SidebarGroup className="px-2 py-0">
-                    <SidebarGroupLabel className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#FF6000]">
-                        <Package className="size-3" />
-                        Master Data
-                    </SidebarGroupLabel>
-                    <SidebarMenu>
-                        {masterDataNavItems.map((item) => (
-                            <SidebarMenuItem key={item.title}>
-                                <SidebarMenuButton
-                                    asChild
-                                    isActive={isCurrentOrParentUrl(item.href)}
-                                    tooltip={{ children: item.title }}
-                                >
-                                    <Link href={item.href} prefetch>
-                                        {item.icon && <item.icon />}
-                                        <span>{item.title}</span>
-                                    </Link>
-                                </SidebarMenuButton>
-                            </SidebarMenuItem>
-                        ))}
-                    </SidebarMenu>
-                </SidebarGroup>
+                {/* Master Data Group only for Admin */}
+                {isAdmin && (
+                    <SidebarGroup className="px-2 py-0">
+                        <SidebarGroupLabel className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#FF6000]">
+                            <Package className="size-3" />
+                            Master Data
+                        </SidebarGroupLabel>
+                        <SidebarMenu>
+                            {masterDataNavItems.map((item) => (
+                                <SidebarMenuItem key={item.title}>
+                                    <SidebarMenuButton
+                                        asChild
+                                        isActive={isCurrentOrParentUrl(item.href)}
+                                        tooltip={{ children: item.title }}
+                                    >
+                                        <Link href={item.href} prefetch>
+                                            {item.icon && <item.icon />}
+                                            <span>{item.title}</span>
+                                        </Link>
+                                    </SidebarMenuButton>
+                                </SidebarMenuItem>
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroup>
+                )}
             </SidebarContent>
 
             <SidebarFooter>

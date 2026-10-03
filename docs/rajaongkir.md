@@ -380,14 +380,14 @@ public function checkOngkir(Request $request, RajaOngkirService $ongkir)
 }
 ```
 
-### 5.4. Hitung Berat Total
+### 6.4. Hitung Berat Total
 
 ```php
 $totalWeight = $cartItems->sum(fn ($item) => $item->qty * $item->product->weight_gram);
 $totalWeight = max($totalWeight, 1000);
 ```
 
-## 6. Alur Lengkap Step-by-Step
+## 7. Alur Lengkap Step-by-Step
 
 ```text
 1. Search Province  -> dapat province_id
@@ -397,7 +397,7 @@ $totalWeight = max($totalWeight, 1000);
 5. POST /calculate/district/domestic-cost -> tampilkan opsi di checkout
 ```
 
-## 7. Tips Anti-Error
+## 8. Tips Anti-Error
 
 1. Berat selalu gram: `1kg = 1000`. Bulatkan ke atas.
 2. Ambil `origin/destination` dari endpoint Search, jangan hardcode (kecuali testing `1391 → 1376`).
