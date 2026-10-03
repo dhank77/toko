@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\CartItem;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -42,6 +44,16 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'storeCategories' => fn () => Category::where('is_active', true)
+                ->with(['subCategories' => function ($q) {
+                    $q->where('is_active', true)->orderBy('sort_order')->orderBy('name');
+                }])
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get(['id', 'name', 'slug', 'icon']),
+            'cartCount' => fn () => $request->user()
+                ? (int) CartItem::where('user_id', $request->user()->id)->sum('quantity')
+                : 0,
             // Sonner: jembatani session flash Laravel lama (->with('success', ...))
             // menjadi prop Inertia `flash` agar otomatis jadi toast.
             'flash' => fn () => $this->resolveToastFlash($request),

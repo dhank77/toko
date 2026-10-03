@@ -29,6 +29,7 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import StorefrontLayout from '@/layouts/storefront-layout';
 import { formatRupiah } from '@/lib/utils';
 import { logout } from '@/routes';
 
@@ -128,19 +129,45 @@ export default function ClientPortal({
     orders = [],
     cartItems = [],
     activeTab: initialTab = 'profile',
+    storeOrigin = { district_id: 6736, district_name: 'Panakkukang' },
 }: Props) {
     const [currentTab, setCurrentTab] = useState<'profile' | 'orders' | 'cart'>(initialTab);
     const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
     const [copiedPin, setCopiedPin] = useState<string | null>(null);
 
-    // Profile form
+    // Profile form (termasuk ID wilayah RajaOngkir)
     const { data, setData, put, processing, errors } = useForm({
         name: user.name || '',
         phone: user.phone || '',
         address: user.address || '',
+        province: user.province || '',
+        province_id: user.province_id || '',
         city: user.city || 'Makassar',
+        city_id: user.city_id || '',
+        district: user.district || '',
+        district_id: user.district_id || '',
+        subdistrict: user.subdistrict || '',
+        subdistrict_id: user.subdistrict_id || '',
         postal_code: user.postal_code || '90222',
     });
+
+    // Dropdown wilayah RajaOngkir (cascading province -> city -> district)
+    const [provinces, setProvinces] = useState<WilayahItem[]>([]);
+    const [cities, setCities] = useState<WilayahItem[]>([]);
+    const [districts, setDistricts] = useState<WilayahItem[]>([]);
+
+    // Kalkulator ongkir dari toko ke alamat pembeli
+    const [courier, setCourier] = useState('jne:jnt:sicepat');
+    const [weight, setWeight] = useState('1000');
+    const [shippingOptions, setShippingOptions] = useState<ShippingOption[]>([]);
+    const [loadingCost, setLoadingCost] = useState(false);
+    const [costError, setCostError] = useState('');
+
+    const fetchWilayah = async (url: string) => {
+        const res = await fetch(url, { headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error('Gagal memuat wilayah');
+        return res.json();
+    };
 
     const handleProfileSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -152,6 +179,82 @@ export default function ClientPortal({
                 toast.error('Gagal memperbarui profil. Periksa data kembali.');
             },
         });
+    };
+
+    const loadProvinces = async () => {
+        try {
+            const json = await fetchWilayah('/shipping/provinces');
+            setProvinces(json.data ?? []);
+        } catch {
+            toast.error('Gagal memuat daftar provinsi.');
+        }
+    };
+
+    const loadCities = async (provinceId: string) => {
+        if (!provinceId) {
+            setCities([]);
+            return;
+        }
+        try {
+            const json = await fetchWilayah(`/shipping/cities/${provinceId}`);
+            setCities(json.data ?? []);
+        } catch {
+            toast.error('Gagal memuat daftar kota.');
+        }
+    };
+
+    const loadDistricts = async (cityId: string) => {
+        if (!cityId) {
+            setDistricts([]);
+            return;
+        }
+        try {
+            const json = await fetchWilayah(`/shipping/districts/${cityId}`);
+            setDistricts(json.data ?? []);
+        } catch {
+            toast.error('Gagal memuat daftar kecamatan.');
+        }
+    };
+
+    const handleCheckCost = async () => {
+        setCostError('');
+        setShippingOptions([]);
+        const destinationId = Number(data.district_id);
+        const weightGrams = Number(String(weight).replace(/\./g, ''));
+        if (!destinationId) {
+            setCostError('Pilih kecamatan tujuan terlebih dahulu.');
+            return;
+        }
+        if (!weightGrams || weightGrams < 1) {
+            setCostError('Berat paket minimal 1 gram.');
+            return;
+        }
+        setLoadingCost(true);
+        try {
+            const token = document.querySelector<HTMLMetaElement>('meta[name="csrf-token"]')?.content;
+            const res = await fetch('/shipping/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Accept: 'application/json',
+                    ...(token ? { 'X-CSRF-TOKEN': token } : {}),
+                },
+                body: JSON.stringify({
+                    destination: destinationId,
+                    weight: weightGrams,
+                    courier,
+                    price: 'lowest',
+                }),
+            });
+            const json = await res.json();
+            if (!res.ok) throw new Error(json.message || 'Gagal menghitung ongkir.');
+            setShippingOptions(json.data ?? []);
+            if ((json.data ?? []).length === 0) setCostError('Layanan tidak tersedia, coba kurir lain.');
+        } catch (err) {
+            setCostError(err instanceof Error ? err.message : 'Gagal menghitung ongkir.');
+        } finally {
+            setLoadingCost(false);
+        }
     };
 
     const copyPinToClipboard = (pin: string) => {
@@ -220,11 +323,11 @@ export default function ClientPortal({
     const cartTotalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
     return (
-        <>
+        <StorefrontLayout>
             <Head title="Akun Pembeli & Layanan Client - MakassarNotebook" />
 
-            {/* TOP BAR / BREADCRUMB */}
-            <div className="border-b border-[#E5E5E5] bg-[#F7F7F7] px-4 py-2.5 text-xs text-[#666666]">
+            {/* BREADCRUMB */}
+            <div className="border-b border-[#E5E5E5] bg-white px-4 py-2.5 text-xs text-[#666666]">
                 <div className="mx-auto flex max-w-7xl items-center justify-between">
                     <div className="flex items-center gap-2">
                         <Link
@@ -232,10 +335,14 @@ export default function ClientPortal({
                             className="flex items-center gap-1 font-semibold text-[#0099FF] hover:underline"
                         >
                             <Home className="size-3.5" />
-                            <span>Katalog MakassarNotebook</span>
+                            <span>Beranda</span>
                         </Link>
                         <ChevronRight className="size-3 text-gray-400" />
-                        <span className="font-bold text-[#222222]">Akun Saya (Portal Client)</span>
+                        <span className="font-bold text-[#222222]">Akun Saya</span>
+                        <ChevronRight className="size-3 text-gray-400" />
+                        <span className="text-[#666666]">
+                            {currentTab === 'profile' ? 'Profil & Alamat' : currentTab === 'orders' ? 'Riwayat Pesanan' : 'Keranjang Belanja'}
+                        </span>
                     </div>
 
                     <div className="flex items-center gap-3">
@@ -244,16 +351,7 @@ export default function ClientPortal({
                             className="inline-flex items-center gap-1 text-xs font-semibold text-[#0099FF] hover:underline"
                         >
                             <ShoppingBag className="size-3.5" />
-                            <span>Lanjut Belanja</span>
-                        </Link>
-                        <span className="text-gray-300">|</span>
-                        <Link
-                            href={logout()}
-                            as="button"
-                            method="post"
-                            className="text-xs font-medium text-red-600 hover:underline"
-                        >
-                            Keluar
+                            <span>Lanjut Belanja Produk</span>
                         </Link>
                     </div>
                 </div>
@@ -498,18 +596,89 @@ export default function ClientPortal({
 
                                         <div>
                                             <label className="block text-xs font-bold text-gray-700">
-                                                Kota / Kabupaten
+                                                Provinsi (RajaOngkir)
+                                            </label>
+                                            <select
+                                                value={data.province_id}
+                                                onChange={(e) => {
+                                                    setData('province_id', e.target.value);
+                                                    setData('city_id', '');
+                                                    setData('district_id', '');
+                                                    setCities([]);
+                                                    setDistricts([]);
+                                                    if (e.target.value) loadCities(e.target.value);
+                                                }}
+                                                className="mt-1 w-full rounded-lg border px-2 py-2 text-xs"
+                                            >
+                                                <option value="">-- Pilih Provinsi --</option>
+                                                {provinces.map((p) => (
+                                                    <option key={p.id} value={String(p.id)}>
+                                                        {p.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-700">
+                                                Kota (RajaOngkir)
+                                            </label>
+                                            <select
+                                                value={data.city_id}
+                                                onChange={(e) => {
+                                                    setData('city_id', e.target.value);
+                                                    setData('district_id', '');
+                                                    setDistricts([]);
+                                                    if (e.target.value) loadDistricts(e.target.value);
+                                                }}
+                                                className="mt-1 w-full rounded-lg border px-2 py-2 text-xs"
+                                            >
+                                                <option value="">-- Pilih Kota --</option>
+                                                {cities.map((c) => (
+                                                    <option key={c.id} value={String(c.id)}>
+                                                        {c.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <button
+                                                type="button"
+                                                onClick={loadProvinces}
+                                                className="mt-1 rounded-lg border px-2 py-1 text-xs font-bold text-[#0099FF]"
+                                            >
+                                                Muat Provinsi
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-700">
+                                                Kecamatan (ID RajaOngkir)
+                                            </label>
+                                            <select
+                                                value={data.district_id}
+                                                onChange={(e) => setData('district_id', e.target.value)}
+                                                className="mt-1 w-full rounded-lg border px-2 py-2 text-xs"
+                                            >
+                                                <option value="">-- Pilih Kecamatan --</option>
+                                                {districts.map((d) => (
+                                                    <option key={d.id} value={String(d.id)}>
+                                                        {d.name} (ID: {d.id})
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="block text-xs font-bold text-gray-700">
+                                                Kota (teks manual)
                                             </label>
                                             <input
                                                 type="text"
                                                 value={data.city}
                                                 onChange={(e) => setData('city', e.target.value)}
-                                                className="mt-1.5 w-full rounded-lg border border-[#D5D5D5] bg-white px-3 py-2 text-xs focus:border-[#0099FF] focus:outline-none focus:ring-1 focus:ring-[#0099FF]"
-                                                placeholder="Contoh: Makassar, Gowa, Maros"
+                                                className="mt-1 w-full rounded-lg border px-2 py-2 text-xs"
+                                                placeholder="Makassar"
                                             />
-                                            {errors.city && (
-                                                <p className="mt-1 text-[11px] text-red-600">{errors.city}</p>
-                                            )}
                                         </div>
                                     </div>
 
@@ -609,12 +778,78 @@ export default function ClientPortal({
                                     </div>
                                 </div>
                             </div>
+
+                            <div className="rounded-xl border border-[#E5E5E5] bg-white p-4 shadow-xs sm:p-5">
+                                <div className="text-sm font-bold text-[#222222]">
+                                    Cek Ongkir Toko
+                                </div>
+                                <p className="mt-1 text-[11px] text-gray-500">
+                                    Dari {storeOrigin.district_name} (ID: {storeOrigin.district_id}) ke kecamatan
+                                    pilihan (ID: {data.district_id || '-'}).
+                                </p>
+                                <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-700">Berat gram</label>
+                                        <input
+                                            type="text"
+                                            value={weight}
+                                            onChange={(e) => setWeight(e.target.value)}
+                                            className="mt-1 w-full rounded-lg border px-2 py-2 text-xs"
+                                        />
+                                    </div>
+                                    <div className="sm:col-span-2">
+                                        <label className="block text-xs font-bold text-gray-700">Kurir</label>
+                                        <select
+                                            value={courier}
+                                            onChange={(e) => setCourier(e.target.value)}
+                                            className="mt-1 w-full rounded-lg border px-2 py-2 text-xs"
+                                        >
+                                            <option value="jne:jnt:sicepat">JNE : JNT : SiCepat</option>
+                                            <option value="jne">JNE saja</option>
+                                            <option value="pos">POS saja</option>
+                                            <option value="tiki">TIKI saja</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={handleCheckCost}
+                                    disabled={loadingCost}
+                                    className="mt-3 h-9 rounded-lg bg-[#FF6000] px-5 text-xs font-bold text-white disabled:opacity-50"
+                                >
+                                    {loadingCost ? 'Menghitung...' : 'Hitung Ongkir'}
+                                </button>
+                                {costError !== '' && (
+                                    <p className="mt-2 text-[11px] text-red-600">{costError}</p>
+                                )}
+                                {shippingOptions.length > 0 && (
+                                    <div className="mt-3 overflow-x-auto rounded-lg border">
+                                        <table className="w-full text-left text-[11px]">
+                                            <thead>
+                                                <tr className="bg-gray-50 text-gray-500">
+                                                    <th className="px-3 py-2">Kurir</th>
+                                                    <th className="px-3 py-2">Layanan</th>
+                                                    <th className="px-3 py-2 text-right">Ongkir</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {shippingOptions.map((opt, idx) => (
+                                                    <tr key={`${opt.code}-${idx}`} className="border-t">
+                                                        <td className="px-3 py-2 font-bold">{opt.code}</td>
+                                                        <td className="px-3 py-2">{opt.service}</td>
+                                                        <td className="px-3 py-2 text-right font-bold">
+                                                            {formatRupiah(opt.cost)}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
 
-                    {/* ========================================================
-                        TAB 2: RIWAYAT PESANAN
-                        ======================================================== */}
                     {currentTab === 'orders' && (
                         <div className="space-y-4">
                             {/* Filter Buttons */}
@@ -1025,6 +1260,6 @@ export default function ClientPortal({
 
                 </div>
             </div>
-        </>
+        </StorefrontLayout>
     );
 }
