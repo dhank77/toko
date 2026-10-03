@@ -3,6 +3,7 @@
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\SubCategory;
+use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
 test('public category page renders successfully with products', function () {
@@ -93,4 +94,17 @@ test('public category page returns 404 for inactive or non-existent category', f
 
     $this->get(route('categories.show', ['slug' => 'kategori-fiktif']))
         ->assertNotFound();
+});
+
+test('authenticated user can view category page as storefront customer', function () {
+    $user = User::factory()->create();
+    $category = Category::factory()->create(['is_active' => true]);
+
+    $this->actingAs($user)
+        ->get(route('categories.show', ['slug' => $category->slug]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('categories/show')
+            ->where('category.id', $category->id)
+        );
 });

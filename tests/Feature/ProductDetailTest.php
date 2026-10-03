@@ -3,6 +3,7 @@
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\SubCategory;
+use App\Models\User;
 use Inertia\Testing\AssertableInertia as Assert;
 
 test('public product detail page renders successfully with active product', function () {
@@ -48,4 +49,17 @@ test('public product detail returns 404 for inactive or non-existent product', f
 
     $this->get(route('products.show', ['slug' => 'slug-tidak-ada']))
         ->assertNotFound();
+});
+
+test('authenticated user can view product detail page as storefront customer', function () {
+    $user = User::factory()->create();
+    $product = Product::factory()->create(['is_active' => true]);
+
+    $this->actingAs($user)
+        ->get(route('products.show', ['slug' => $product->slug]))
+        ->assertOk()
+        ->assertInertia(fn (Assert $page) => $page
+            ->component('products/show')
+            ->where('product.id', $product->id)
+        );
 });
