@@ -95,7 +95,7 @@ export default function ProductsShow({ product }: { product: ProductDetail }) {
                                 Detail Tampilan Produk
                             </h1>
                             <p className="mt-0.5 text-xs text-[#666666]">
-                                Layout presisi sesuai standar e-commerce JakartaNotebook / MakassarNotebook
+                                Layout presisi sesuai standar e-commerce MakassarNotebook
                             </p>
                         </div>
                     </div>

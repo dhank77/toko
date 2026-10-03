@@ -1,13 +1,13 @@
-# JakartaNotebook Design System Specification
+# MakassarNotebook Design System Specification
 
 > **Official Design Rules & Token Fidelity Specification**
-> Replicated with 100% fidelity from **JakartaNotebook (jakartanotebook.com)** live production architecture and high-density omnichannel retail design system.
+> Diadaptasi dari model referensi JakartaNotebook (jakartanotebook.com): high-density omnichannel retail design system.
 
 ---
 
 ## 1. Design Philosophy & Core Principles
 
-JakartaNotebook employs an **ultra-high-density, high-speed omnichannel retail design language**. Unlike typical generic e-commerce templates that suffer from bloated whitespace and oversized cards, JakartaNotebook's design system is engineered specifically for power shoppers, tech enthusiasts, resellers, and Pick N Go branch visitors who demand instant product scannability, warehouse pricing transparency, and real-time branch inventory.
+MakassarNotebook employs an **ultra-high-density, high-speed omnichannel retail design language**. Unlike typical generic e-commerce templates that suffer from bloated whitespace and oversized cards, MakassarNotebook's design system (diadaptasi dari model referensi JakartaNotebook) is engineered specifically for power shoppers, tech enthusiasts, resellers, and Pick N Go branch visitors who demand instant product scannability, warehouse pricing transparency, and real-time branch inventory.
 
 ### Key Architectural Pillars:
 1. **Maximum Information Density**:
@@ -82,7 +82,7 @@ JakartaNotebook employs an **ultra-high-density, high-speed omnichannel retail d
 ### 3.2 Type Hierarchy
 | Context | Size | Weight | Line Height | Color | Usage |
 |---|---|---|---|---|---|
-| **Header Logo Text** | `22px - 24px` | 900 (Black) | 1.1 | `#222222` + `#0099FF` | Brand name MakassarNotebook / JakartaNotebook |
+| **Header Logo Text** | `22px - 24px` | 900 (Black) | 1.1 | `#222222` + `#0099FF` | Brand name MakassarNotebook |
 | **Slogan** | `9px - 10px` | 700 (Bold) | 1.0 | `#FF6000` | `#SudahPastiMurahnya` |
 | **Section Title** | `14px - 16px` | 700 (Bold) | 1.2 | `#222222` | Flash Sale, Rekomendasi, Kategori Populer |
 | **Section Action Link**| `11px - 12px` | 600 (Semibold)| 1.2 | `#0099FF` | "Lihat Semua", "Ganti Cabang" |
@@ -106,7 +106,7 @@ JakartaNotebook employs an **ultra-high-density, high-speed omnichannel retail d
 ### 4.2 Main Sticky Header
 - Height: `64px` - `70px`
 - Background: `#FFFFFF` (sticky top with subtle shadow-xs and border-b `#E5E5E5`).
-- **Brand Mark**: JakartaNotebook signature glasses smile SVG logo (`#0099FF` & `#FF8500`) paired with bold logotype and `#SudahPastiMurahnya` slogan.
+- **Brand Mark**: MakassarNotebook signature glasses smile SVG logo (`#0099FF` & `#FF8500`) paired with bold logotype and `#SudahPastiMurahnya` slogan.
 - **Search Bar**:
   - Full-width flexible container with `#F0F0F0` background and `#CCCCCC` border.
   - Left category selector dropdown (`Semua Kategori`).
@@ -181,9 +181,9 @@ JakartaNotebook employs an **ultra-high-density, high-speed omnichannel retail d
 
 When developing any frontend, page, component, or layout in this project:
 
-1. **NO Emerald Green CTAs (`#00ED64`)**: Never use vibrant neon green buttons or badges. All primary CTAs must use JakartaNotebook Blue (`#0099FF`) or Brand Orange (`#FF6000`).
+1. **NO Emerald Green CTAs (`#00ED64`)**: Never use vibrant neon green buttons or badges. All primary CTAs must use MakassarNotebook Blue (`#0099FF`) or Brand Orange (`#FF6000`).
 2. **NO Dark Teal Canvas (`#001E2B`)**: Never use dark teal backgrounds. All canvas backgrounds must be `#F7F7F7` (or `#111827` in dark mode), with clean `#FFFFFF` card surfaces.
-3. **NO Cliché AI Violet/Purple Gradients**: Never use arbitrary purple glow meshes or futuristic cyberpunk gradients. JakartaNotebook uses crisp retail white, blue, orange, and red.
+3. **NO Cliché AI Violet/Purple Gradients**: Never use arbitrary purple glow meshes or futuristic cyberpunk gradients. MakassarNotebook uses crisp retail white, blue, orange, and red.
 4. **NO Low-Density Generic E-commerce Templates**: Never display 3 or 4 oversized cards per row on desktop screens. Always maintain the authentic 8-column high-density grid.
 5. **NO Full-Rounded Pill Buttons**: All action buttons must use `rounded-lg` (`8px`) or `rounded-md` (`6px`), not circular stadium pills.
 6. **NO Generic Placeholder Blocks**: Never render gray empty placeholder blocks. Always render authentic products with real imagery, Indonesian prices (`Rp ...`), and stock status.

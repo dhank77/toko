@@ -5,7 +5,7 @@
 
 ### 1. Product Vision & Design Principles
 
-**MakassarNotebook (MKN)** menghadirkan pengalaman belanja e-commerce yang instan, efisien, dan padat informasi bagi konsumen dan pebisnis di Makassar dan Indonesia Timur. Sistem mereplikasi keunggulan fungsional **JakartaNotebook** dengan menggabungkan kecepatan Single Page Application (SPA), akurasi stok multi-cabang, dan fleksibilitas pemenuhan pesanan (Pick N Go & Delivery).
+**MakassarNotebook (MKN)** menghadirkan pengalaman belanja e-commerce yang instan, efisien, dan padat informasi bagi konsumen dan pebisnis di Makassar dan Indonesia Timur. Sistem mereplikasi keunggulan fungsional dari model referensi **JakartaNotebook** dengan menggabungkan kecepatan Single Page Application (SPA), akurasi stok multi-cabang, dan fleksibilitas pemenuhan pesanan (Pick N Go & Delivery).
 
 #### Core Design Principles
 1. **High Information Density (Kepadatan Informasi Terorganisir):**

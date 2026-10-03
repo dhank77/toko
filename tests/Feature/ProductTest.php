@@ -404,3 +404,40 @@ test('authenticated users can update a product with new uploaded images', functi
     Storage::disk('public')->assertExists($thumbPath);
     Storage::disk('public')->assertExists($galPath);
 });
+
+test('store and update sanitize rupiah with dots to integer for database', function () {
+    $user = User::factory()->create();
+    $category = Category::factory()->create();
+
+    $response = $this->actingAs($user)->post(route('admin.products.store'), [
+        'category_id' => $category->id,
+        'name' => 'Produk Tes Sanitasi Rupiah',
+        'sku' => 'TESTDOTS01',
+        'brand' => 'Baseus',
+        'price' => '1.250.000',
+        'original_price' => '2.500.000',
+        'stock' => 15,
+        'weight_grams' => 500,
+        'warranty' => '1 Bulan',
+        'is_active' => true,
+    ]);
+
+    $response->assertRedirect(route('admin.products.index'));
+
+    $product = Product::where('sku', 'TESTDOTS01')->first();
+    expect($product)->not->toBeNull();
+    expect($product->price)->toBe(1250000);
+    expect($product->original_price)->toBe(2500000);
+    expect($product->discount_percent)->toBe(50);
+
+    // Test update with dots
+    $this->actingAs($user)->put(route('admin.products.update', $product), [
+        'name' => 'Produk Tes Sanitasi Rupiah Updated',
+        'price' => '999.000',
+        'original_price' => '1.500.000',
+    ])->assertRedirect(route('admin.products.index'));
+
+    $product->refresh();
+    expect($product->price)->toBe(999000);
+    expect($product->original_price)->toBe(1500000);
+});

@@ -80,7 +80,7 @@ export default function Dashboard() {
             <Head title="Member &amp; Reseller Dashboard - MakassarNotebook" />
 
             <div className="flex h-full flex-1 flex-col gap-6 bg-[#F7F7F7] p-4 text-[#222222] sm:p-6 lg:p-8">
-                {/* Header Greeting Banner with JakartaNotebook Navy Accent */}
+                {/* Header Greeting Banner with MakassarNotebook Navy Accent */}
                 <div className="rounded-xl border border-[#166397]/30 bg-gradient-to-r from-[#166397] to-[#12527D] p-6 text-white shadow-xs sm:p-8">
                     <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
                         <div>

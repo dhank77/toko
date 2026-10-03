@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import * as ProductController from '@/actions/App/Http/Controllers/Admin/ProductController';
+import { formatNumberWithDots } from '@/lib/utils';
 
 type SubCategory = { id: number; name: string };
 type Category = { id: number; name: string; icon: string | null; sub_categories?: SubCategory[] };
@@ -33,32 +34,21 @@ export default function ProductsCreate({
         sku: '',
         name: '',
         slug: '',
-        category_id: categories[0]?.id ? String(categories[0].id) : '',
+        category_id: '',
         sub_category_id: '',
-        brand: 'Lainnya',
-        color: 'White',
-        price: 43700,
-        original_price: 75000,
-        stock: 50,
-        weight_grams: 1300,
-        warranty: '7 Hari',
-        package_dimension: '33 x 14 x 12 cm',
+        brand: '',
+        color: '',
+        price: '' as unknown as number,
+        original_price: '' as unknown as number,
+        stock: '' as unknown as number,
+        weight_grams: '' as unknown as number,
+        warranty: '',
+        package_dimension: '',
         overview: '',
         description: '',
-        features: [
-            {
-                title: 'Kotak Manajemen Kabel Serbaguna',
-                description:
-                    'Kotak ini dapat digunakan untuk berbagai kebutuhan mulai dari mengelola kabel komputer, laptop hingga kabel charger smartphone dan tablet.',
-            },
-        ] as FeatureItem[],
-        specifications: [
-            { key: 'Material', value: 'Plastik ABS' },
-            { key: 'Dimensi', value: 'Panjang: 32 cm, Lebar: 13 cm, Tinggi: 11 cm' },
-        ] as SpecItem[],
-        whats_in_the_box: [
-            '1 x Kotak Organizer Kabel Charger Wire Cable Management Box Dustproof - FT-400',
-        ] as string[],
+        features: [] as FeatureItem[],
+        specifications: [] as SpecItem[],
+        whats_in_the_box: [] as string[],
         thumbnail: null as File | null,
         images: [] as File[],
         is_active: true,
@@ -78,9 +68,11 @@ export default function ProductsCreate({
     const availableSubCategories = selectedCategory?.sub_categories || [];
 
     // Calculate discount preview
+    const numOriginalPrice = Number(data.original_price) || 0;
+    const numPrice = Number(data.price) || 0;
     const discountPercent =
-        data.original_price && data.original_price > data.price
-            ? Math.round(((data.original_price - data.price) / data.original_price) * 100)
+        numOriginalPrice > numPrice && numPrice > 0
+            ? Math.round(((numOriginalPrice - numPrice) / numOriginalPrice) * 100)
             : 0;
 
     function handleGenerateSku() {
@@ -396,15 +388,23 @@ export default function ProductsCreate({
                                     <label className="block text-xs font-semibold text-[#333]">
                                         Harga Jual (Rp) <span className="text-[#D32F2F]">*</span>
                                     </label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        value={data.price}
-                                        onChange={(e) => setData('price', Number(e.target.value))}
-                                        placeholder="Contoh: 43700"
-                                        className="mt-1.5 h-9 w-full rounded-lg border border-[#E5E5E5] bg-[#FBFBFB] px-3 font-semibold text-[#D32F2F] outline-none focus:border-[#0099FF] focus:bg-white focus:ring-1 focus:ring-[#0099FF]"
-                                        required
-                                    />
+                                    <div className="relative mt-1.5 flex rounded-lg border border-[#E5E5E5] bg-[#FBFBFB] focus-within:border-[#0099FF] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#0099FF]">
+                                        <span className="inline-flex items-center pl-3 text-xs font-bold text-[#888]">
+                                            Rp
+                                        </span>
+                                        <input
+                                            type="text"
+                                            inputMode="numeric"
+                                            value={formatNumberWithDots(data.price)}
+                                            onChange={(e) => {
+                                                const cleanDigits = e.target.value.replace(/\D/g, '');
+                                                setData('price', cleanDigits ? parseInt(cleanDigits, 10) : ('' as unknown as number));
+                                            }}
+                                            placeholder="0"
+                                            className="h-9 w-full rounded-r-lg bg-transparent px-2.5 font-semibold text-[#D32F2F] outline-none"
+                                            required
+                                        />
+                                    </div>
                                     {errors.price && <p className="mt-1 text-xs text-[#D32F2F]">{errors.price}</p>}
                                 </div>
 
@@ -419,14 +419,22 @@ export default function ProductsCreate({
                                             </span>
                                         )}
                                     </div>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        value={data.original_price}
-                                        onChange={(e) => setData('original_price', Number(e.target.value))}
-                                        placeholder="Contoh: 75000"
-                                        className="mt-1.5 h-9 w-full rounded-lg border border-[#E5E5E5] bg-[#FBFBFB] px-3 text-xs text-[#666] line-through outline-none focus:border-[#0099FF] focus:bg-white focus:ring-1 focus:ring-[#0099FF]"
-                                    />
+                                    <div className="relative mt-1.5 flex rounded-lg border border-[#E5E5E5] bg-[#FBFBFB] focus-within:border-[#0099FF] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#0099FF]">
+                                        <span className="inline-flex items-center pl-3 text-xs font-semibold text-[#999]">
+                                            Rp
+                                        </span>
+                                        <input
+                                            type="text"
+                                            inputMode="numeric"
+                                            value={formatNumberWithDots(data.original_price)}
+                                            onChange={(e) => {
+                                                const cleanDigits = e.target.value.replace(/\D/g, '');
+                                                setData('original_price', cleanDigits ? parseInt(cleanDigits, 10) : ('' as unknown as number));
+                                            }}
+                                            placeholder="0"
+                                            className="h-9 w-full rounded-r-lg bg-transparent px-2.5 text-xs text-[#666] outline-none"
+                                        />
+                                    </div>
                                     {errors.original_price && <p className="mt-1 text-xs text-[#D32F2F]">{errors.original_price}</p>}
                                 </div>
 
@@ -438,7 +446,8 @@ export default function ProductsCreate({
                                         type="number"
                                         min="0"
                                         value={data.stock}
-                                        onChange={(e) => setData('stock', Number(e.target.value))}
+                                        onChange={(e) => setData('stock', e.target.value === '' ? ('' as unknown as number) : Number(e.target.value))}
+                                        placeholder="0"
                                         className="mt-1.5 h-9 w-full rounded-lg border border-[#E5E5E5] bg-[#FBFBFB] px-3 font-mono text-xs font-semibold text-[#222] outline-none focus:border-[#0099FF] focus:bg-white focus:ring-1 focus:ring-[#0099FF]"
                                         required
                                     />
@@ -453,14 +462,16 @@ export default function ProductsCreate({
                                         type="number"
                                         min="1"
                                         value={data.weight_grams}
-                                        onChange={(e) => setData('weight_grams', Number(e.target.value))}
-                                        placeholder="1300 = 1.3 kg"
+                                        onChange={(e) => setData('weight_grams', e.target.value === '' ? ('' as unknown as number) : Number(e.target.value))}
+                                        placeholder="Contoh: 1000"
                                         className="mt-1.5 h-9 w-full rounded-lg border border-[#E5E5E5] bg-[#FBFBFB] px-3 text-xs text-[#222] outline-none focus:border-[#0099FF] focus:bg-white focus:ring-1 focus:ring-[#0099FF]"
                                         required
                                     />
-                                    <span className="mt-1 block text-[10px] text-[#888]">
-                                        = {(data.weight_grams / 1000).toFixed(1)} kg
-                                    </span>
+                                    {data.weight_grams ? (
+                                        <span className="mt-1 block text-[10px] text-[#888]">
+                                            = {(Number(data.weight_grams) / 1000).toFixed(1)} kg
+                                        </span>
+                                    ) : null}
                                 </div>
                             </div>
                         </div>
@@ -518,39 +529,52 @@ export default function ProductsCreate({
                                 </button>
                             </div>
 
-                            <div className="space-y-3">
-                                {data.features.map((feat, index) => (
-                                    <div
-                                        key={index}
-                                        className="flex items-start gap-2 rounded-lg border border-[#F0F0F0] bg-[#FAFAFA] p-3"
+                            {data.features.length === 0 ? (
+                                <div className="rounded-lg border border-dashed border-[#E5E5E5] bg-[#FAFAFA] p-4 text-center">
+                                    <p className="text-xs text-[#888]">Belum ada fitur unggulan yang ditambahkan.</p>
+                                    <button
+                                        type="button"
+                                        onClick={addFeature}
+                                        className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#0099FF] hover:underline"
                                     >
-                                        <div className="flex-1 space-y-2">
-                                            <input
-                                                type="text"
-                                                value={feat.title}
-                                                onChange={(e) => updateFeature(index, 'title', e.target.value)}
-                                                placeholder="Judul Fitur (mis. Kotak Manajemen Kabel Serbaguna)"
-                                                className="h-8 w-full rounded border border-[#E5E5E5] bg-white px-2.5 text-xs font-semibold text-[#222] outline-none focus:border-[#0099FF]"
-                                            />
-                                            <textarea
-                                                rows={2}
-                                                value={feat.description}
-                                                onChange={(e) => updateFeature(index, 'description', e.target.value)}
-                                                placeholder="Penjelasan fitur..."
-                                                className="w-full rounded border border-[#E5E5E5] bg-white p-2 text-xs text-[#444] outline-none focus:border-[#0099FF]"
-                                            />
-                                        </div>
-                                        <button
-                                            type="button"
-                                            onClick={() => removeFeature(index)}
-                                            className="text-[#999] hover:text-[#D32F2F]"
-                                            title="Hapus Fitur"
+                                        <Plus className="size-3" /> Tambah Fitur Pertama
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="space-y-3">
+                                    {data.features.map((feat, index) => (
+                                        <div
+                                            key={index}
+                                            className="flex items-start gap-2 rounded-lg border border-[#F0F0F0] bg-[#FAFAFA] p-3"
                                         >
-                                            <Trash2 className="size-4" />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+                                            <div className="flex-1 space-y-2">
+                                                <input
+                                                    type="text"
+                                                    value={feat.title}
+                                                    onChange={(e) => updateFeature(index, 'title', e.target.value)}
+                                                    placeholder="Judul Fitur (mis. Kotak Manajemen Kabel Serbaguna)"
+                                                    className="h-8 w-full rounded border border-[#E5E5E5] bg-white px-2.5 text-xs font-semibold text-[#222] outline-none focus:border-[#0099FF]"
+                                                />
+                                                <textarea
+                                                    rows={2}
+                                                    value={feat.description}
+                                                    onChange={(e) => updateFeature(index, 'description', e.target.value)}
+                                                    placeholder="Penjelasan fitur..."
+                                                    className="w-full rounded border border-[#E5E5E5] bg-white p-2 text-xs text-[#444] outline-none focus:border-[#0099FF]"
+                                                />
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeFeature(index)}
+                                                className="text-[#999] hover:text-[#D32F2F]"
+                                                title="Hapus Fitur"
+                                            >
+                                                <Trash2 className="size-4" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         {/* 5. Spesifikasi Teknis (Dinamis) */}
@@ -571,34 +595,47 @@ export default function ProductsCreate({
                                 </button>
                             </div>
 
-                            <div className="space-y-2">
-                                {data.specifications.map((spec, index) => (
-                                    <div key={index} className="flex items-center gap-2">
-                                        <input
-                                            type="text"
-                                            value={spec.key}
-                                            onChange={(e) => updateSpec(index, 'key', e.target.value)}
-                                            placeholder="Label (mis. Material)"
-                                            className="h-8 w-1/3 rounded border border-[#E5E5E5] bg-white px-2.5 text-xs font-semibold text-[#333] outline-none focus:border-[#0099FF]"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={spec.value}
-                                            onChange={(e) => updateSpec(index, 'value', e.target.value)}
-                                            placeholder="Nilai (mis. Plastik ABS)"
-                                            className="h-8 flex-1 rounded border border-[#E5E5E5] bg-white px-2.5 text-xs text-[#444] outline-none focus:border-[#0099FF]"
-                                        />
-                                        <button
-                                            type="button"
-                                            onClick={() => removeSpec(index)}
-                                            className="text-[#999] hover:text-[#D32F2F]"
-                                            title="Hapus Spek"
-                                        >
-                                            <Trash2 className="size-4" />
-                                        </button>
-                                    </div>
-                                ))}
-                            </div>
+                            {data.specifications.length === 0 ? (
+                                <div className="rounded-lg border border-dashed border-[#E5E5E5] bg-[#FAFAFA] p-4 text-center">
+                                    <p className="text-xs text-[#888]">Belum ada spesifikasi teknis yang ditambahkan.</p>
+                                    <button
+                                        type="button"
+                                        onClick={addSpec}
+                                        className="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-[#0099FF] hover:underline"
+                                    >
+                                        <Plus className="size-3" /> Tambah Spek Pertama
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="space-y-2">
+                                    {data.specifications.map((spec, index) => (
+                                        <div key={index} className="flex items-center gap-2">
+                                            <input
+                                                type="text"
+                                                value={spec.key}
+                                                onChange={(e) => updateSpec(index, 'key', e.target.value)}
+                                                placeholder="Label (mis. Material)"
+                                                className="h-8 w-1/3 rounded border border-[#E5E5E5] bg-white px-2.5 text-xs font-semibold text-[#333] outline-none focus:border-[#0099FF]"
+                                            />
+                                            <input
+                                                type="text"
+                                                value={spec.value}
+                                                onChange={(e) => updateSpec(index, 'value', e.target.value)}
+                                                placeholder="Nilai (mis. Plastik ABS)"
+                                                className="h-8 flex-1 rounded border border-[#E5E5E5] bg-white px-2.5 text-xs text-[#444] outline-none focus:border-[#0099FF]"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => removeSpec(index)}
+                                                className="text-[#999] hover:text-[#D32F2F]"
+                                                title="Hapus Spek"
+                                            >
+                                                <Trash2 className="size-4" />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                         </div>
 
                         {/* 6. Kelengkapan Produk */}
@@ -631,23 +668,29 @@ export default function ProductsCreate({
                                 </button>
                             </div>
 
-                            <ul className="space-y-1.5 text-xs text-[#444]">
-                                {data.whats_in_the_box.map((item, index) => (
-                                    <li
-                                        key={index}
-                                        className="flex items-center justify-between rounded bg-[#FAFAFA] px-3 py-1.5"
-                                    >
-                                        <span>• {item}</span>
-                                        <button
-                                            type="button"
-                                            onClick={() => removeBoxItem(index)}
-                                            className="text-[#999] hover:text-[#D32F2F]"
+                            {data.whats_in_the_box.length === 0 ? (
+                                <p className="py-2 text-center text-xs text-[#888]">
+                                    Belum ada kelengkapan produk yang ditambahkan.
+                                </p>
+                            ) : (
+                                <ul className="space-y-1.5 text-xs text-[#444]">
+                                    {data.whats_in_the_box.map((item, index) => (
+                                        <li
+                                            key={index}
+                                            className="flex items-center justify-between rounded bg-[#FAFAFA] px-3 py-1.5"
                                         >
-                                            <Trash2 className="size-3.5" />
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
+                                            <span>• {item}</span>
+                                            <button
+                                                type="button"
+                                                onClick={() => removeBoxItem(index)}
+                                                className="text-[#999] hover:text-[#D32F2F]"
+                                            >
+                                                <Trash2 className="size-3.5" />
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
                     </div>
 

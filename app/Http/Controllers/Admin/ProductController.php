@@ -119,6 +119,21 @@ class ProductController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        if ($request->has('price')) {
+            $rawPrice = $request->input('price');
+            $request->merge([
+                'price' => is_string($rawPrice) ? (int) str_replace(['.', ',', ' '], '', $rawPrice) : $rawPrice,
+            ]);
+        }
+        if ($request->has('original_price')) {
+            $rawOrig = $request->input('original_price');
+            $request->merge([
+                'original_price' => (is_string($rawOrig) && trim($rawOrig) !== '')
+                    ? (int) str_replace(['.', ',', ' '], '', $rawOrig)
+                    : ($rawOrig === '' ? null : $rawOrig),
+            ]);
+        }
+
         $validated = $request->validate([
             'sku' => ['required', 'string', 'max:50', 'unique:products,sku'],
             'name' => ['required', 'string', 'max:255'],
@@ -237,6 +252,21 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product): RedirectResponse
     {
+        if ($request->has('price')) {
+            $rawPrice = $request->input('price');
+            $request->merge([
+                'price' => is_string($rawPrice) ? (int) str_replace(['.', ',', ' '], '', $rawPrice) : $rawPrice,
+            ]);
+        }
+        if ($request->has('original_price')) {
+            $rawOrig = $request->input('original_price');
+            $request->merge([
+                'original_price' => (is_string($rawOrig) && trim($rawOrig) !== '')
+                    ? (int) str_replace(['.', ',', ' '], '', $rawOrig)
+                    : ($rawOrig === '' ? null : $rawOrig),
+            ]);
+        }
+
         $validated = $request->validate([
             'sku' => ['sometimes', 'required', 'string', 'max:50', "unique:products,sku,{$product->id}"],
             'name' => ['sometimes', 'required', 'string', 'max:255'],

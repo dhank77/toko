@@ -349,8 +349,8 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
 
     const [activeVideo, setActiveVideo] = useState<VideoItem | null>(null);
 
-    // --- Official Jaknot Value icons ---
-    const jaknotValues = [
+    // --- Maknot Value icons (referensi) ---
+    const maknotValues = [
         { label: 'Waktunya Jajan 🎉', img: 'https://assets.jaknot.com/jaknot_value/2026/09/OZm0xG-3.png' },
         { label: 'Just Arrived', img: 'https://assets.jaknot.com/jaknot_value/2026/09/OG5JZe-2.png' },
         { label: 'Gear wajib rider 🚨', img: 'https://assets.jaknot.com/jaknot_value/2026/09/WGvdX7-1.png' },
@@ -375,7 +375,7 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
         }
     };
 
-    // --- Official Flash Sale products from jakartanotebook.html ---
+    // --- Flash Sale products (data referensi dari design/jakartanotebook.html) ---
     const flashSaleProducts = [
         {
             id: 'takara-mobil',
@@ -451,7 +451,7 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
         },
     ];
 
-    // --- Official Popular Categories from jaknot ---
+    // --- Popular Categories (data referensi) ---
     const popularCategories = [
         { name: 'Kursi Camping', img: 'https://assets.jaknot.com/popular_category/2026/09/KZ8Ed7-1.png' },
         { name: 'Soft Flask', img: 'https://assets.jaknot.com/popular_category/2026/03/OZmgxN-1.jpg' },
@@ -479,7 +479,7 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
         }
     };
 
-    // --- Official Lagi Banyak Dicari from jakartanotebook.html ---
+    // --- Lagi Banyak Dicari (data referensi dari design/jakartanotebook.html) ---
     const mostSearchItems = [
         {
             title: 'Teko Camping',
@@ -720,7 +720,7 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
         ? recommendationProducts
         : recommendationProducts.filter((p) => p.category === selectedTab);
 
-    // --- Info Menarik Jaknot / Maknot Articles ---
+    // --- Info Menarik Maknot Articles ---
     const articles = [
         {
             title: '7 Rekomendasi Pompa Ban Manual Terbaik dan Praktis Dibawa Touring',
@@ -770,7 +770,7 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
     return (
         <>
             <Head>
-                <title>JakartaNotebook / MakassarNotebook : Toko Online Lengkap &amp; Unik Harga Murah</title>
+                <title>MakassarNotebook : Toko Online Lengkap &amp; Unik Harga Murah</title>
                 <meta name="description" content="Belanja murah, mudah, aman, bergaransi, tersedia pembelian secara online, toko offline, dan COD." />
                 <link rel="icon" href="/images/logo-top.png" />
             </Head>
@@ -851,10 +851,10 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
                             <span className="hidden sm:inline">Kategori</span>
                         </button>
 
-                        {/* Brand Logo JakartaNotebook / MakassarNotebook */}
+                        {/* Brand Logo MakassarNotebook */}
                         <Link href="/" className="flex items-center gap-2 shrink-0">
                             <div className="flex items-center gap-2">
-                                {/* SVG Authentic Brand Icon from jakartanotebook.html */}
+                                {/* SVG Brand Icon MakassarNotebook (diadaptasi dari desain referensi) */}
                                 <svg viewBox="0 0 24 24" className="size-8">
                                     <path d="M 12.0331 20.0119 C 10.2264 19.9492 8.51686 19.5975 6.86925 18.9462 C 5.40864 18.3688 4.05164 17.5578 2.8514 16.5448 C 2.69483 16.4131 2.51397 16.2957 2.49023 16.0603 C 2.48123 15.9716 2.47059 15.8835 2.5587 15.834 C 2.64054 15.7873 2.69809 15.8565 2.75811 15.9005 C 3.93354 16.7556 5.25518 17.3044 6.63165 17.7298 C 7.80462 18.0922 9.00979 18.323 10.2294 18.4663 C 11.0922 18.5669 11.9585 18.6389 12.829 18.5868 C 14.5189 18.4859 16.1919 18.2829 17.807 17.7412 C 18.2814 17.5806 18.7435 17.3858 19.1899 17.1585 C 19.2978 17.0999 19.4104 17.0507 19.5268 17.0112 C 19.6955 16.9602 19.8227 17.0137 19.8922 17.1428 C 19.9664 17.2791 19.9468 17.3882 19.8022 17.5162 C 19.5245 17.7617 19.21 17.9548 18.8914 18.1387 C 17.4367 18.9786 15.8714 19.5056 14.2188 19.788 C 13.4959 19.9097 12.7658 19.9845 12.0331 20.0119 " fill="#0099FF"></path>
                                     <path d="M 18.0337 16.4889 C 18.0528 16.3667 18.1317 16.3202 18.2045 16.2897 C 19.0408 15.9392 19.8783 15.5903 20.8142 15.635 C 20.9933 15.6456 21.1696 15.6844 21.3366 15.7499 C 21.5077 15.814 21.5821 15.9214 21.5788 16.1138 C 21.5688 16.6433 21.4577 17.166 21.2515 17.6539 C 21.0398 18.1648 20.7229 18.6108 20.3898 19.0467 C 20.3729 19.0693 20.354 19.0903 20.3333 19.1095 C 20.296 19.1435 20.2499 19.1619 20.2045 19.1345 C 20.1593 19.1073 20.153 19.0601 20.1759 19.011 C 20.1959 18.9682 20.2171 18.9259 20.234 18.882 C 20.4522 18.3173 20.6475 17.7472 20.6953 17.1378 C 20.7028 17.1008 20.7075 17.0634 20.7098 17.0257 C 20.6787 16.5585 20.5718 16.4318 20.1219 16.3901 C 19.6981 16.3532 19.2716 16.3594 18.849 16.4087 C 18.5809 16.4381 18.3128 16.4616 18.0337 16.4889 Z" fill="#0099FF"></path>
@@ -864,7 +864,7 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
 
                                 <div className="flex flex-col">
                                     <div className="text-xl sm:text-2xl font-black tracking-tight text-[#222222] leading-none">
-                                        jakarta<span className="text-[#0099ff]">notebook</span>
+                                        makassar<span className="text-[#0099ff]">notebook</span>
                                     </div>
                                     <span className="text-[10px] font-bold text-[#ff6000] tracking-tight mt-0.5">
                                         #SudahPastiMurahnya
@@ -1151,7 +1151,7 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
                     ======================================================== */}
                 <main className="mx-auto max-w-[1200px] xl:max-w-[1400px] 2xl:max-w-[1620px] px-3 sm:px-4 2xl:px-6 pt-3">
                     {/* ========================================================
-                        3. HERO BANNER BENTO SECTION (Live Jaknot Layout)
+                        3. HERO BANNER BENTO SECTION (Maknot Layout)
                         ======================================================== */}
                     <div className="grid grid-cols-1 gap-3 md:grid-cols-12">
                         {/* Left Carousel Slider (8 columns) */}
@@ -1274,7 +1274,7 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
                             ref={valueScrollRef}
                             className="flex items-center gap-2 overflow-x-auto pb-1 text-center scrollbar-none scroll-smooth"
                         >
-                            {jaknotValues.map((val, idx) => (
+                            {maknotValues.map((val, idx) => (
                                 <button
                                     key={idx}
                                     type="button"
@@ -1639,7 +1639,7 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
                     </div>
 
                     {/* ========================================================
-                        11. INFO MENARIK JAKNOT / MAKNOT (Blog Articles)
+                        11. INFO MENARIK MAKNOT (Blog Articles)
                         ======================================================== */}
                     <div className="mt-4 rounded-lg border border-[#e5e5e5] bg-white p-4 shadow-xs">
                         <div className="flex items-center justify-between pb-3 border-b border-[#f0f0f0]">
@@ -1649,7 +1649,7 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
                                     alt="RSS Blog"
                                     className="size-5 object-contain"
                                 />
-                                <h3 className="text-sm font-bold text-[#222222]">Info Menarik Jaknot</h3>
+                                <h3 className="text-sm font-bold text-[#222222]">Info Menarik Maknot</h3>
                             </div>
                             <a
                                 href="#"
@@ -1746,10 +1746,10 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
                         ======================================================== */}
                     <section id="seo-info" className="mt-6 rounded-lg border border-[#e5e5e5] bg-white p-6 text-[11px] text-[#666666] leading-relaxed shadow-xs">
                         <h4 className="font-bold text-[#333333] text-xs">
-                            JakartaNotebook / MakassarNotebook : Toko Online Lengkap &amp; Unik Harga Murah
+                            MakassarNotebook : Toko Online Lengkap &amp; Unik Harga Murah
                         </h4>
                         <p className="mt-1.5">
-                            Selamat datang di <strong>MakassarNotebook</strong> (bagian dari jaringan retail omnichannel JakartaNotebook). Kami menyediakan aneka produk unik, perlengkapan komputer &amp; laptop, outdoor gear, peralatan rumah tangga, smartphone accessories, hobi, dan perkakas dengan slogan <strong>#SudahPastiMurahnya</strong>.
+                            Selamat datang di <strong>MakassarNotebook</strong>. Kami menyediakan aneka produk unik, perlengkapan komputer &amp; laptop, outdoor gear, peralatan rumah tangga, smartphone accessories, hobi, dan perkakas dengan slogan <strong>#SudahPastiMurahnya</strong>.
                         </p>
 
                         <h4 className="font-bold text-[#333333] text-xs mt-4">

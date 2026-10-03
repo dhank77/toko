@@ -317,7 +317,7 @@ CREATE TABLE rma_tickets (
 
 ### 4. Concurrency, Race Condition, & Stock Reservation Strategy
 
-Salah satu titik paling rawan dalam sistem e-commerce seperti JakartaNotebook adalah persaingan pembelian pada saat **Flash Sale** dan stok terakhir di toko cabang fisik.
+Salah satu titik paling rawan dalam sistem e-commerce seperti MakassarNotebook (diadaptasi dari model referensi JakartaNotebook) adalah persaingan pembelian pada saat **Flash Sale** dan stok terakhir di toko cabang fisik.
 
 #### 4.1. Two-Phase Stock Reservation
 1. **Fase 1: Checkout Reservation (Kunci Sementara)**
@@ -399,7 +399,7 @@ Aplikasi memanfaatkan **Laravel Wayfinder** untuk mengekspos pemanggilan rute PH
 
 ### 6. Design System & UI/UX Specifications
 
-#### 6.1. Visual Palette (JakartaNotebook-Inspired Aesthetics)
+#### 6.1. Visual Palette (MakassarNotebook Aesthetics, diadaptasi dari referensi JakartaNotebook)
 - **Primary Navy:** `#0B3B60` (Warna utama header, tombol aksi netral, sidebar aktif)
 - **Primary Dark Slate:** `#07263F` (Background footer dan panel atas kontras tinggi)
 - **Action Orange:** `#FF6B00` (Warna aksen tombol `Beli Sekarang`, badge `Flash Sale`, harga diskon)

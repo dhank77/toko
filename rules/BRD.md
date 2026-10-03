@@ -5,7 +5,7 @@
 
 ### 1. Executive Summary & Project Vision
 
-**MakassarNotebook (MKN)** adalah platform e-commerce dan sistem ritel omnichannel berkecepatan tinggi yang mengadopsi model bisnis dan arsitektur operasional **JakartaNotebook (Jaknote)**, yang dirancang dan dioptimalkan secara spesifik untuk pasar Makassar serta kawasan Indonesia Timur (Sulawesi, Maluku, Papua).
+**MakassarNotebook (MKN)** adalah platform e-commerce dan sistem ritel omnichannel berkecepatan tinggi yang mengadopsi model bisnis dan arsitektur operasional dari model referensi **JakartaNotebook (Jaknote)**, yang dirancang dan dioptimalkan secara spesifik untuk pasar Makassar serta kawasan Indonesia Timur (Sulawesi, Maluku, Papua).
 
 Platform ini menggabungkan penjualan daring (online marketplace) dengan jaringan toko fisik/gudang lokal melalui model **BOPIS (Buy Online, Pick Up In Store / "Pick N Go")**, sistem promosi **Flash Sale** berbasis kuota dan waktu nyata, serta ekosistem kemitraan **Dropshipper & Reseller** tanpa modal stok.
 

@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import * as ProductController from '@/actions/App/Http/Controllers/Admin/ProductController';
+import { formatNumberWithDots } from '@/lib/utils';
 
 type SubCategory = { id: number; name: string };
 type Category = { id: number; name: string; icon: string | null; sub_categories?: SubCategory[] };
@@ -393,14 +394,23 @@ export default function ProductsEdit({
                                     <label className="block text-xs font-semibold text-[#333]">
                                         Harga Jual (Rp) <span className="text-[#D32F2F]">*</span>
                                     </label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        value={data.price}
-                                        onChange={(e) => setData('price', Number(e.target.value))}
-                                        className="mt-1.5 h-9 w-full rounded-lg border border-[#E5E5E5] bg-[#FBFBFB] px-3 font-semibold text-[#D32F2F] outline-none focus:border-[#0099FF] focus:bg-white focus:ring-1 focus:ring-[#0099FF]"
-                                        required
-                                    />
+                                    <div className="relative mt-1.5 flex rounded-lg border border-[#E5E5E5] bg-[#FBFBFB] focus-within:border-[#0099FF] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#0099FF]">
+                                        <span className="inline-flex items-center pl-3 text-xs font-bold text-[#888]">
+                                            Rp
+                                        </span>
+                                        <input
+                                            type="text"
+                                            inputMode="numeric"
+                                            value={formatNumberWithDots(data.price)}
+                                            onChange={(e) => {
+                                                const cleanDigits = e.target.value.replace(/\D/g, '');
+                                                setData('price', cleanDigits ? parseInt(cleanDigits, 10) : ('' as unknown as number));
+                                            }}
+                                            placeholder="0"
+                                            className="h-9 w-full rounded-r-lg bg-transparent px-2.5 font-semibold text-[#D32F2F] outline-none"
+                                            required
+                                        />
+                                    </div>
                                     {errors.price && <p className="mt-1 text-xs text-[#D32F2F]">{errors.price}</p>}
                                 </div>
 
@@ -415,13 +425,22 @@ export default function ProductsEdit({
                                             </span>
                                         )}
                                     </div>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        value={data.original_price}
-                                        onChange={(e) => setData('original_price', Number(e.target.value))}
-                                        className="mt-1.5 h-9 w-full rounded-lg border border-[#E5E5E5] bg-[#FBFBFB] px-3 text-xs text-[#666] line-through outline-none focus:border-[#0099FF] focus:bg-white focus:ring-1 focus:ring-[#0099FF]"
-                                    />
+                                    <div className="relative mt-1.5 flex rounded-lg border border-[#E5E5E5] bg-[#FBFBFB] focus-within:border-[#0099FF] focus-within:bg-white focus-within:ring-1 focus-within:ring-[#0099FF]">
+                                        <span className="inline-flex items-center pl-3 text-xs font-semibold text-[#999]">
+                                            Rp
+                                        </span>
+                                        <input
+                                            type="text"
+                                            inputMode="numeric"
+                                            value={formatNumberWithDots(data.original_price)}
+                                            onChange={(e) => {
+                                                const cleanDigits = e.target.value.replace(/\D/g, '');
+                                                setData('original_price', cleanDigits ? parseInt(cleanDigits, 10) : ('' as unknown as number));
+                                            }}
+                                            placeholder="0"
+                                            className="h-9 w-full rounded-r-lg bg-transparent px-2.5 text-xs text-[#666] outline-none"
+                                        />
+                                    </div>
                                 </div>
 
                                 <div>
