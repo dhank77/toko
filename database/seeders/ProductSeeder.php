@@ -188,5 +188,202 @@ class ProductSeeder extends Seeder
                 ]
             );
         }
+
+        // 4. Products for other departments
+        $otherProducts = [
+            // Outdoor & Olahraga
+            [
+                'cat_slug' => 'outdoor-olahraga',
+                'sku' => 'PT-CHAIR-144',
+                'name' => 'Patio Kursi Lipat Outdoor Camping Portable Oxford 600D Folding Chair',
+                'brand' => 'Patio',
+                'color' => 'Army Green',
+                'price' => 89000,
+                'original_price' => 159000,
+                'stock' => 50,
+                'thumbnail' => 'https://upload.jaknot.com/2025/09/images/products/214dc9/icon/patio-kursi-lipat-outdoor-camping-portable-oxford-600d-folding-chair-pt144.jpg',
+            ],
+            [
+                'cat_slug' => 'outdoor-olahraga',
+                'sku' => 'NC-MH12-PRO',
+                'name' => 'Nitecore Senter LED NiteLab UHi 40 Tactical IP68 3300 Lumens MH12 Pro',
+                'brand' => 'Nitecore',
+                'color' => 'Tactical Black',
+                'price' => 749000,
+                'original_price' => 1150000,
+                'stock' => 15,
+                'thumbnail' => 'https://upload.jaknot.com/2026/06/images/products/488f77/icon/nitecore-senter-led-nitelab-uhi-40-tactical-ip68-3300-lumens-mh12-pro.png',
+            ],
+            [
+                'cat_slug' => 'outdoor-olahraga',
+                'sku' => 'TK-CAMP-2L',
+                'name' => 'Teko Alat Masak Camping Outdoor Anodized Aluminium 2L Kapasitas Besar',
+                'brand' => 'Fire-Maple',
+                'color' => 'Dark Grey',
+                'price' => 122600,
+                'original_price' => 190900,
+                'stock' => 30,
+                'thumbnail' => 'https://upload.jaknot.com/2026/07/images/products/deec3d/icon/0.jpg',
+            ],
+            // Handphone & Tablet
+            [
+                'cat_slug' => 'handphone-tablet',
+                'sku' => 'TW-TYPEC-PD20',
+                'name' => 'Taffware Kabel Charger Type-C to Lightning PD 20W Fast Charging Braided',
+                'brand' => 'Taffware',
+                'color' => 'Black 1.2M',
+                'price' => 21900,
+                'original_price' => 45000,
+                'stock' => 100,
+                'thumbnail' => 'https://upload.jaknot.com/2026/06/images/products/4f2ef3/icon/0.jpg',
+            ],
+            [
+                'cat_slug' => 'handphone-tablet',
+                'sku' => 'BS-CAR-MOUNT',
+                'name' => 'Baseus Car Mount Holder HP Mobil Dashboard & Air Vent Gravity Sensor',
+                'brand' => 'Baseus',
+                'color' => 'Silver Metallic',
+                'price' => 64900,
+                'original_price' => 109000,
+                'stock' => 40,
+                'thumbnail' => 'https://upload.jaknot.com/2026/07/images/products/c6aa8c/icon/0.jpg',
+            ],
+            // TV & Elektronik
+            [
+                'cat_slug' => 'tv-elektronik',
+                'sku' => 'AP-TRIPOD-SPK',
+                'name' => 'Apir Tripod Stand Speaker Audio System Heavy Duty All Metal 97-200cm',
+                'brand' => 'Apir',
+                'color' => 'Matte Black',
+                'price' => 139000,
+                'original_price' => 219000,
+                'stock' => 25,
+                'thumbnail' => 'https://upload.jaknot.com/2026/08/images/products/a32ff1/icon/apir-tripod-stand-speaker-audio-system-97-200cm-all-metal-sps-510m.jpg',
+            ],
+            [
+                'cat_slug' => 'tv-elektronik',
+                'sku' => 'GS-HEADPHONE',
+                'name' => 'Gorsun Headphone Bluetooth Wireless Over-Ear Foldable Deep Bass E62',
+                'brand' => 'Gorsun',
+                'color' => 'Matte Grey',
+                'price' => 99000,
+                'original_price' => 165000,
+                'stock' => 35,
+                'thumbnail' => 'https://upload.jaknot.com/2026/08/images/products/6007b8/icon/0.jpg',
+            ],
+            // Rumah Tangga & Dapur
+            [
+                'cat_slug' => 'rumah-tangga-dapur',
+                'sku' => 'QT-GLOVE-LATEX',
+                'name' => 'Qitu Sarung Tangan Latex Cuci Piring Waterproof Extra Thick 1 Pasang',
+                'brand' => 'Qitu',
+                'color' => 'Yellow Large',
+                'price' => 12500,
+                'original_price' => 22000,
+                'stock' => 80,
+                'thumbnail' => 'https://upload.jaknot.com/2026/04/images/products/33219f/icon/qitu-sarung-tangan-latex-cuci-piring-cleaning-gloves-extra-thick-a303.png',
+            ],
+            [
+                'cat_slug' => 'rumah-tangga-dapur',
+                'sku' => 'ZF-POMPA-BAN',
+                'name' => 'Zifei Pompa Ban Mobil Elektrik Portable Inflator Digital LED Screen 150 PSI',
+                'brand' => 'Zifei',
+                'color' => 'Wireless Battery',
+                'price' => 198000,
+                'original_price' => 320000,
+                'stock' => 22,
+                'thumbnail' => 'https://upload.jaknot.com/2026/05/images/products/65d1d6/icon/0.jpg',
+            ],
+            // Hobi & Mainan
+            [
+                'cat_slug' => 'hobi-mainan',
+                'sku' => 'TK-MOBIL-ROBOT',
+                'name' => 'Takara Mainan Mobil Robot Transformers 2in1 Deformation Toy Auto',
+                'brand' => 'Takara',
+                'color' => 'Jet Black',
+                'price' => 32800,
+                'original_price' => 59900,
+                'stock' => 60,
+                'thumbnail' => 'https://upload.jaknot.com/2024/07/images/products/d4cf2b/thumbnail/takara-mainan-mobil-robot-transformers-2in1-deformation-toy-tk21.png',
+            ],
+            [
+                'cat_slug' => 'hobi-mainan',
+                'sku' => 'FM-RUBIK-3X3',
+                'name' => 'FMA Mainan Kubus Rubik Carbon Fiber Magic Cube 3x3x3 Speed Cube',
+                'brand' => 'FMA',
+                'color' => 'Carbon Mix Color',
+                'price' => 14200,
+                'original_price' => 30900,
+                'stock' => 90,
+                'thumbnail' => 'https://upload.jaknot.com/2025/05/images/products/44265d/thumbnail/fma-mainan-kubus-rubik-carbon-fiber-magic-cube-3x3x3-fmm3.jpg',
+            ],
+            [
+                'cat_slug' => 'hobi-mainan',
+                'sku' => 'MG-PIANO-61K',
+                'name' => 'Maygiv Piano Digital Elektrik Mainan Anak 61-Key with Microphone',
+                'brand' => 'Maygiv',
+                'color' => 'Black',
+                'price' => 120300,
+                'original_price' => 187900,
+                'stock' => 18,
+                'thumbnail' => 'https://upload.jaknot.com/2026/07/images/products/2d6d09/thumbnail/maygiv-piano-digital-elektrik-mainan-anak-61-key-with-microphone-mq-6185.jpg',
+            ],
+            [
+                'cat_slug' => 'hobi-mainan',
+                'sku' => 'SV-DRONE-4K',
+                'name' => 'Sivery Drone 4K Dual Camera Stunt Roll Optical Flow Hovering',
+                'brand' => 'Sivery',
+                'color' => 'Stealth Grey',
+                'price' => 229900,
+                'original_price' => 380900,
+                'stock' => 14,
+                'thumbnail' => 'https://upload.jaknot.com/2026/01/images/products/5b529a/thumbnail/sivery-drone-4k-dual-camera-stunt-roll-optical-flow-hovering-1800mah-h16.jpg',
+            ],
+        ];
+
+        foreach ($otherProducts as $op) {
+            $cat = Category::where('slug', $op['cat_slug'])->first();
+            if (! $cat) {
+                continue;
+            }
+
+            $subCat = SubCategory::where('category_id', $cat->id)->first();
+
+            Product::updateOrCreate(
+                ['sku' => $op['sku']],
+                [
+                    'name' => $op['name'],
+                    'slug' => Str::slug($op['name']).'-'.strtolower($op['sku']),
+                    'category_id' => $cat->id,
+                    'sub_category_id' => $subCat?->id,
+                    'brand' => $op['brand'],
+                    'color' => $op['color'],
+                    'price' => $op['price'],
+                    'original_price' => $op['original_price'],
+                    'discount_percent' => (int) round((($op['original_price'] - $op['price']) / $op['original_price']) * 100),
+                    'stock' => $op['stock'],
+                    'weight_grams' => 500,
+                    'warranty' => '7 Hari',
+                    'package_dimension' => '20 x 15 x 10 cm',
+                    'overview' => 'Produk berkualitas terbaik MakassarNotebook dengan jaminan harga termurah.',
+                    'description' => 'Produk pilihan untuk memenuhi kebutuhan harian Anda dengan standar mutu tinggi.',
+                    'features' => [
+                        ['title' => 'Kualitas Premium', 'description' => 'Material kokoh dan awet digunakan.'],
+                    ],
+                    'specifications' => [
+                        ['key' => 'Brand', 'value' => $op['brand']],
+                        ['key' => 'Warna', 'value' => $op['color']],
+                    ],
+                    'whats_in_the_box' => [
+                        '1 x '.$op['name'],
+                    ],
+                    'thumbnail' => $op['thumbnail'],
+                    'rating' => 4.9,
+                    'review_count' => 8,
+                    'is_active' => true,
+                    'is_featured' => true,
+                ]
+            );
+        }
     }
 }

@@ -1,4 +1,4 @@
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     ChevronLeft,
     ChevronRight,
@@ -30,10 +30,51 @@ import {
     Zap,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { formatRupiah } from '@/lib/utils';
 import { dashboard, login, register } from '@/routes';
 
-type SubCategoryItem = { id: number; name: string; slug: string };
-type CategoryItem = { id: number; name: string; slug: string; icon: string | null; sub_categories: SubCategoryItem[] };
+export interface SubCategoryItem {
+    id: number;
+    name: string;
+    slug: string;
+}
+
+export interface CategoryItem {
+    id: number;
+    name: string;
+    slug: string;
+    icon: string | null;
+    sub_categories: SubCategoryItem[];
+}
+
+export interface ProductItem {
+    id: number | string;
+    name: string;
+    slug: string;
+    sku?: string | null;
+    brand?: string | null;
+    color?: string | null;
+    price: number;
+    original_price?: number | null;
+    discount_percent?: number | null;
+    stock?: number;
+    thumbnail?: string | null;
+    images?: string[] | null;
+    category_id?: number | null;
+    sub_category_id?: number | null;
+    category?: { id: number; name: string; slug: string; icon?: string | null } | null;
+    sub_category?: { id: number; name: string; slug: string } | null;
+    rating?: number | null;
+    review_count?: number | null;
+    is_featured?: boolean;
+    // Fallback fields for legacy compatibility
+    title?: string;
+    badge?: string;
+    variant?: string;
+    img?: string;
+    originalPrice?: number;
+    discount?: number;
+}
 
 const STATIC_DEPARTMENTS = [
     { name: 'Komputer & Laptop', items: ['Keyboard', 'Mouse', 'Cooling Pad', 'Stand Laptop', 'Webcam', 'USB Hub & Converter', 'Kabel HDMI & DP', 'SSD & Enclosure'] },
@@ -46,7 +87,17 @@ const STATIC_DEPARTMENTS = [
     { name: 'Kesehatan & Personal Care', items: ['Oximeter Saturasi Oksigen', 'Nebulizer Portable', 'Kacamata Baca Anti Radiasi'] },
 ];
 
-export default function Welcome({ categories = [] }: { categories?: CategoryItem[] }) {
+export default function Welcome({
+    categories = [],
+    products = [],
+    flashSaleProducts = [],
+    selectedCategory = 'all',
+}: {
+    categories?: CategoryItem[];
+    products?: ProductItem[];
+    flashSaleProducts?: ProductItem[];
+    selectedCategory?: string;
+}) {
     const { auth } = usePage().props;
 
     // --- Branch state & data ---
@@ -375,8 +426,8 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
         }
     };
 
-    // --- Flash Sale products (data referensi dari design/jakartanotebook.html) ---
-    const flashSaleProducts = [
+    // --- Fallback Flash Sale products (data referensi jika DB belum ada flash sale) ---
+    const fallbackFlashSaleProducts = [
         {
             id: 'takara-mobil',
             title: 'Takara Mainan Mobil Robot Transformers 2in1 Deformation Toy',
@@ -450,6 +501,8 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
             img: 'https://upload.jaknot.com/2026/07/images/products/2e127e/thumbnail/tosie-boneka-burung-beo-pintar-talking-parrot-plush-repeat-voice-n500.png',
         },
     ];
+
+    const activeFlashSaleProducts = flashSaleProducts.length > 0 ? flashSaleProducts : fallbackFlashSaleProducts;
 
     // --- Popular Categories (data referensi) ---
     const popularCategories = [
@@ -533,192 +586,43 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
         },
     ];
 
-    // --- Rekomendasi Untukmu Product Catalog (16 products) ---
-    type CategoryTab = 'all' | 'computer' | 'outdoor' | 'home' | 'electronics';
-    const [selectedTab, setSelectedTab] = useState<CategoryTab>('all');
+    const getProductImage = (src?: string | null) => {
+        if (!src) {
+            return 'https://placehold.co/400x400/f5f5f5/999999?text=No+Image';
+        }
+        if (src.startsWith('http') || src.startsWith('/') || src.startsWith('data:')) {
+            return src;
+        }
+        return `/storage/${src}`;
+    };
 
-    const recommendationProducts = [
-        {
-            id: 'p1',
-            title: 'Aqqef Meja Laptop Desk Monitor Stand with USB 3.0 and Charging Port',
-            category: 'computer',
-            badge: 'BEST SELLER',
-            variant: 'Black 4 Ports',
-            price: 184500,
-            originalPrice: 289000,
-            discount: 36,
-            img: 'https://upload.jaknot.com/2022/10/images/products/e22c0d/icon/aqqef-meja-laptop-desk-monitor-stand-with-usb-30-and-charging-port-aqms5.jpg',
-        },
-        {
-            id: 'p2',
-            title: 'Patio Kursi Lipat Outdoor Camping Portable Oxford 600D Folding Chair',
-            category: 'outdoor',
-            badge: 'OUTDOOR GEAR',
-            variant: 'Army Green',
-            price: 89000,
-            originalPrice: 159000,
-            discount: 44,
-            img: 'https://upload.jaknot.com/2025/09/images/products/214dc9/icon/patio-kursi-lipat-outdoor-camping-portable-oxford-600d-folding-chair-pt144.jpg',
-        },
-        {
-            id: 'p3',
-            title: 'Nitecore Senter LED NiteLab UHi 40 Tactical IP68 3300 Lumens MH12 Pro',
-            category: 'outdoor',
-            badge: '3300 LUMENS',
-            variant: 'Tactical Black',
-            price: 749000,
-            originalPrice: 1150000,
-            discount: 35,
-            img: 'https://upload.jaknot.com/2026/06/images/products/488f77/icon/nitecore-senter-led-nitelab-uhi-40-tactical-ip68-3300-lumens-mh12-pro.png',
-        },
-        {
-            id: 'p4',
-            title: 'Segb Notebook Cooling Pad Laptop Ultra Thin Cooler 6-Fan Super Silent',
-            category: 'computer',
-            badge: '6-FAN TURBO',
-            variant: 'Blue LED',
-            price: 111700,
-            originalPrice: 175900,
-            discount: 36,
-            img: 'https://upload.jaknot.com/2022/11/images/products/24a38c/icon/segb-notebook-cooling-pad-laptop-ultra-thin-cooler-6-fan-s6.jpg',
-        },
-        {
-            id: 'p5',
-            title: 'Teko Alat Masak Camping Outdoor Anodized Aluminium 2L Kapasitas Besar',
-            category: 'outdoor',
-            badge: 'ALUMINIUM 2L',
-            variant: 'Dark Grey',
-            price: 122600,
-            originalPrice: 190900,
-            discount: 36,
-            img: 'https://upload.jaknot.com/2026/07/images/products/deec3d/icon/0.jpg',
-        },
-        {
-            id: 'p6',
-            title: 'Takezero Tas Sepeda Smartphone Holder Touchscreen Waterproof Earphone Hole',
-            category: 'outdoor',
-            badge: 'WATERPROOF',
-            variant: 'Black 6.5 inch',
-            price: 49500,
-            originalPrice: 89000,
-            discount: 44,
-            img: 'https://upload.jaknot.com/2024/07/images/products/90b2f8/icon/takezero-tas-sepeda-smartphone-holder-earphone-hole-waterproof-tz47.jpg',
-        },
-        {
-            id: 'p7',
-            title: 'Qitu Sarung Tangan Latex Cuci Piring Cleaning Gloves Extra Thick Ergonomis',
-            category: 'home',
-            badge: 'EXTRA TEBAL',
-            variant: 'White L',
-            price: 12900,
-            originalPrice: 25000,
-            discount: 48,
-            img: 'https://upload.jaknot.com/2026/04/images/products/33219f/icon/qitu-sarung-tangan-latex-cuci-piring-cleaning-gloves-extra-thick-a303.png',
-        },
-        {
-            id: 'p8',
-            title: 'Apir Tripod Stand Speaker Audio System 97-200cm Heavy Metal Base',
-            category: 'electronics',
-            badge: 'HEAVY DUTY',
-            variant: 'Steel Black',
-            price: 145000,
-            originalPrice: 235000,
-            discount: 38,
-            img: 'https://upload.jaknot.com/2026/08/images/products/a32ff1/icon/apir-tripod-stand-speaker-audio-system-97-200cm-all-metal-sps-510m.jpg',
-        },
-        {
-            id: 'p9',
-            title: 'Lumiparty Kompas Mini Professional Scale Outdoor Hiking survival Precision',
-            category: 'outdoor',
-            badge: 'PRECISION GEAR',
-            variant: 'Army Green',
-            price: 21500,
-            originalPrice: 45000,
-            discount: 52,
-            img: 'https://upload.jaknot.com/2022/12/images/products/36bd52/icon/lumiparty-kompas-mini-professional-scale-outdoor-hiking-xc-mn0010.jpg',
-        },
-        {
-            id: 'p10',
-            title: 'Alat Bantu Tongkat Jalan Lipat Aluminium Ringan Anti Slip Height Adjustable',
-            category: 'home',
-            badge: 'HEALTH CARE',
-            variant: 'Metallic Bronze',
-            price: 52000,
-            originalPrice: 95000,
-            discount: 45,
-            img: 'https://upload.jaknot.com/2026/08/images/products/0882e9/icon/0.jpg',
-        },
-        {
-            id: 'p11',
-            title: 'Sivery Drone Dual Camera 4K Stunt Roll Optical Flow Hovering 1800mAh',
-            category: 'electronics',
-            badge: 'DRONE 4K',
-            variant: 'Matte Black',
-            price: 229900,
-            originalPrice: 380900,
-            discount: 40,
-            img: 'https://upload.jaknot.com/2026/01/images/products/5b529a/thumbnail/sivery-drone-4k-dual-camera-stunt-roll-optical-flow-hovering-1800mah-h16.jpg',
-        },
-        {
-            id: 'p12',
-            title: 'Razus Mainan Balok Susun Vintage Retro Camera Polaroid Bricks Blok Klasik',
-            category: 'home',
-            badge: 'BRICKS HOBBY',
-            variant: 'Classic White',
-            price: 68400,
-            originalPrice: 111900,
-            discount: 39,
-            img: 'https://upload.jaknot.com/2026/07/images/products/d145cf/thumbnail/razus-mainan-balok-susun-vintage-retro-camera-polaroid-bricks-blok-my97131.jpg',
-        },
-        {
-            id: 'p13',
-            title: 'HEB Display Box Action Figure Case Kotak Pajangan Blindbox Akrilik Magnet',
-            category: 'home',
-            badge: 'DUST PROOF',
-            variant: 'Crystal Clear',
-            price: 39100,
-            originalPrice: 68900,
-            discount: 44,
-            img: 'https://upload.jaknot.com/2026/06/images/products/7a1a64/thumbnail/0.jpg',
-        },
-        {
-            id: 'p14',
-            title: 'Maygiv Piano Digital Elektrik Mainan Anak 61-Key with Microphone MQ-6185',
-            category: 'electronics',
-            badge: '61 KEYS EDU',
-            variant: 'Piano Black',
-            price: 120300,
-            originalPrice: 187900,
-            discount: 36,
-            img: 'https://upload.jaknot.com/2026/07/images/products/2d6d09/thumbnail/maygiv-piano-digital-elektrik-mainan-anak-61-key-with-microphone-mq-6185.jpg',
-        },
-        {
-            id: 'p15',
-            title: 'Takara Mainan Mobil Robot Transformers 2in1 Deformation Fighter Jet TK21',
-            category: 'home',
-            badge: 'TRANSFORMERS',
-            variant: 'Jet Black',
-            price: 32800,
-            originalPrice: 59900,
-            discount: 46,
-            img: 'https://upload.jaknot.com/2024/07/images/products/d4cf2b/thumbnail/takara-mainan-mobil-robot-transformers-2in1-deformation-toy-tk21.png',
-        },
-        {
-            id: 'p16',
-            title: 'FMA Mainan Kubus Rubik Carbon Fiber Magic Cube 3x3x3 Speed Cube',
-            category: 'home',
-            badge: 'SPEED CUBE',
-            variant: 'Carbon Mix Color',
-            price: 14200,
-            originalPrice: 30900,
-            discount: 55,
-            img: 'https://upload.jaknot.com/2025/05/images/products/44265d/thumbnail/fma-mainan-kubus-rubik-carbon-fiber-magic-cube-3x3x3-fmm3.jpg',
-        },
-    ];
+    // --- Rekomendasi Untukmu Filtering (Database Products + Dynamic Tabs) ---
+    const [activeCategoryTab, setActiveCategoryTab] = useState<string>(selectedCategory || 'all');
 
-    const filteredRecommendations = selectedTab === 'all'
-        ? recommendationProducts
-        : recommendationProducts.filter((p) => p.category === selectedTab);
+    useEffect(() => {
+        setActiveCategoryTab(selectedCategory || 'all');
+    }, [selectedCategory]);
+
+    const handleSelectCategory = (catSlugOrId: string) => {
+        setActiveCategoryTab(catSlugOrId);
+        router.get(
+            '/',
+            catSlugOrId === 'all' ? {} : { category: catSlugOrId },
+            { preserveState: true, preserveScroll: true, replace: true }
+        );
+    };
+
+    const filteredRecommendations = activeCategoryTab === 'all'
+        ? products
+        : products.filter((p) => {
+            const pCatId = p.category_id ? String(p.category_id) : '';
+            const pCatSlug = p.category?.slug ?? '';
+            const pCatName = p.category?.name?.toLowerCase() ?? '';
+            const target = activeCategoryTab.toLowerCase();
+
+            return pCatId === activeCategoryTab || pCatSlug.toLowerCase() === target || pCatName.includes(target);
+        });
+
 
     // --- Info Menarik Maknot Articles ---
     const articles = [
@@ -763,9 +667,6 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
         : STATIC_DEPARTMENTS;
 
     const [activeDepartment, setActiveDepartment] = useState(0);
-
-    // Format Rupiah helper
-    const formatRupiah = (val: number) => 'Rp' + val.toLocaleString('id-ID');
 
     return (
         <>
@@ -1333,45 +1234,59 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
 
                         {/* 8 Product Cards Grid */}
                         <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 2xl:gap-3">
-                            {flashSaleProducts.map((p) => (
-                                <div
-                                    key={p.id}
-                                    onClick={() => handleAddToCart(p.title)}
-                                    className="group flex flex-col justify-between rounded-lg border border-transparent p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white cursor-pointer"
-                                >
-                                    <div>
-                                        <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-[#fafafa]">
-                                            <img
-                                                src={p.img}
-                                                alt={p.title}
-                                                className="h-full w-full object-contain p-1 group-hover:scale-105 transition-transform duration-300"
-                                                loading="lazy"
-                                            />
-                                            <span className="absolute top-1 left-1 rounded bg-[#0099ff] px-1 py-0.5 text-[8px] font-bold text-white uppercase">
-                                                {p.badge}
-                                            </span>
+                            {activeFlashSaleProducts.map((p) => {
+                                const displayName = p.name || p.title || 'Produk';
+                                const displayImg = getProductImage(p.thumbnail || p.img);
+                                const displayBadge = p.brand || p.badge;
+                                const original = p.original_price ?? p.originalPrice;
+                                const discountVal = p.discount_percent ?? p.discount;
+
+                                return (
+                                    <div
+                                        key={p.id}
+                                        onClick={() => handleAddToCart(displayName)}
+                                        className="group flex flex-col justify-between rounded-lg border border-transparent p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white cursor-pointer"
+                                    >
+                                        <div>
+                                            <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-[#fafafa]">
+                                                <img
+                                                    src={displayImg}
+                                                    alt={displayName}
+                                                    className="h-full w-full object-contain p-1 group-hover:scale-105 transition-transform duration-300"
+                                                    loading="lazy"
+                                                />
+                                                {displayBadge && (
+                                                    <span className="absolute top-1 left-1 rounded bg-[#0099ff] px-1 py-0.5 text-[8px] font-bold text-white uppercase">
+                                                        {displayBadge}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <h4 className="mt-2 text-[11px] font-medium text-[#222222] line-clamp-2 leading-snug group-hover:text-[#ff6000]">
+                                                {displayName}
+                                            </h4>
                                         </div>
 
-                                        <h4 className="mt-2 text-[11px] font-medium text-[#222222] line-clamp-2 leading-snug group-hover:text-[#ff6000]">
-                                            {p.title}
-                                        </h4>
-                                    </div>
-
-                                    <div className="mt-2 pt-1 border-t border-[#f5f5f5]">
-                                        <div className="text-xs font-bold text-[#222222]">
-                                            {formatRupiah(p.price)}
+                                        <div className="mt-2 pt-1 border-t border-[#f5f5f5]">
+                                            <div className="text-xs font-bold text-[#222222]">
+                                                {formatRupiah(p.price)}
+                                            </div>
+                                            <div className="flex items-center gap-1.5 text-[10px]">
+                                                {original && (
+                                                    <span className="text-[#999999] line-through">
+                                                        {formatRupiah(original)}
+                                                    </span>
+                                                )}
+                                                {discountVal && (
+                                                    <span className="font-bold text-[#d32f2f]">
+                                                        {discountVal}%
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-1.5 text-[10px]">
-                                            <span className="text-[#999999] line-through">
-                                                {formatRupiah(p.originalPrice)}
-                                            </span>
-                                            <span className="font-bold text-[#d32f2f]">
-                                                {p.discount}%
-                                            </span>
-                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -1426,7 +1341,20 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
                                 <button
                                     key={i}
                                     type="button"
-                                    onClick={() => setSearchKeyword(cat.name)}
+                                    onClick={() => {
+                                        const matched = categories.find(
+                                            (c) =>
+                                                c.name.toLowerCase().includes(cat.name.toLowerCase()) ||
+                                                cat.name.toLowerCase().includes(c.name.toLowerCase())
+                                        );
+                                        if (matched) {
+                                            handleSelectCategory(matched.slug);
+                                        } else {
+                                            setSearchKeyword(cat.name);
+                                        }
+                                        const el = document.getElementById('rekomendasi-section');
+                                        if (el) el.scrollIntoView({ behavior: 'smooth' });
+                                    }}
                                     className="flex flex-col items-center justify-center min-w-[92px] p-2 rounded-lg border border-[#efefef] hover:border-[#0099ff] hover:shadow-xs transition-all text-center group cursor-pointer shrink-0"
                                 >
                                     <div className="relative size-14 rounded-full bg-[#fafafa] p-1 flex items-center justify-center group-hover:scale-105 transition-transform">
@@ -1539,7 +1467,7 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
                     {/* ========================================================
                         10. REKOMENDASI UNTUKMU (8-Column High-Density Grid)
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] bg-white p-4 shadow-xs">
+                    <div id="rekomendasi-section" className="mt-4 rounded-lg border border-[#e5e5e5] bg-white p-4 shadow-xs">
                         <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#f0f0f0]">
                             <div className="flex items-center gap-2">
                                 <img
@@ -1551,89 +1479,127 @@ export default function Welcome({ categories = [] }: { categories?: CategoryItem
                             </div>
 
                             {/* Department category tabs */}
-                            <div className="flex items-center gap-1.5 overflow-x-auto text-[11px] scrollbar-none">
-                                {[
-                                    { id: 'all', label: 'Semua' },
-                                    { id: 'computer', label: 'Komputer & Gadget' },
-                                    { id: 'outdoor', label: 'Outdoor & Camping' },
-                                    { id: 'home', label: 'Rumah Tangga' },
-                                    { id: 'electronics', label: 'Elektronik & Audio' },
-                                ].map((tab) => (
-                                    <button
-                                        key={tab.id}
-                                        type="button"
-                                        onClick={() => setSelectedTab(tab.id as CategoryTab)}
-                                        className={`rounded-full px-3 py-1 font-semibold transition-all cursor-pointer ${
-                                            selectedTab === tab.id
-                                                ? 'bg-[#0099ff] text-white shadow-xs'
-                                                : 'bg-[#f0f0f0] text-[#555555] hover:bg-[#e6f5ff] hover:text-[#0099ff]'
-                                        }`}
-                                    >
-                                        {tab.label}
-                                    </button>
-                                ))}
+                            <div className="flex items-center gap-1.5 overflow-x-auto text-[11px] scrollbar-none max-w-full pb-1">
+                                <button
+                                    type="button"
+                                    onClick={() => handleSelectCategory('all')}
+                                    className={`rounded-full px-3 py-1 font-semibold transition-all cursor-pointer whitespace-nowrap ${
+                                        activeCategoryTab === 'all'
+                                            ? 'bg-[#0099ff] text-white shadow-xs'
+                                            : 'bg-[#f0f0f0] text-[#555555] hover:bg-[#e6f5ff] hover:text-[#0099ff]'
+                                    }`}
+                                >
+                                    Semua
+                                </button>
+                                {categories.map((cat) => {
+                                    const isSelected =
+                                        activeCategoryTab === cat.slug ||
+                                        activeCategoryTab === String(cat.id);
+                                    return (
+                                        <button
+                                            key={cat.id}
+                                            type="button"
+                                            onClick={() => handleSelectCategory(cat.slug)}
+                                            className={`rounded-full px-3 py-1 font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
+                                                isSelected
+                                                    ? 'bg-[#0099ff] text-white shadow-xs'
+                                                    : 'bg-[#f0f0f0] text-[#555555] hover:bg-[#e6f5ff] hover:text-[#0099ff]'
+                                            }`}
+                                        >
+                                            {cat.icon && <span>{cat.icon}</span>}
+                                            <span>{cat.name}</span>
+                                        </button>
+                                    );
+                                })}
                             </div>
                         </div>
 
                         {/* 8-Column Product Grid */}
                         <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 2xl:gap-3.5">
-                            {filteredRecommendations.map((item) => (
-                                <div
-                                    key={item.id}
-                                    onClick={() => handleAddToCart(item.title)}
-                                    className="cursor-pointer group flex flex-col justify-between rounded-lg border border-[#e9e9e9] p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white"
-                                >
-                                    <div>
-                                        <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-[#fafafa]">
-                                            <img
-                                                src={item.img}
-                                                alt={item.title}
-                                                className="h-full w-full object-contain p-1 group-hover:scale-105 transition-transform duration-300"
-                                                loading="lazy"
-                                            />
-                                            {item.badge && (
-                                                <span className="absolute top-1 left-1 rounded bg-[#0099ff] px-1 py-0.5 text-[8px] font-bold text-white uppercase">
-                                                    {item.badge}
-                                                </span>
-                                            )}
-                                        </div>
+                            {filteredRecommendations.length > 0 ? (
+                                filteredRecommendations.map((item) => {
+                                    const displayName = item.name || item.title || 'Produk';
+                                    const displayImg = getProductImage(item.thumbnail || item.img);
+                                    const displayBadge = item.brand || item.badge;
+                                    const displayVariant = item.color || item.variant;
+                                    const original = item.original_price ?? item.originalPrice;
+                                    const discountVal = item.discount_percent ?? item.discount;
 
-                                        <h4 className="mt-2 text-[11px] font-medium text-[#222222] line-clamp-2 leading-snug group-hover:text-[#ff6000]">
-                                            {item.title}
-                                        </h4>
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            onClick={() => handleAddToCart(displayName)}
+                                            className="cursor-pointer group flex flex-col justify-between rounded-lg border border-[#e9e9e9] p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white"
+                                        >
+                                            <div>
+                                                <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-[#fafafa]">
+                                                    <img
+                                                        src={displayImg}
+                                                        alt={displayName}
+                                                        className="h-full w-full object-contain p-1 group-hover:scale-105 transition-transform duration-300"
+                                                        loading="lazy"
+                                                    />
+                                                    {displayBadge && (
+                                                        <span className="absolute top-1 left-1 rounded bg-[#0099ff] px-1 py-0.5 text-[8px] font-bold text-white uppercase">
+                                                            {displayBadge}
+                                                        </span>
+                                                    )}
+                                                </div>
 
-                                        {item.variant && (
-                                            <span className="mt-1 inline-block rounded bg-[#f2f2f2] px-1.5 py-0.5 text-[9px] text-[#666666]">
-                                                {item.variant}
-                                            </span>
-                                        )}
-                                    </div>
+                                                <h4 className="mt-2 text-[11px] font-medium text-[#222222] line-clamp-2 leading-snug group-hover:text-[#ff6000]">
+                                                    {displayName}
+                                                </h4>
 
-                                    <div className="mt-2 pt-1 border-t border-[#f5f5f5]">
-                                        <div className="text-xs font-bold text-[#222222]">
-                                            {formatRupiah(item.price)}
+                                                {displayVariant && (
+                                                    <span className="mt-1 inline-block rounded bg-[#f2f2f2] px-1.5 py-0.5 text-[9px] text-[#666666]">
+                                                        {displayVariant}
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            <div className="mt-2 pt-1 border-t border-[#f5f5f5]">
+                                                <div className="text-xs font-bold text-[#222222]">
+                                                    {formatRupiah(item.price)}
+                                                </div>
+                                                <div className="flex items-center gap-1 text-[10px]">
+                                                    {original && (
+                                                        <span className="text-[#999999] line-through">
+                                                            {formatRupiah(original)}
+                                                        </span>
+                                                    )}
+                                                    {discountVal && (
+                                                        <span className="font-bold text-[#d32f2f]">
+                                                            {discountVal}%
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div className="flex items-center gap-1 text-[10px]">
-                                            <span className="text-[#999999] line-through">
-                                                {formatRupiah(item.originalPrice)}
-                                            </span>
-                                            <span className="font-bold text-[#d32f2f]">
-                                                {item.discount}%
-                                            </span>
-                                        </div>
-                                    </div>
+                                    );
+                                })
+                            ) : (
+                                <div className="col-span-full py-12 flex flex-col items-center justify-center text-center">
+                                    <Package className="size-10 text-gray-300 mb-2" />
+                                    <p className="text-xs font-semibold text-[#555555]">Belum ada produk di kategori ini</p>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleSelectCategory('all')}
+                                        className="mt-2 text-xs text-[#0099ff] hover:underline font-medium cursor-pointer"
+                                    >
+                                        Lihat semua produk
+                                    </button>
                                 </div>
-                            ))}
+                            )}
                         </div>
 
                         {/* Centered Button */}
                         <div className="mt-6 flex justify-center pb-2">
                             <button
                                 type="button"
-                                onClick={() => setSelectedTab('all')}
+                                onClick={() => handleSelectCategory('all')}
                                 className="rounded-lg border border-[#0099ff] px-8 py-2 text-xs font-bold text-[#0099ff] bg-white hover:bg-[#e6f5ff] transition-colors cursor-pointer"
                             >
-                                Lihat Selanjutnya
+                                Lihat Semua Produk
                             </button>
                         </div>
                     </div>
