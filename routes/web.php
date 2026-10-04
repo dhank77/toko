@@ -3,7 +3,6 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SubCategoryController;
-use App\Http\Controllers\Api\PaymentWebhookController;
 use App\Http\Controllers\CategoryPageController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Client\ClientPortalController;
@@ -37,8 +36,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/checkout/buy-now', [CheckoutController::class, 'buyNow'])->name('checkout.buy-now');
     Route::post('/checkout/cart', [CheckoutController::class, 'processCart'])->name('checkout.cart');
 });
-
-Route::post('/api/webhooks/doku', [PaymentWebhookController::class, 'handleDoku'])->name('webhooks.doku');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function (Request $request) {
