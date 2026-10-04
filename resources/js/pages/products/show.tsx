@@ -100,6 +100,7 @@ export default function ProductDetail({ product, relatedProducts = [], categorie
     };
 
     // Cart state & feedback toast
+    const selectedBranch = 'Panakkukang';
     const [cartCount, setCartCount] = useState(0);
     const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -125,6 +126,26 @@ export default function ProductDetail({ product, relatedProducts = [], categorie
             setCartCount((c) => c + quantity);
             triggerToast(`Berhasil menambahkan ${quantity}x "${product.name}" ke keranjang!`);
         }
+    };
+
+    const [isBuyingNow, setIsBuyingNow] = useState(false);
+
+    const handleBuyNow = () => {
+        if (!auth.user) {
+            router.visit(login());
+
+            return;
+        }
+
+        router.post(
+            '/checkout/buy-now',
+            { product_id: product.id, quantity, branch: selectedBranch },
+            {
+                onStart: () => setIsBuyingNow(true),
+                onError: (errors) => triggerToast(errors.checkout ?? 'Pembayaran tidak dapat diproses. Silakan coba lagi.'),
+                onFinish: () => setIsBuyingNow(false),
+            },
+        );
     };
 
     // Tabs inside details
@@ -411,14 +432,12 @@ export default function ProductDetail({ product, relatedProducts = [], categorie
 
                                     <button
                                         type="button"
-                                        onClick={() => {
-                                            handleAddToCart();
-                                            triggerToast('Mengarahkan ke pembayaran...');
-                                        }}
-                                        className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#ff6000] py-2.5 text-xs font-bold text-white hover:bg-[#e05500] shadow-xs transition-colors cursor-pointer"
+                                        onClick={handleBuyNow}
+                                        disabled={isBuyingNow}
+                                        className="w-full flex items-center justify-center gap-2 rounded-lg bg-[#ff6000] py-2.5 text-xs font-bold text-white hover:bg-[#e05500] shadow-xs transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                                     >
                                         <Zap className="size-4 fill-current" />
-                                        <span>Beli Sekarang</span>
+                                        <span>{isBuyingNow ? 'Mengarahkan ke pembayaran...' : 'Beli Sekarang'}</span>
                                     </button>
                                 </div>
 

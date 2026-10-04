@@ -42,4 +42,14 @@ return [
         'origin_district_name' => env('RAJAONGKIR_ORIGIN_DISTRICT_NAME', 'Panakkukang'),
     ],
 
+    'doku' => [
+        'client_id' => env('DOKU_CLIENT_ID'),
+        'secret_key' => env('DOKU_SECRET_KEY'),
+        'environment' => env('DOKU_ENVIRONMENT', 'sandbox'),
+        'base_url' => env('DOKU_ENVIRONMENT', 'sandbox') === 'production'
+            ? 'https://api.doku.com'
+            : 'https://api-sandbox.doku.com',
+        'payment_due_minutes' => (int) env('DOKU_PAYMENT_DUE_MINUTES', 60),
+    ],
+
 ];

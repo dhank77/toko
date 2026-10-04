@@ -3,7 +3,9 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Api\PaymentWebhookController;
 use App\Http\Controllers\CategoryPageController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Client\ClientPortalController;
 use App\Http\Controllers\ProductDetailController;
 use App\Http\Controllers\ShippingController;
@@ -31,7 +33,12 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/client/cart/{cartItem}', [ClientPortalController::class, 'updateCart'])->name('client.cart.update');
     Route::delete('/client/cart/{cartItem}', [ClientPortalController::class, 'removeCart'])->name('client.cart.remove');
     Route::delete('/client/cart', [ClientPortalController::class, 'clearCart'])->name('client.cart.clear');
+
+    Route::post('/checkout/buy-now', [CheckoutController::class, 'buyNow'])->name('checkout.buy-now');
+    Route::post('/checkout/cart', [CheckoutController::class, 'processCart'])->name('checkout.cart');
 });
+
+Route::post('/api/webhooks/doku', [PaymentWebhookController::class, 'handleDoku'])->name('webhooks.doku');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', function (Request $request) {

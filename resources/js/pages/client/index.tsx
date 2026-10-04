@@ -76,6 +76,7 @@ interface OrderData {
     tracking_number: string | null;
     payment_method: string;
     payment_status: string;
+    payment_url: string | null;
     total_amount: number;
     notes: string | null;
     created_at: string;
@@ -297,6 +298,20 @@ export default function ClientPortal({
                 onSuccess: () => toast.success('Keranjang belanja berhasil dikosongkan.'),
             });
         }
+    };
+
+    const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+    const handleCheckoutCart = () => {
+        router.post(
+            '/checkout/cart',
+            { branch: cartItems[0]?.branch },
+            {
+                onStart: () => setIsCheckingOut(true),
+                onError: (errors) => toast.error(errors.checkout ?? 'Pembayaran tidak dapat diproses. Silakan coba lagi.'),
+                onFinish: () => setIsCheckingOut(false),
+            },
+        );
     };
 
     // Filter orders
@@ -981,6 +996,12 @@ export default function ClientPortal({
                                                                 ? '✓ Pesanan Selesai'
                                                                 : order.status === 'shipped'
                                                                 ? '✈ Dalam Pengiriman'
+                                                                : order.status === 'pending_payment'
+                                                                ? 'Menunggu Pembayaran'
+                                                                : order.status === 'processing'
+                                                                ? 'Sedang Dikemas'
+                                                                : order.status === 'cancelled'
+                                                                ? 'Dibatalkan'
                                                                 : order.status}
                                                         </span>
                                                     </div>
@@ -1065,7 +1086,23 @@ export default function ClientPortal({
                                                     <div className="flex items-center gap-2 text-[#666666]">
                                                         <span>Pembayaran: <strong>{order.payment_method}</strong></span>
                                                         <span className="text-gray-300">&bull;</span>
-                                                        <span className="text-green-700 font-semibold">Lunas</span>
+                                                        {order.payment_status === 'paid' ? (
+                                                            <span className="text-green-700 font-semibold">Lunas</span>
+                                                        ) : order.payment_status === 'unpaid' ? (
+                                                            <span className="font-semibold text-[#FF6000]">Menunggu Pembayaran</span>
+                                                        ) : (
+                                                            <span className="font-semibold text-[#D32F2F]">
+                                                                {order.payment_status === 'expired' ? 'Kedaluwarsa' : 'Gagal'}
+                                                            </span>
+                                                        )}
+                                                        {order.payment_status === 'unpaid' && order.payment_url && (
+                                                            <a
+                                                                href={order.payment_url}
+                                                                className="ml-1 inline-flex h-7 items-center rounded-lg bg-[#FF6000] px-3 text-[11px] font-bold text-white transition-colors hover:bg-[#E05500]"
+                                                            >
+                                                                Bayar Sekarang
+                                                            </a>
+                                                        )}
                                                     </div>
 
                                                     <div className="flex items-center gap-3">
@@ -1230,12 +1267,11 @@ export default function ClientPortal({
 
                                             <button
                                                 type="button"
-                                                onClick={() => {
-                                                    toast.success('Melanjutkan ke pembayaran Pick N Go...');
-                                                }}
-                                                className="mt-5 w-full rounded-lg bg-[#FF6000] py-3 text-xs font-bold text-white shadow-xs transition-all hover:bg-[#E05500] active:scale-98"
+                                                onClick={handleCheckoutCart}
+                                                disabled={isCheckingOut}
+                                                className="mt-5 w-full rounded-lg bg-[#FF6000] py-3 text-xs font-bold text-white shadow-xs transition-all hover:bg-[#E05500] active:scale-98 disabled:cursor-not-allowed disabled:opacity-60"
                                             >
-                                                Lanjut ke Pembayaran Pick N Go
+                                                {isCheckingOut ? 'Mengarahkan ke pembayaran...' : 'Lanjut ke Pembayaran Pick N Go'}
                                             </button>
 
                                             <p className="mt-2 text-center text-[10px] text-gray-500">

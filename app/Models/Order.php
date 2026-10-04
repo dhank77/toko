@@ -24,6 +24,8 @@ class Order extends Model
         'tracking_number',
         'payment_method',
         'payment_status',
+        'payment_url',
+        'doku_invoice_number',
         'total_amount',
         'notes',
     ];
@@ -52,5 +54,13 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    /**
+     * @return HasMany<Payment, $this>
+     */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class);
     }
 }
