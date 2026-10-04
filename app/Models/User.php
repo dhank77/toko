@@ -20,6 +20,8 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string $name
  * @property string $email
  * @property string $role
+ * @property string|null $google_id
+ * @property string|null $avatar
  * @property string|null $phone
  * @property string|null $address
  * @property string|null $city
@@ -32,7 +34,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property string|null $subdistrict_id
  * @property string|null $postal_code
  * @property Carbon|null $email_verified_at
- * @property string $password
+ * @property string|null $password
  * @property string|null $two_factor_secret
  * @property string|null $two_factor_recovery_codes
  * @property Carbon|null $two_factor_confirmed_at
@@ -40,7 +42,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['name', 'email', 'password', 'role', 'phone', 'address', 'city', 'city_id', 'province', 'province_id', 'district', 'district_id', 'subdistrict', 'subdistrict_id', 'postal_code'])]
+#[Fillable(['name', 'email', 'google_id', 'avatar', 'password', 'role', 'phone', 'address', 'city', 'city_id', 'province', 'province_id', 'district', 'district_id', 'subdistrict', 'subdistrict_id', 'postal_code', 'email_verified_at'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail, PasskeyUser
 {

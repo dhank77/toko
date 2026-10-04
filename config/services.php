@@ -52,4 +52,10 @@ return [
         'payment_due_minutes' => (int) env('DOKU_PAYMENT_DUE_MINUTES', 60),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
+    ],
+
 ];

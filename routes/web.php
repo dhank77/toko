@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\CategoryPageController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\Client\ClientPortalController;
@@ -16,6 +17,11 @@ use Inertia\Inertia;
 Route::get('/', WelcomeController::class)->name('home');
 Route::get('/products/{slug}', [ProductDetailController::class, 'show'])->name('products.show');
 Route::get('/categories/{slug}', [CategoryPageController::class, 'show'])->name('categories.show');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/auth/google/redirect', [GoogleAuthController::class, 'redirect'])->name('auth.google.redirect');
+    Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback'])->name('auth.google.callback');
+});
 
 // RajaOngkir: wilayah & ongkir (publik agar dropdown alamat bisa dipakai tanpa login)
 Route::prefix('shipping')->name('shipping.')->group(function () {
