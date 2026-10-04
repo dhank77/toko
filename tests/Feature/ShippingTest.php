@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\Province;
 use App\Models\User;
 use App\Services\RajaOngkirService;
+use Database\Seeders\ProvinceSeeder;
 use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
@@ -30,13 +32,15 @@ test('user dapat menyimpan id wilayah rajaongkir pada profil', function () {
         ->and($user->fresh()->province_id)->toBe('33');
 });
 
-test('endpoint provinces mengembalikan daftar dari rajaongkir', function () {
-    Http::fake([
-        'rajaongkir.komerce.id/*' => Http::response([
-            'meta' => ['message' => 'Success', 'code' => 200, 'status' => 'success'],
-            'data' => [['id' => 33, 'name' => 'SULAWESI SELATAN']],
-        ]),
-    ]);
+test('province seeder mengisi database dengan data provinsi rajaongkir', function () {
+    $this->seed(ProvinceSeeder::class);
+
+    expect(Province::count())->toBeGreaterThanOrEqual(34)
+        ->and(Province::where('name', 'SULAWESI SELATAN')->exists())->toBeTrue();
+});
+
+test('endpoint provinces mengembalikan daftar dari database atau rajaongkir', function () {
+    Province::create(['id' => 33, 'name' => 'SULAWESI SELATAN']);
 
     $this->get('/shipping/provinces')
         ->assertOk()

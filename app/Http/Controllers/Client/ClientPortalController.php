@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\CartItem;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Province;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -99,6 +100,7 @@ class ClientPortalController extends Controller
             'orders' => $orders,
             'cartItems' => $cartItems,
             'activeTab' => $activeTab,
+            'provinces' => Province::orderBy('name')->get(['id', 'name']),
         ]);
     }
 

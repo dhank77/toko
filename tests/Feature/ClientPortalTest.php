@@ -75,6 +75,7 @@ test('customer can view client portal with profile, orders, and cart', function 
             ->has('orders', 1)
             ->has('cartItems', 1)
             ->where('activeTab', 'profile')
+            ->has('provinces')
         );
 });
 

@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Province;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
+use Throwable;
 
 /**
  * Layanan integrasi RajaOngkir V2 (Komerce).
@@ -48,21 +50,47 @@ class RajaOngkirService
     }
 
     /**
-     * Ambil daftar provinsi (Step 1).
+     * Ambil data provinsi langsung dari API RajaOngkir.
      *
      * @return array<int, array<string, mixed>>
      */
+    public function fetchProvincesFromApi(): array
+    {
+        $response = Http::withHeaders($this->headers())
+            ->timeout(15)
+            ->get("{$this->baseUrl}/destination/province");
+
+        $this->throwIfFailed($response, 'Gagal memuat daftar provinsi.');
+
+        return $response->json('data') ?? [];
+    }
+
+    /**
+     * Ambil daftar provinsi dari database lokal (fallback sinkronisasi ke API jika kosong).
+     *
+     * @return array<int, array{id: int, name: string}>
+     */
     public function provinces(): array
     {
-        return Cache::remember('rajaongkir:provinces', now()->addDays(7), function (): array {
-            $response = Http::withHeaders($this->headers())
-                ->timeout(15)
-                ->get("{$this->baseUrl}/destination/province");
+        $provinces = Province::query()->orderBy('name')->get(['id', 'name'])->toArray();
 
-            $this->throwIfFailed($response, 'Gagal memuat daftar provinsi.');
+        if (! empty($provinces)) {
+            return $provinces;
+        }
 
-            return $response->json('data') ?? [];
-        });
+        try {
+            $apiProvinces = $this->fetchProvincesFromApi();
+            foreach ($apiProvinces as $p) {
+                Province::updateOrCreate(
+                    ['id' => (int) $p['id']],
+                    ['name' => (string) $p['name']]
+                );
+            }
+
+            return Province::query()->orderBy('name')->get(['id', 'name'])->toArray();
+        } catch (Throwable) {
+            return [];
+        }
     }
 
     /**

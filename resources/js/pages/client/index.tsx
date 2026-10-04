@@ -27,7 +27,7 @@ import {
     User,
     UserCheck,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import StorefrontLayout from '@/layouts/storefront-layout';
 import { formatRupiah } from '@/lib/utils';
@@ -109,6 +109,7 @@ interface Props {
     cartItems: CartItemData[];
     activeTab: 'profile' | 'orders' | 'cart';
     storeOrigin: { district_id: number; district_name: string };
+    provinces?: WilayahItem[];
 }
 
 interface WilayahItem {
@@ -131,6 +132,7 @@ export default function ClientPortal({
     cartItems = [],
     activeTab: initialTab = 'profile',
     storeOrigin = { district_id: 6736, district_name: 'Panakkukang' },
+    provinces: initialProvinces = [],
 }: Props) {
     const [currentTab, setCurrentTab] = useState<'profile' | 'orders' | 'cart'>(initialTab);
     const [orderStatusFilter, setOrderStatusFilter] = useState<string>('all');
@@ -153,7 +155,7 @@ export default function ClientPortal({
     });
 
     // Dropdown wilayah RajaOngkir (cascading province -> city -> district)
-    const [provinces, setProvinces] = useState<WilayahItem[]>([]);
+    const [provinces, setProvinces] = useState<WilayahItem[]>(initialProvinces);
     const [cities, setCities] = useState<WilayahItem[]>([]);
     const [districts, setDistricts] = useState<WilayahItem[]>([]);
 
@@ -216,6 +218,26 @@ export default function ClientPortal({
             toast.error('Gagal memuat daftar kecamatan.');
         }
     };
+
+    useEffect(() => {
+        if (initialProvinces && initialProvinces.length > 0) {
+            setProvinces(initialProvinces);
+        } else {
+            void loadProvinces();
+        }
+    }, [initialProvinces]);
+
+    useEffect(() => {
+        if (user.province_id) {
+            void loadCities(String(user.province_id));
+        }
+    }, [user.province_id]);
+
+    useEffect(() => {
+        if (user.city_id) {
+            void loadDistricts(String(user.city_id));
+        }
+    }, [user.city_id]);
 
     const handleCheckCost = async () => {
         setCostError('');
@@ -610,18 +632,37 @@ export default function ClientPortal({
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-bold text-gray-700">
-                                                Provinsi (RajaOngkir)
-                                            </label>
+                                            <div className="flex items-center justify-between">
+                                                <label className="block text-xs font-bold text-gray-700">
+                                                    Provinsi (RajaOngkir)
+                                                </label>
+                                                {provinces.length === 0 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={loadProvinces}
+                                                        className="text-[11px] font-medium text-[#0099FF] hover:underline"
+                                                    >
+                                                        Muat Provinsi
+                                                    </button>
+                                                )}
+                                            </div>
                                             <select
                                                 value={data.province_id}
                                                 onChange={(e) => {
-                                                    setData('province_id', e.target.value);
-                                                    setData('city_id', '');
-                                                    setData('district_id', '');
+                                                    const val = e.target.value;
+                                                    const selected = provinces.find((p) => String(p.id) === val);
+                                                    setData((prev) => ({
+                                                        ...prev,
+                                                        province_id: val,
+                                                        province: selected ? selected.name : '',
+                                                        city_id: '',
+                                                        city: '',
+                                                        district_id: '',
+                                                        district: '',
+                                                    }));
                                                     setCities([]);
                                                     setDistricts([]);
-                                                    if (e.target.value) loadCities(e.target.value);
+                                                    if (val) loadCities(val);
                                                 }}
                                                 className="mt-1 w-full rounded-lg border px-2 py-2 text-xs"
                                             >
@@ -641,10 +682,17 @@ export default function ClientPortal({
                                             <select
                                                 value={data.city_id}
                                                 onChange={(e) => {
-                                                    setData('city_id', e.target.value);
-                                                    setData('district_id', '');
+                                                    const val = e.target.value;
+                                                    const selected = cities.find((c) => String(c.id) === val);
+                                                    setData((prev) => ({
+                                                        ...prev,
+                                                        city_id: val,
+                                                        city: selected ? selected.name : prev.city,
+                                                        district_id: '',
+                                                        district: '',
+                                                    }));
                                                     setDistricts([]);
-                                                    if (e.target.value) loadDistricts(e.target.value);
+                                                    if (val) loadDistricts(val);
                                                 }}
                                                 className="mt-1 w-full rounded-lg border px-2 py-2 text-xs"
                                             >
@@ -655,13 +703,6 @@ export default function ClientPortal({
                                                     </option>
                                                 ))}
                                             </select>
-                                            <button
-                                                type="button"
-                                                onClick={loadProvinces}
-                                                className="mt-1 rounded-lg border px-2 py-1 text-xs font-bold text-[#0099FF]"
-                                            >
-                                                Muat Provinsi
-                                            </button>
                                         </div>
                                     </div>
 
@@ -672,7 +713,15 @@ export default function ClientPortal({
                                             </label>
                                             <select
                                                 value={data.district_id}
-                                                onChange={(e) => setData('district_id', e.target.value)}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    const selected = districts.find((d) => String(d.id) === val);
+                                                    setData((prev) => ({
+                                                        ...prev,
+                                                        district_id: val,
+                                                        district: selected ? selected.name : prev.district,
+                                                    }));
+                                                }}
                                                 className="mt-1 w-full rounded-lg border px-2 py-2 text-xs"
                                             >
                                                 <option value="">-- Pilih Kecamatan --</option>
