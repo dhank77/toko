@@ -8,6 +8,7 @@ use App\Models\Payment;
 use App\Models\Product;
 use App\Models\User;
 use App\Services\DokuService;
+use App\Services\WhapifyService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -141,6 +142,20 @@ class CheckoutController extends Controller
                 CartItem::where('user_id', $user->id)->delete();
             }
         });
+
+        dispatch(function () use ($order): void {
+            try {
+                $freshOrder = Order::with(['items', 'user'])->find($order->id);
+                if ($freshOrder) {
+                    app(WhapifyService::class)->sendOrderCreated($freshOrder);
+                }
+            } catch (Throwable $e) {
+                Log::warning('Whapify order notification gagal dikirim', [
+                    'order' => $order->order_number,
+                    'error' => $e->getMessage(),
+                ]);
+            }
+        })->afterResponse();
 
         return Inertia::location($checkout['payment_url']);
     }

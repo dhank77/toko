@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Services\DokuService;
+use App\Services\WhapifyService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class PaymentWebhookController extends Controller
 {
@@ -31,7 +33,9 @@ class PaymentWebhookController extends Controller
             return response()->json(['message' => 'Order not found'], 404);
         }
 
-        DB::transaction(function () use ($order, $request, $transactionStatus): void {
+        $isNewlyPaid = false;
+
+        DB::transaction(function () use ($order, $request, $transactionStatus, &$isNewlyPaid): void {
             $order = Order::whereKey($order->id)->lockForUpdate()->firstOrFail();
 
             if ($order->payment_status === 'paid') {
@@ -50,6 +54,7 @@ class PaymentWebhookController extends Controller
                 $payment?->update($paymentData + ['status' => 'success', 'paid_at' => now()]);
 
                 $order->update($this->paidAttributes($order));
+                $isNewlyPaid = true;
 
                 return;
             }
@@ -65,6 +70,22 @@ class PaymentWebhookController extends Controller
                 ]);
             }
         });
+
+        if ($isNewlyPaid) {
+            dispatch(function () use ($order): void {
+                try {
+                    $freshOrder = Order::with(['items', 'user'])->find($order->id);
+                    if ($freshOrder) {
+                        app(WhapifyService::class)->sendOrderPaid($freshOrder);
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning('Whapify payment notification gagal dikirim', [
+                        'order' => $order->order_number,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+            })->afterResponse();
+        }
 
         return response()->json(['message' => 'OK']);
     }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SubCategoryController;
+use App\Http\Controllers\Admin\WhatsAppSettingController;
 use App\Http\Controllers\Auth\GoogleAuthController;
 use App\Http\Controllers\CategoryPageController;
 use App\Http\Controllers\CheckoutController;
@@ -56,6 +57,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('categories', CategoryController::class);
         Route::resource('sub-categories', SubCategoryController::class);
         Route::resource('products', ProductController::class);
+
+        Route::get('settings/whatsapp', [WhatsAppSettingController::class, 'index'])->name('settings.whatsapp');
+        Route::put('settings/whatsapp', [WhatsAppSettingController::class, 'update'])->name('settings.whatsapp.update');
+        Route::post('settings/whatsapp/test', [WhatsAppSettingController::class, 'test'])->name('settings.whatsapp.test');
     });
 });
 

@@ -4,6 +4,7 @@ import {
     FolderOpen,
     HelpCircle,
     LayoutGrid,
+    MessageSquare,
     Package,
     ShieldCheck,
     ShoppingBag,
@@ -60,6 +61,11 @@ const adminNavItems: NavItem[] = [
         title: 'Klaim Garansi & RMA',
         href: dashboard(),
         icon: ShieldCheck,
+    },
+    {
+        title: 'WhatsApp Whapify',
+        href: '/admin/settings/whatsapp',
+        icon: MessageSquare,
     },
 ];
 

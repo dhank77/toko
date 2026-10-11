@@ -58,4 +58,11 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
     ],
 
+    'whapify' => [
+        'base_url' => env('WHAPIFY_BASE_URL', 'https://whapify.id/api'),
+        'secret' => env('WHAPIFY_SECRET'),
+        'account' => env('WHAPIFY_ACCOUNT'),
+        'priority' => (int) env('WHAPIFY_PRIORITY', 2),
+    ],
+
 ];
