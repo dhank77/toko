@@ -16,6 +16,15 @@ export default defineConfig({
                 bunny('Instrument Sans', {
                     weights: [400, 500, 600],
                 }),
+                bunny('Archivo', {
+                    weights: [400, 500, 600, 700, 800],
+                }),
+                bunny('Archivo Black', {
+                    weights: [400],
+                }),
+                bunny('Archivo Narrow', {
+                    weights: [600, 700],
+                }),
             ],
         }),
         inertia(),

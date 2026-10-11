@@ -9,9 +9,18 @@
 
 @theme {
     --font-sans:
-        'Inter', 'Poppins', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Archivo', 'Inter', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
         'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
         'Noto Color Emoji';
+
+    --font-display:
+        'Archivo Black', 'Archivo', ui-sans-serif, system-ui, sans-serif;
+
+    --font-ticket:
+        'Archivo Narrow', 'Archivo', ui-sans-serif, system-ui, sans-serif;
+
+    --font-measure:
+        ui-monospace, 'SF Mono', 'Cascadia Mono', Menlo, Consolas, monospace;
 
     --radius-lg: var(--radius);
     --radius-md: calc(var(--radius) - 2px);
@@ -94,6 +103,39 @@
     --color-charcoal: #444444;
     --color-slate: #666666;
     --color-steel: #888888;
+
+    /* Selebaran world: paper ground, ink, stamp blues, marker orange */
+    --color-paper: #f5efe1;
+    --color-paper-deep: #e9dfc9;
+    --color-press-ink: #1c1917;
+    --color-stamp: #0099ff;
+    --color-stamp-deep: #007acc;
+    --color-marker: #ff6000;
+    --color-urgent: #d32f2f;
+
+    --animate-rise: rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+    --animate-stamp: stamp 2.4s ease-in-out infinite;
+}
+
+@keyframes rise {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes stamp {
+    0%,
+    100% {
+        transform: rotate(-3deg) scale(1);
+    }
+    50% {
+        transform: rotate(-3deg) scale(1.045);
+    }
 }
 
 :root {
@@ -172,7 +214,44 @@
         @apply border-border;
     }
 
+    html {
+        scroll-behavior: smooth;
+    }
+
     body {
         @apply bg-background text-foreground;
+        text-rendering: optimizeLegibility;
     }
+
+    ::selection {
+        background: rgb(255 96 0 / 0.28);
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: 2px;
+        border-radius: 4px;
+    }
+
+    a {
+        text-underline-offset: 3px;
+    }
+
+    input,
+    textarea,
+    select {
+        caret-color: var(--color-brand-primary);
+    }
+}
+
+@utility scrollbar-none {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+@utility tabular {
+    font-variant-numeric: tabular-nums;
 }

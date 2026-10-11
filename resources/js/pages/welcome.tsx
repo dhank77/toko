@@ -261,6 +261,14 @@ export default function Welcome({
     // --- Cart state & Toast ---
     const [cartCount, setCartCount] = useState<number>(0);
     const [cartToast, setCartToast] = useState<string | null>(null);
+    const [newsletterDone, setNewsletterDone] = useState(false);
+
+    const todayLine = new Date().toLocaleDateString('id-ID', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+    });
 
     const handleAddToCart = (productName: string) => {
         setCartCount((prev) => prev + 1);
@@ -284,22 +292,34 @@ export default function Welcome({
         'timbangan digital',
     ];
 
-    // --- Flash sale countdown timer ---
-    const [timer, setTimer] = useState({ hours: 2, minutes: 27, seconds: 43 });
+    // --- Flash sale countdown timer (tenggat edisi hari ini, tengah malam WITA) ---
+    const msUntilMidnightWita = () => {
+        const nowWita = new Date(new Date().toLocaleString('en-US', { timeZone: 'Asia/Makassar' }));
+        const midnight = new Date(nowWita);
+        midnight.setHours(24, 0, 0, 0);
+        return Math.max(0, midnight.getTime() - nowWita.getTime());
+    };
+
+    const toHms = (ms: number) => {
+        const total = Math.floor(ms / 1000);
+        return {
+            hours: Math.floor(total / 3600),
+            minutes: Math.floor((total % 3600) / 60),
+            seconds: total % 60,
+        };
+    };
+
+    const [timer, setTimer] = useState({ hours: 0, minutes: 0, seconds: 0 });
 
     useEffect(() => {
+        setTimer(toHms(msUntilMidnightWita()));
         const interval = setInterval(() => {
-            setTimer((prev) => {
-                if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-                if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-                if (prev.hours > 0) return { hours: prev.hours - 1, minutes: 59, seconds: 59 };
-                return { hours: 0, minutes: 0, seconds: 0 };
-            });
+            setTimer(toHms(msUntilMidnightWita()));
         }, 1000);
         return () => clearInterval(interval);
     }, []);
 
-    // --- Hero Banner Carousel ---
+    // --- Hero Banner Carousel (manual: sampul edisi tunggal, tanpa autorotate) ---
     const heroSlides = [
         {
             id: 1,
@@ -349,13 +369,6 @@ export default function Welcome({
     ];
 
     const [currentSlide, setCurrentSlide] = useState(0);
-
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % heroSlides.length);
-        }, 5000);
-        return () => clearInterval(timer);
-    }, [heroSlides.length]);
 
     // --- Video Shopping Modal Player ---
     interface VideoItem {
@@ -415,19 +428,19 @@ export default function Welcome({
 
     // --- Maknot Value icons (referensi) ---
     const maknotValues = [
-        { label: 'Waktunya Jajan 🎉', img: 'https://assets.jaknot.com/jaknot_value/2026/09/OZm0xG-3.png' },
+        { label: 'Waktunya Jajan', img: 'https://assets.jaknot.com/jaknot_value/2026/09/OZm0xG-3.png' },
         { label: 'Just Arrived', img: 'https://assets.jaknot.com/jaknot_value/2026/09/OG5JZe-2.png' },
-        { label: 'Gear wajib rider 🚨', img: 'https://assets.jaknot.com/jaknot_value/2026/09/WGvdX7-1.png' },
-        { label: 'Inspirasi hari ini ⭐', img: 'https://assets.jaknot.com/jaknot_value/2026/07/wGwg5G-2.png' },
+        { label: 'Gear wajib rider', img: 'https://assets.jaknot.com/jaknot_value/2026/09/WGvdX7-1.png' },
+        { label: 'Inspirasi hari ini', img: 'https://assets.jaknot.com/jaknot_value/2026/07/wGwg5G-2.png' },
         { label: 'Toko Cabang', img: 'https://assets.jaknot.com/jaknot_value/2026/09/1GzEN3-3.png' },
-        { label: 'Beli sekalian 👀', img: 'https://assets.jaknot.com/jaknot_value/2026/07/vNWagZ-3.png' },
-        { label: 'Ada barang keren..', img: 'https://assets.jaknot.com/jaknot_value/2026/09/VZLkbG-1.png' },
+        { label: 'Beli sekalian', img: 'https://assets.jaknot.com/jaknot_value/2026/07/vNWagZ-3.png' },
+        { label: 'Ada barang keren', img: 'https://assets.jaknot.com/jaknot_value/2026/09/VZLkbG-1.png' },
         { label: 'Coming Soon', img: 'https://assets.jaknot.com/jaknot_value/2026/09/97KO7J-2.png' },
-        { label: 'Menarik Nih 👀', img: 'https://assets.jaknot.com/jaknot_value/2026/09/v7VkAN-2.png' },
+        { label: 'Menarik Nih', img: 'https://assets.jaknot.com/jaknot_value/2026/09/v7VkAN-2.png' },
         { label: 'Whats New', img: 'https://assets.jaknot.com/jaknot_value/2026/09/3ZedGJ-2.png' },
-        { label: 'Mungkin butuh..', img: 'https://assets.jaknot.com/jaknot_value/2026/07/1NyEzN-7.png' },
-        { label: '🚨 Buat di Mobil', img: 'https://assets.jaknot.com/jaknot_value/2026/08/xGq4KN-1.png' },
-        { label: 'Semua Praktis 🤩', img: 'https://assets.jaknot.com/jaknot_value/2026/08/mG38JZ-1.png' },
+        { label: 'Mungkin butuh', img: 'https://assets.jaknot.com/jaknot_value/2026/07/1NyEzN-7.png' },
+        { label: 'Buat di Mobil', img: 'https://assets.jaknot.com/jaknot_value/2026/08/xGq4KN-1.png' },
+        { label: 'Semua Praktis', img: 'https://assets.jaknot.com/jaknot_value/2026/08/mG38JZ-1.png' },
     ];
 
     const valueScrollRef = useRef<HTMLDivElement>(null);
@@ -718,30 +731,40 @@ export default function Welcome({
                 <link rel="icon" href="/images/logo-top.png" />
             </Head>
 
-            <div className="min-h-screen bg-[#f7f7f7] dark:bg-slate-950 font-sans text-xs text-[#333333] dark:text-gray-200 antialiased overflow-x-hidden w-full max-w-full transition-colors duration-150">
+            <div className="min-h-screen bg-[#f5efe1] dark:bg-[#141210] font-sans text-xs text-[#2b2620] dark:text-gray-200 antialiased overflow-x-hidden w-full max-w-full transition-colors duration-150">
+                <a
+                    href="#rekomendasi-section"
+                    className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-[70] focus:rounded-lg focus:bg-[#1c1917] focus:px-4 focus:py-2 focus:text-xs focus:font-bold focus:text-white"
+                >
+                    Lewati ke rekomendasi produk
+                </a>
                 {/* --- TOAST NOTIFICATION --- */}
                 {cartToast && (
-                    <div className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-[#222222] dark:bg-gray-800 px-4 py-3 text-xs font-semibold text-white shadow-xl animate-fade-in border border-[#0099ff]">
-                        <ShoppingCart className="size-4 text-[#0099ff]" />
+                    <div role="status" className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-[#1c1917] dark:bg-gray-800 px-4 py-3 text-xs font-semibold text-white shadow-[0_18px_36px_-16px_rgb(28_25_23/0.55)] animate-fade-in">
+                        <ShoppingCart className="size-4 text-[#ff6000]" />
                         <span>{cartToast}</span>
                     </div>
                 )}
 
                 {/* ========================================================
-                    1. TOP BAR (Ticker Branches, Opening Hours, Support)
+                    1. MASTHEAD (Dateline, Branch, Support)
                     ======================================================== */}
-                <div className="border-b border-[#e5e5e5] dark:border-gray-800/80 bg-white dark:bg-gray-900 py-1.5 text-[11px] text-[#666666] dark:text-gray-400 transition-colors">
+                <div className="border-b-2 border-[#1c1917] dark:border-gray-100/80 bg-[#f5efe1] dark:bg-[#141210] py-1.5 text-[11px] text-[#5b554b] dark:text-gray-400 transition-colors">
                     <div className="mx-auto flex max-w-[1200px] xl:max-w-[1400px] 2xl:max-w-[1620px] items-center justify-between px-3 sm:px-4 2xl:px-6">
-                        {/* Left: Location & Branch Ticker */}
+                        {/* Left: Dateline & Branch Ticker */}
                         <div className="flex items-center gap-2 truncate">
+                            <span className="font-measure text-[10px] uppercase tracking-[0.14em] text-[#5b554b] dark:text-gray-400 hidden lg:inline">
+                                {todayLine}
+                            </span>
+                            <span className="text-[#c9bfa8] dark:text-gray-700 hidden lg:inline">/</span>
                             <button
                                 type="button"
                                 onClick={() => setIsBranchModalOpen(true)}
-                                className="flex items-center gap-1 font-semibold text-[#222222] dark:text-gray-200 hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors cursor-pointer"
+                                className="flex items-center gap-1 font-semibold text-[#1c1917] dark:text-gray-200 hover:text-[#007acc] dark:hover:text-blue-400 transition-colors cursor-pointer"
                             >
                                 <MapPin className="size-3.5 text-[#ff6000]" />
                                 <span>{currentBranch.region}</span>
-                                <span className="text-[#0099ff] dark:text-blue-400 font-normal hover:underline ml-0.5">ganti</span>
+                                <span className="text-[#007acc] dark:text-blue-400 font-normal hover:underline ml-0.5">ganti</span>
                             </button>
 
                             <span className="text-gray-300 dark:text-gray-700">|</span>
@@ -827,7 +850,7 @@ export default function Welcome({
                                     onChange={(e) => setSearchKeyword(e.target.value)}
                                     onFocus={() => setIsSearchFocused(true)}
                                     onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                                    placeholder="Cari produk di toko..."
+                                    placeholder="Cari di edisi ini..."
                                     className="h-9 sm:h-10 w-full rounded-lg border border-[#cccccc] dark:border-gray-700 bg-[#f0f0f0] dark:bg-gray-800 pr-8 sm:pr-10 pl-3 sm:pl-3.5 text-xs text-[#333333] dark:text-gray-100 placeholder-[#999999] dark:placeholder-gray-400 focus:bg-white dark:focus:bg-gray-800 focus:border-[#0099ff] dark:focus:border-blue-400 focus:outline-none transition-all shadow-inner"
                                 />
                                 <button
@@ -1261,13 +1284,14 @@ export default function Welcome({
                         3. HERO BANNER BENTO SECTION (Maknot Layout)
                         ======================================================== */}
                     <div className="grid grid-cols-1 gap-3 md:grid-cols-12">
-                        {/* Left Carousel Slider (8 columns) */}
-                        <div className="relative overflow-hidden rounded-lg md:col-span-8 h-[290px] xl:h-[350px] 2xl:h-[400px] shadow-xs group bg-[#e5e5e5]">
+                        {/* Sampul edisi (8 columns) */}
+                        <section aria-label="Promo unggulan hari ini" className="relative overflow-hidden rounded-xl md:col-span-8 h-[300px] xl:h-[360px] 2xl:h-[410px] shadow-[0_24px_44px_-24px_rgb(28_25_23/0.5)] group bg-[#1c1917]">
                             {heroSlides.map((slide, index) => (
                                 <div
                                     key={slide.id}
+                                    aria-hidden={index !== currentSlide}
                                     className={`absolute inset-0 transition-opacity duration-700 ease-in-out ${
-                                        index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                                        index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'
                                     }`}
                                 >
                                     <img
@@ -1275,6 +1299,32 @@ export default function Welcome({
                                         alt={slide.title}
                                         className="h-full w-full object-cover object-center"
                                     />
+                                    <div className="absolute inset-0 bg-gradient-to-r from-black/78 via-black/30 to-transparent" />
+                                    <div className="absolute inset-0 flex flex-col justify-end p-5 sm:p-7 max-w-[36rem]">
+                                        {index === currentSlide && (
+                                            <div className="animate-rise">
+                                                <p className="inline-block -rotate-2 rounded border-2 border-[#ff6000] px-2.5 py-1 font-ticket text-[11px] font-bold uppercase tracking-[0.12em] text-[#ffb37e]">
+                                                    {slide.priceTag}
+                                                </p>
+                                                <h2 className="mt-3 font-display text-[1.65rem] sm:text-4xl leading-[1.02] text-white text-balance">
+                                                    {slide.title}
+                                                </h2>
+                                                <p className="mt-2 text-xs sm:text-sm leading-relaxed text-white/85 max-w-[27rem]">
+                                                    {slide.subtitle}
+                                                </p>
+                                                <p className="mt-2.5 font-measure text-[11px] tabular tracking-wide text-white/90">
+                                                    Tenggat edisi hari ini {String(timer.hours).padStart(2, '0')}:{String(timer.minutes).padStart(2, '0')}:{String(timer.seconds).padStart(2, '0')} WITA
+                                                </p>
+                                                <a
+                                                    href="#flash-sale"
+                                                    className="mt-4 inline-flex w-fit items-center gap-1.5 rounded-lg bg-[#ff6000] px-5 py-2.5 text-xs font-bold text-white transition-colors hover:bg-[#e05500] active:scale-[0.98]"
+                                                >
+                                                    Serbu edisi ini
+                                                    <ChevronRight className="size-4" />
+                                                </a>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             ))}
 
@@ -1282,7 +1332,7 @@ export default function Welcome({
                             <button
                                 type="button"
                                 onClick={() => setCurrentSlide((prev) => (prev - 1 + heroSlides.length) % heroSlides.length)}
-                                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 flex size-8 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/70 transition-colors cursor-pointer"
+                                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-20 flex size-9 items-center justify-center rounded-full bg-black/45 text-white hover:bg-black/65 active:scale-95 transition-all cursor-pointer"
                                 aria-label="Slide sebelumnya"
                             >
                                 <ChevronLeft className="size-5" />
@@ -1290,89 +1340,102 @@ export default function Welcome({
                             <button
                                 type="button"
                                 onClick={() => setCurrentSlide((prev) => (prev + 1) % heroSlides.length)}
-                                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 flex size-8 items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/70 transition-colors cursor-pointer"
+                                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-20 flex size-9 items-center justify-center rounded-full bg-black/45 text-white hover:bg-black/65 active:scale-95 transition-all cursor-pointer"
                                 aria-label="Slide berikutnya"
                             >
                                 <ChevronRight className="size-5" />
                             </button>
 
                             {/* Dot Indicators */}
-                            <div className="absolute bottom-3 right-6 z-20 flex items-center gap-1.5">
+                            <div className="absolute bottom-3.5 right-6 z-20 flex items-center gap-1.5">
                                 {heroSlides.map((_, i) => (
                                     <button
                                         key={i}
                                         onClick={() => setCurrentSlide(i)}
-                                        className={`size-2 rounded-full transition-all cursor-pointer ${
-                                            i === currentSlide ? 'bg-white w-4' : 'bg-white/50 hover:bg-white/80'
+                                        aria-label={`Ke slide ${i + 1}`}
+                                        className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                                            i === currentSlide ? 'bg-white w-6' : 'bg-white/45 w-2 hover:bg-white/80'
                                         }`}
                                     />
                                 ))}
                             </div>
-                        </div>
+                        </section>
 
-                        {/* Right 3 Stacked Banners (4 columns) */}
-                        <div className="flex flex-col gap-3 md:col-span-4 h-[290px] xl:h-[350px] 2xl:h-[400px]">
+                        {/* Rel iklan-baris (4 columns) */}
+                        <div className="flex flex-col gap-3 md:col-span-4 h-[290px] xl:h-[360px] 2xl:h-[410px]">
                             {/* Top 2 side-by-side tiles */}
                             <div className="grid grid-cols-2 gap-3 h-[138px] xl:h-[168px] 2xl:h-[193px]">
                                 {/* Tile 1: Teko Camping */}
                                 <a
-                                    href="#"
-                                    className="relative block h-full w-full overflow-hidden rounded-lg shadow-xs group"
+                                    href="#rekomendasi-section"
+                                    className="relative block h-full w-full overflow-hidden rounded-xl group"
                                 >
                                     <img
                                         src="https://www.jakartanotebook.com/images/banners/2026/09/side-up-(1)_(24).jpg"
                                         alt="Teko Camping"
-                                        className="h-full w-full object-cover group-hover:scale-103 transition-transform duration-300"
+                                        className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                                     />
+                                    <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-2.5 pt-5 pb-2 text-left text-[10px] font-bold text-white">
+                                        Teko Camping di etalase
+                                    </span>
                                 </a>
 
                                 {/* Tile 2: Cooling Pad */}
                                 <a
-                                    href="#"
-                                    className="relative block h-full w-full overflow-hidden rounded-lg shadow-xs group"
+                                    href="#rekomendasi-section"
+                                    className="relative block h-full w-full overflow-hidden rounded-xl group"
                                 >
                                     <img
                                         src="https://www.jakartanotebook.com/images/banners/2026/09/side-up-(2)_(23).jpg"
                                         alt="Cooling Pad"
-                                        className="h-full w-full object-cover group-hover:scale-103 transition-transform duration-300"
+                                        className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                                     />
+                                    <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-2.5 pt-5 pb-2 text-left text-[10px] font-bold text-white">
+                                        Cooling Pad di etalase
+                                    </span>
                                 </a>
                             </div>
 
                             {/* Bottom Tile: Selfie Screen / Kamera Belakang */}
                             <a
-                                href="#"
-                                className="relative block flex-1 w-full overflow-hidden rounded-lg shadow-xs group"
+                                href="#rekomendasi-section"
+                                className="relative block flex-1 w-full overflow-hidden rounded-xl group"
                             >
                                 <img
                                     src="https://www.jakartanotebook.com/images/banners/2026/09/side-down_(21).jpg"
                                     alt="Selfie Screen"
-                                    className="h-full w-full object-cover group-hover:scale-103 transition-transform duration-300"
+                                    className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.04]"
                                 />
+                                <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-2.5 pt-5 pb-2 text-left text-[10px] font-bold text-white">
+                                    Selfie Screen di etalase
+                                </span>
                             </a>
                         </div>
                     </div>
 
                     {/* ========================================================
-                        4. #SudahPastiMurahnya VALUE BUBBLES
+                        4. INDEKS EDISI
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-3 shadow-xs transition-colors">
-                        <div className="flex items-center justify-between mb-2">
-                            <span className="text-xs font-bold text-[#ff6000]">#SudahPastiMurahnya</span>
-                            <div className="flex items-center gap-1">
+                    <section aria-label="Indeks edisi" className="mt-6">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b-2 border-[#1c1917] dark:border-gray-100 pb-2">
+                            <h2 className="font-display text-xl sm:text-2xl tracking-tight text-[#1c1917] dark:text-white">
+                                Jelajahi edisi
+                            </h2>
+                            <div className="flex items-center gap-2">
+                                <span className="font-ticket text-[11px] font-bold uppercase tracking-[0.14em] text-[#ff6000]">#SudahPastiMurahnya</span>
                                 <button
                                     type="button"
                                     onClick={() => scrollValues('left')}
-                                    className="flex size-6 items-center justify-center rounded-full border border-[#dddddd] dark:border-gray-700 text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white cursor-pointer"
-                                    aria-label="Scroll kiri value"
+                                    className="flex size-7 items-center justify-center rounded-full border border-[#1c1917]/25 dark:border-gray-600 text-[#5b554b] hover:text-[#1c1917] dark:hover:text-white hover:border-[#1c1917] dark:hover:border-gray-300 cursor-pointer"
+                                    aria-label="Geser indeks ke kiri"
                                 >
                                     <ChevronLeft className="size-3.5" />
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => scrollValues('right')}
-                                    className="flex size-6 items-center justify-center rounded-full border border-[#dddddd] dark:border-gray-700 text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white cursor-pointer"
-                                    aria-label="Scroll kanan value"
+                                    className="flex size-7 items-center justify-center rounded-full border border-[#1c1917]/25 dark:border-gray-600 text-[#5b554b] hover:text-[#1c1917] dark:hover:text-white hover:border-[#1c1917] dark:hover:border-gray-300 cursor-pointer"
+                                    aria-label="Geser indeks ke kanan"
                                 >
                                     <ChevronRight className="size-3.5" />
                                 </button>
@@ -1381,67 +1444,45 @@ export default function Welcome({
 
                         <div
                             ref={valueScrollRef}
-                            className="flex items-center gap-2 overflow-x-auto pb-1 text-center scrollbar-none scroll-smooth"
+                            className="flex items-stretch gap-0 overflow-x-auto text-center scrollbar-none scroll-smooth divide-x divide-[#1c1917]/12 dark:divide-gray-700/60"
                         >
                             {maknotValues.map((val, idx) => (
                                 <button
                                     key={idx}
                                     type="button"
                                     onClick={() => setSearchKeyword(val.label)}
-                                    className="flex flex-col items-center justify-center min-w-[96px] p-2 hover:bg-[#fafafa] dark:hover:bg-gray-800 rounded-lg transition-colors group cursor-pointer shrink-0"
+                                    className="flex flex-col items-center justify-start min-w-[104px] px-3 py-3 transition-colors group cursor-pointer shrink-0 hover:bg-[#1c1917]/[0.04] dark:hover:bg-white/5"
                                 >
-                                    <div className="relative size-12 rounded-xl bg-[#fafafa] dark:bg-gray-800 p-1 flex items-center justify-center group-hover:scale-105 transition-transform">
-                                        <img
-                                            src={val.img}
-                                            alt={val.label}
-                                            className="size-10 object-contain"
-                                            loading="lazy"
-                                        />
-                                    </div>
-                                    <span className="mt-2 text-[11px] font-medium text-[#444444] dark:text-gray-300 line-clamp-1">
+                                    <img
+                                        src={val.img}
+                                        alt=""
+                                        aria-hidden="true"
+                                        className="size-11 object-contain group-hover:scale-105 transition-transform"
+                                        loading="lazy"
+                                    />
+                                    <span className="mt-2 text-[11px] font-semibold text-[#2b2620] dark:text-gray-300 line-clamp-2 leading-snug">
                                         {val.label}
                                     </span>
                                 </button>
                             ))}
                         </div>
-                    </div>
+                    </section>
 
                     {/* ========================================================
-                        5. FLASH SALE (HomeParade with Countdown & 8 Products)
+                        5. BANJIR HARGA (Flash Sale + Countdown)
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
-                        <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
-                            <div className="flex items-center gap-2">
-                                <img
-                                    src="https://static.jakartanotebook.com/frontend/public/images/home/parade/flash-sale.svg?1"
-                                    alt="Flash Sale"
-                                    className="size-6 object-contain"
-                                />
-                                <h3 className="text-sm font-bold text-[#222222] dark:text-white">Flash Sale</h3>
-                                <span className="rounded bg-[#ffe6e6] dark:bg-red-950/60 px-2 py-0.5 text-[11px] font-bold text-[#d32f2f] dark:text-red-400">
-                                    Mainan
-                                </span>
-                            </div>
-
-                            {/* Red Countdown Timer */}
-                            <div className="flex items-center gap-1.5 font-mono text-xs font-bold">
-                                <span className="text-[11px] font-sans text-[#666666] dark:text-gray-400 mr-1">Berakhir dalam</span>
-                                <span className="rounded bg-[#d32f2f] px-2 py-0.5 text-white shadow-xs">
-                                    {String(timer.hours).padStart(2, '0')}
-                                </span>
-                                <span className="text-[#d32f2f] font-bold">:</span>
-                                <span className="rounded bg-[#d32f2f] px-2 py-0.5 text-white shadow-xs">
-                                    {String(timer.minutes).padStart(2, '0')}
-                                </span>
-                                <span className="text-[#d32f2f] font-bold">:</span>
-                                <span className="rounded bg-[#d32f2f] px-2 py-0.5 text-white shadow-xs">
-                                    {String(timer.seconds).padStart(2, '0')}
-                                </span>
-                            </div>
+                    <section id="flash-sale" aria-label="Banjir harga" className="mt-8 scroll-mt-24">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b-2 border-[#1c1917] dark:border-gray-100 pb-2">
+                            <h2 className="font-display text-xl sm:text-2xl tracking-tight text-[#1c1917] dark:text-white">
+                                Banjir Harga
+                            </h2>
+                            <p className="font-measure text-[11px] tabular text-[#5b554b] dark:text-gray-400" role="timer" aria-label="Waktu banjir harga tersisa">
+                                Tenggat edisi hari ini {String(timer.hours).padStart(2, '0')}:{String(timer.minutes).padStart(2, '0')}:{String(timer.seconds).padStart(2, '0')} WITA
+                            </p>
                         </div>
 
-                        {/* 8 Product Cards Grid */}
-                        <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 2xl:gap-3">
+                        {/* 8 Product Tickets Grid */}
+                        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-x-2.5 gap-y-5 2xl:gap-x-3.5">
                             {activeFlashSaleProducts.map((p) => {
                                 const displayName = p.name || p.title || 'Produk';
                                 const displayImg = getProductImage(p.thumbnail || p.img);
@@ -1454,90 +1495,76 @@ export default function Welcome({
                                     <Link
                                         key={p.id}
                                         href={productHref}
-                                        className="group flex flex-col justify-between rounded-lg border border-transparent p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white dark:bg-gray-800/80 hover:dark:bg-gray-800 cursor-pointer"
+                                        className="group flex flex-col cursor-pointer"
                                     >
-                                        <div>
-                                            <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-[#fafafa] dark:bg-gray-900/60">
-                                                <img
-                                                    src={displayImg}
-                                                    alt={displayName}
-                                                    className="h-full w-full object-contain p-1 group-hover:scale-105 transition-transform duration-300"
-                                                    loading="lazy"
-                                                />
-                                                {displayBadge && (
-                                                    <span className="absolute top-1 left-1 rounded bg-[#0099ff] px-1 py-0.5 text-[8px] font-bold text-white uppercase">
-                                                        {displayBadge}
-                                                    </span>
-                                                )}
-                                            </div>
-
-                                            <h4 className="mt-2 text-[11px] font-medium text-[#222222] dark:text-gray-100 line-clamp-2 leading-snug group-hover:text-[#ff6000]">
-                                                {displayName}
-                                            </h4>
+                                        <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#e9dfc9] dark:bg-gray-800/70">
+                                            <img
+                                                src={displayImg}
+                                                alt={displayName}
+                                                className="h-full w-full object-contain p-1.5 transition-transform duration-300 ease-out group-hover:scale-105"
+                                                loading="lazy"
+                                            />
+                                            {discountVal && (
+                                                <span className="absolute top-2 left-2 -rotate-3 rounded border-2 border-[#1c1917] dark:border-[#f5efe1] bg-[#f5efe1] dark:bg-[#141210] px-1.5 py-0.5 font-ticket text-[10px] font-bold tabular text-[#1c1917] dark:text-[#f5efe1] animate-stamp">
+                                                    -{discountVal}%
+                                                </span>
+                                            )}
                                         </div>
 
-                                        <div className="mt-2 pt-1 border-t border-[#f5f5f5] dark:border-gray-700/60">
-                                            <div className="text-xs font-bold text-[#222222] dark:text-white">
-                                                {formatRupiah(p.price)}
-                                            </div>
-                                            <div className="flex items-center gap-1.5 text-[10px]">
-                                                {original && (
-                                                    <span className="text-[#999999] dark:text-gray-400 line-through">
-                                                        {formatRupiah(original)}
-                                                    </span>
-                                                )}
-                                                {discountVal && (
-                                                    <span className="font-bold text-[#d32f2f] dark:text-red-400">
-                                                        {discountVal}%
-                                                    </span>
-                                                )}
-                                            </div>
+                                        {displayBadge && (
+                                            <span className="mt-2 font-measure text-[9px] font-bold uppercase tracking-[0.14em] text-[#007acc] dark:text-blue-400">
+                                                {displayBadge}
+                                            </span>
+                                        )}
+                                        <h4 className="mt-0.5 text-[11px] font-medium text-[#2b2620] dark:text-gray-100 line-clamp-2 leading-snug group-hover:underline">
+                                            {displayName}
+                                        </h4>
+                                        <div className="mt-1 font-ticket text-base font-bold tabular tracking-tight text-[#1c1917] dark:text-white">
+                                            {formatRupiah(p.price)}
                                         </div>
+                                        {original && (
+                                            <div className="font-measure text-[10px] tabular text-[#8a8175] dark:text-gray-500 line-through">
+                                                {formatRupiah(original)}
+                                            </div>
+                                        )}
                                     </Link>
                                 );
                             })}
                         </div>
-                    </div>
+                    </section>
 
                     {/* ========================================================
                         6. FULL-WIDTH LONG BANNER (assets.jaknot.com)
                         ======================================================== */}
-                    <div className="mt-4 overflow-hidden rounded-lg shadow-xs">
+                    <div className="mt-8 overflow-hidden rounded-xl">
                         <img
                             src="https://assets.jaknot.com/home_image/2026/09/XN2WGM-w-1.jpg"
-                            alt="Special Promotion Long Banner"
+                            alt="Promo spesial MakassarNotebook"
                             className="w-full object-cover"
                             loading="lazy"
                         />
                     </div>
 
                     {/* ========================================================
-                        7. KATEGORI POPULER (17 items, 10 columns on desktop)
+                        7. DIREKTORI KATEGORI
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
-                        <div className="flex items-center justify-between pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
-                            <div className="flex items-center gap-2">
-                                <img
-                                    src="https://static.jakartanotebook.com/frontend/public/images/home/category-popular/chart.png"
-                                    alt="Kategori Populer"
-                                    className="size-5 object-contain"
-                                />
-                                <h3 className="text-sm font-bold text-[#222222] dark:text-white">Kategori Populer</h3>
-                            </div>
+                    <section aria-label="Direktori kategori" className="mt-8">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b-2 border-[#1c1917] dark:border-gray-100 pb-2">
+                            <h2 className="font-display text-xl sm:text-2xl tracking-tight text-[#1c1917] dark:text-white">Direktori kategori</h2>
                             <div className="flex items-center gap-1">
                                 <button
                                     type="button"
                                     onClick={() => scrollCategories('left')}
-                                    className="flex size-6 items-center justify-center rounded border border-[#e0e0e0] dark:border-gray-700 text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white cursor-pointer"
-                                    aria-label="Scroll kiri kategori"
+                                    className="flex size-7 items-center justify-center rounded-full border border-[#1c1917]/25 dark:border-gray-600 text-[#5b554b] hover:text-[#1c1917] dark:hover:text-white hover:border-[#1c1917] dark:hover:border-gray-300 cursor-pointer"
+                                    aria-label="Geser direktori ke kiri"
                                 >
                                     <ChevronLeft className="size-3.5" />
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => scrollCategories('right')}
-                                    className="flex size-6 items-center justify-center rounded border border-[#e0e0e0] dark:border-gray-700 text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white cursor-pointer"
-                                    aria-label="Scroll kanan kategori"
+                                    className="flex size-7 items-center justify-center rounded-full border border-[#1c1917]/25 dark:border-gray-600 text-[#5b554b] hover:text-[#1c1917] dark:hover:text-white hover:border-[#1c1917] dark:hover:border-gray-300 cursor-pointer"
+                                    aria-label="Geser direktori ke kanan"
                                 >
                                     <ChevronRight className="size-3.5" />
                                 </button>
@@ -1546,7 +1573,7 @@ export default function Welcome({
 
                         <div
                             ref={categoryScrollRef}
-                            className="mt-3 flex items-center gap-2 overflow-x-auto pb-1 text-center scrollbar-none scroll-smooth"
+                            className="flex items-stretch overflow-x-auto text-center scrollbar-none scroll-smooth divide-x divide-[#1c1917]/12 dark:divide-gray-700/60"
                         >
                             {popularCategories.map((cat, i) => (
                                 <button
@@ -1566,52 +1593,44 @@ export default function Welcome({
                                             if (el) el.scrollIntoView({ behavior: 'smooth' });
                                         }
                                     }}
-                                    className="flex flex-col items-center justify-center min-w-[92px] p-2 rounded-lg border border-[#efefef] dark:border-gray-800 bg-white dark:bg-gray-800/50 hover:dark:bg-gray-800 hover:border-[#0099ff] dark:hover:border-blue-400 hover:shadow-xs transition-all text-center group cursor-pointer shrink-0"
+                                    className="flex flex-col items-center justify-start min-w-[104px] px-3 py-3 transition-colors text-center group cursor-pointer shrink-0 hover:bg-[#1c1917]/[0.04] dark:hover:bg-white/5"
                                 >
-                                    <div className="relative size-14 rounded-full bg-[#fafafa] dark:bg-gray-900/80 p-1 flex items-center justify-center group-hover:scale-105 transition-transform">
-                                        <img
-                                            src={cat.img}
-                                            alt={cat.name}
-                                            className="size-11 object-contain"
-                                            loading="lazy"
-                                        />
-                                    </div>
-                                    <span className="mt-2 text-[11px] font-semibold text-[#444444] dark:text-gray-300 line-clamp-1">
+                                    <img
+                                        src={cat.img}
+                                        alt=""
+                                        aria-hidden="true"
+                                        className="size-12 object-contain group-hover:scale-105 transition-transform"
+                                        loading="lazy"
+                                    />
+                                    <span className="mt-2 text-[11px] font-semibold text-[#2b2620] dark:text-gray-300 line-clamp-2 leading-snug">
                                         {cat.name}
                                     </span>
                                 </button>
                             ))}
                         </div>
-                    </div>
+                    </section>
 
                     {/* ========================================================
-                        8. VIDEO SHOPPING (Produk Viral Reels)
+                        8. VIDEO BELANJA
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
-                        <div className="flex items-center justify-between pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
-                            <div className="flex items-center gap-2">
-                                <img
-                                    src="https://static.jakartanotebook.com/frontend/public/images/home/video-shopping/video.svg?1"
-                                    alt="Video Shopping"
-                                    className="size-5 object-contain"
-                                />
-                                <h3 className="text-sm font-bold text-[#222222] dark:text-white">Video Shopping</h3>
-                            </div>
+                    <section aria-label="Video belanja" className="mt-8">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b-2 border-[#1c1917] dark:border-gray-100 pb-2">
+                            <h2 className="font-display text-xl sm:text-2xl tracking-tight text-[#1c1917] dark:text-white">Video belanja</h2>
                             <button
                                 type="button"
                                 onClick={() => setActiveVideo(videoReels[0])}
-                                className="rounded-lg border border-[#0099ff] dark:border-blue-400 px-3 py-1 text-[11px] font-semibold text-[#0099ff] dark:text-blue-400 bg-white dark:bg-gray-800 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/60 transition-colors cursor-pointer"
+                                className="font-ticket text-[11px] font-bold uppercase tracking-[0.14em] text-[#007acc] dark:text-blue-400 hover:underline cursor-pointer"
                             >
                                 Lihat Semua
                             </button>
                         </div>
 
-                        <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+                        <div className="mt-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
                             {videoReels.map((v) => (
                                 <div
                                     key={v.id}
                                     onClick={() => setActiveVideo(v)}
-                                    className="relative aspect-9/16 w-full overflow-hidden rounded-xl bg-black group cursor-pointer shadow-xs"
+                                    className="relative aspect-9/16 w-full overflow-hidden rounded-xl bg-black group cursor-pointer"
                                 >
                                     <img
                                         src={v.thumbnailUrl}
@@ -1636,107 +1655,101 @@ export default function Welcome({
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </section>
 
                     {/* ========================================================
-                        9. LAGI BANYAK DICARI (10 Top Keyword Cards)
+                        9. PALING DICARI
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
-                        <div className="flex items-center gap-2 pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
-                            <img
-                                src="https://static.jakartanotebook.com/frontend/public/images/home/most-search/search.svg"
-                                alt="Lagi Banyak Dicari"
-                                className="size-5 object-contain"
-                            />
-                            <h3 className="text-sm font-bold text-[#222222] dark:text-white">Lagi Banyak Dicari</h3>
+                    <section aria-label="Paling dicari" className="mt-8">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b-2 border-[#1c1917] dark:border-gray-100 pb-2">
+                            <h2 className="font-display text-xl sm:text-2xl tracking-tight text-[#1c1917] dark:text-white">Paling dicari</h2>
+                            <span className="font-measure text-[11px] tabular text-[#5b554b] dark:text-gray-400">10 baris teratas minggu ini</span>
                         </div>
 
-                        <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                        <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-6">
                             {mostSearchItems.map((item, idx) => (
                                 <div
                                     key={idx}
                                     onClick={() => setSearchKeyword(item.title)}
-                                    className="flex items-center gap-2.5 p-2 rounded-lg border border-[#eeeeee] dark:border-gray-800 hover:border-[#0099ff] dark:hover:border-blue-400 cursor-pointer bg-[#fafafa] dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800 transition-all group"
+                                    className="flex items-center gap-3 py-2.5 border-b border-[#1c1917]/12 dark:border-gray-700/60 cursor-pointer group"
                                 >
+                                    <span className="font-ticket text-sm font-bold tabular text-[#b3a88f] dark:text-gray-600 w-6 shrink-0">
+                                        {String(idx + 1).padStart(2, '0')}
+                                    </span>
                                     <img
                                         src={item.img}
-                                        alt={item.title}
-                                        className="size-11 rounded-lg object-contain bg-white dark:bg-gray-900 p-0.5 border border-[#eaeaea] dark:border-gray-700"
+                                        alt=""
+                                        aria-hidden="true"
+                                        className="size-10 rounded-lg object-contain bg-[#e9dfc9] dark:bg-gray-800 p-0.5"
                                         loading="lazy"
                                     />
                                     <div className="overflow-hidden">
-                                        <div className="text-xs font-bold text-[#333333] dark:text-gray-200 group-hover:text-[#0099ff] dark:group-hover:text-blue-400 truncate">
+                                        <div className="text-xs font-bold text-[#2b2620] dark:text-gray-200 group-hover:underline truncate">
                                             {item.title}
                                         </div>
-                                        <div className="text-[10px] text-[#888888] dark:text-gray-400">{item.count}</div>
+                                        <div className="font-measure text-[10px] tabular text-[#8a8175] dark:text-gray-500">{item.count}</div>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </section>
 
                     {/* ========================================================
-                        10. REKOMENDASI UNTUKMU (8-Column High-Density Grid)
+                        10. ETALASE REKOMENDASI
                         ======================================================== */}
-                    <div id="rekomendasi-section" className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
-                        <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
-                            <div className="flex items-center gap-2">
-                                <img
-                                    src="https://static.jakartanotebook.com/frontend/public/images/home/product-recommended/badge.svg"
-                                    alt="Rekomendasi Untukmu"
-                                    className="size-5 object-contain"
-                                />
-                                <h3 className="text-sm font-bold text-[#222222] dark:text-white">Rekomendasi Untukmu</h3>
-                            </div>
+                    <section id="rekomendasi-section" aria-label="Etalase rekomendasi" className="mt-8 scroll-mt-24">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b-2 border-[#1c1917] dark:border-gray-100 pb-2">
+                            <h2 className="font-display text-xl sm:text-2xl tracking-tight text-[#1c1917] dark:text-white">Etalase pilihan</h2>
+                            <span className="font-measure text-[11px] tabular text-[#5b554b] dark:text-gray-400">{filteredRecommendations.length} baris di edisi ini</span>
+                        </div>
 
-                            {/* Department category tabs */}
-                            <div className="flex items-center gap-1.5 overflow-x-auto text-[11px] scrollbar-none max-w-full pb-1">
-                                <button
-                                    type="button"
-                                    onClick={() => handleSelectCategory('all')}
-                                    className={`rounded-full px-3 py-1 font-semibold transition-all cursor-pointer whitespace-nowrap ${
-                                        activeCategoryTab === 'all'
-                                            ? 'bg-[#0099ff] text-white shadow-xs'
-                                            : 'bg-[#f0f0f0] dark:bg-gray-800 text-[#555555] dark:text-gray-300 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/60 hover:text-[#0099ff] dark:hover:text-blue-400'
-                                    }`}
-                                >
-                                    Semua
-                                </button>
-                                {categories.map((cat) => {
-                                    const isSelected =
-                                        activeCategoryTab === cat.slug ||
-                                        activeCategoryTab === String(cat.id);
-                                    return (
-                                        <button
-                                            key={cat.id}
-                                            type="button"
-                                            onClick={() => handleSelectCategory(cat.slug)}
-                                            className={`rounded-full px-3 py-1 font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
-                                                isSelected
-                                                    ? 'bg-[#0099ff] text-white shadow-xs'
-                                                    : 'bg-[#f0f0f0] dark:bg-gray-800 text-[#555555] dark:text-gray-300 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/60 hover:text-[#0099ff] dark:hover:text-blue-400'
-                                            }`}
-                                        >
-                                            {cat.icon && <span>{cat.icon}</span>}
-                                            <span>{cat.name}</span>
-                                        </button>
-                                    );
-                                })}
-
-                                {activeCategoryTab !== 'all' && (
-                                    <Link
-                                        href={`/categories/${activeCategoryTab}`}
-                                        className="rounded-full px-3 py-1 font-semibold text-[#0099ff] dark:text-blue-400 bg-[#e6f5ff] dark:bg-blue-950/60 hover:bg-[#d0ebff] dark:hover:bg-blue-900/60 transition-all whitespace-nowrap flex items-center gap-1 shrink-0"
+                        {/* Department category tabs */}
+                        <div className="mt-3 flex items-center gap-1.5 overflow-x-auto text-[11px] scrollbar-none max-w-full pb-1">
+                            <button
+                                type="button"
+                                onClick={() => handleSelectCategory('all')}
+                                className={`rounded-full px-3.5 py-1.5 font-bold transition-colors cursor-pointer whitespace-nowrap active:scale-95 ${
+                                    activeCategoryTab === 'all'
+                                        ? 'bg-[#1c1917] dark:bg-gray-100 text-white dark:text-[#1c1917]'
+                                        : 'bg-[#1c1917]/[0.06] dark:bg-white/10 text-[#2b2620] dark:text-gray-300 hover:bg-[#1c1917]/[0.12] dark:hover:bg-white/20'
+                                }`}
+                            >
+                                Semua
+                            </button>
+                            {categories.map((cat) => {
+                                const isSelected =
+                                    activeCategoryTab === cat.slug ||
+                                    activeCategoryTab === String(cat.id);
+                                return (
+                                    <button
+                                        key={cat.id}
+                                        type="button"
+                                        onClick={() => handleSelectCategory(cat.slug)}
+                                        className={`rounded-full px-3.5 py-1.5 font-bold transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1 active:scale-95 ${
+                                            isSelected
+                                                ? 'bg-[#1c1917] dark:bg-gray-100 text-white dark:text-[#1c1917]'
+                                                : 'bg-[#1c1917]/[0.06] dark:bg-white/10 text-[#2b2620] dark:text-gray-300 hover:bg-[#1c1917]/[0.12] dark:hover:bg-white/20'
+                                        }`}
                                     >
-                                        <span>Buka Halaman Kategori</span>
-                                        <ChevronRight className="size-3" />
-                                    </Link>
-                                )}
-                            </div>
+                                        {cat.icon && <span>{cat.icon}</span>}
+                                        <span>{cat.name}</span>
+                                    </button>
+                                );
+                            })}
+
+                            {activeCategoryTab !== 'all' && (
+                                <Link
+                                    href={`/categories/${activeCategoryTab}`}
+                                    className="rounded-full px-3.5 py-1.5 font-bold text-[#007acc] dark:text-blue-400 hover:underline transition-all whitespace-nowrap flex items-center gap-1 shrink-0"
+                                >
+                                    <span>Buka Halaman Kategori</span>
+                                    <ChevronRight className="size-3" />
+                                </Link>
+                            )}
                         </div>
 
                         {/* 8-Column Product Grid */}
-                        <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5 2xl:gap-3.5">
+                        <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-x-2.5 gap-y-5 2xl:gap-x-3.5">
                             {filteredRecommendations.length > 0 ? (
                                 filteredRecommendations.map((item) => {
                                     const displayName = item.name || item.title || 'Produk';
@@ -1752,51 +1765,45 @@ export default function Welcome({
                                         <Link
                                             key={item.id}
                                             href={productHref}
-                                            className="cursor-pointer group flex flex-col justify-between rounded-lg border border-[#e9e9e9] dark:border-gray-800 p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white dark:bg-gray-800/80 hover:dark:bg-gray-800"
+                                            className="cursor-pointer group flex flex-col"
                                         >
-                                            <div>
-                                                <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-[#fafafa] dark:bg-gray-900/60">
-                                                    <img
-                                                        src={displayImg}
-                                                        alt={displayName}
-                                                        className="h-full w-full object-contain p-1 group-hover:scale-105 transition-transform duration-300"
-                                                        loading="lazy"
-                                                    />
-                                                    {displayBadge && (
-                                                        <span className="absolute top-1 left-1 rounded bg-[#0099ff] px-1 py-0.5 text-[8px] font-bold text-white uppercase">
-                                                            {displayBadge}
-                                                        </span>
-                                                    )}
-                                                </div>
-
-                                                <h4 className="mt-2 text-[11px] font-medium text-[#222222] dark:text-gray-100 line-clamp-2 leading-snug group-hover:text-[#ff6000]">
-                                                    {displayName}
-                                                </h4>
-
-                                                {displayVariant && (
-                                                    <span className="mt-1 inline-block rounded bg-[#f2f2f2] dark:bg-gray-700/60 px-1.5 py-0.5 text-[9px] text-[#666666] dark:text-gray-300">
-                                                        {displayVariant}
+                                            <div className="relative aspect-square w-full overflow-hidden rounded-xl bg-[#e9dfc9] dark:bg-gray-800/70">
+                                                <img
+                                                    src={displayImg}
+                                                    alt={displayName}
+                                                    className="h-full w-full object-contain p-1.5 transition-transform duration-300 ease-out group-hover:scale-105"
+                                                    loading="lazy"
+                                                />
+                                                {discountVal && (
+                                                    <span className="absolute top-2 left-2 -rotate-3 rounded border-2 border-[#1c1917] dark:border-[#f5efe1] bg-[#f5efe1] dark:bg-[#141210] px-1.5 py-0.5 font-ticket text-[10px] font-bold tabular text-[#1c1917] dark:text-[#f5efe1]">
+                                                        -{discountVal}%
                                                     </span>
                                                 )}
                                             </div>
 
-                                            <div className="mt-2 pt-1 border-t border-[#f5f5f5] dark:border-gray-700/60">
-                                                <div className="text-xs font-bold text-[#222222] dark:text-white">
-                                                    {formatRupiah(item.price)}
-                                                </div>
-                                                <div className="flex items-center gap-1 text-[10px]">
-                                                    {original && (
-                                                        <span className="text-[#999999] dark:text-gray-400 line-through">
-                                                            {formatRupiah(original)}
-                                                        </span>
-                                                    )}
-                                                    {discountVal && (
-                                                        <span className="font-bold text-[#d32f2f] dark:text-red-400">
-                                                            {discountVal}%
-                                                        </span>
-                                                    )}
-                                                </div>
+                                            {displayBadge && (
+                                                <span className="mt-2 font-measure text-[9px] font-bold uppercase tracking-[0.14em] text-[#007acc] dark:text-blue-400">
+                                                    {displayBadge}
+                                                </span>
+                                            )}
+                                            <h4 className="mt-0.5 text-[11px] font-medium text-[#2b2620] dark:text-gray-100 line-clamp-2 leading-snug group-hover:underline">
+                                                {displayName}
+                                            </h4>
+
+                                            {displayVariant && (
+                                                <span className="mt-1 w-fit rounded bg-[#1c1917]/[0.06] dark:bg-white/10 px-1.5 py-0.5 text-[9px] font-medium text-[#5b554b] dark:text-gray-300">
+                                                    {displayVariant}
+                                                </span>
+                                            )}
+
+                                            <div className="mt-1 font-ticket text-base font-bold tabular tracking-tight text-[#1c1917] dark:text-white">
+                                                {formatRupiah(item.price)}
                                             </div>
+                                            {original && (
+                                                <div className="font-measure text-[10px] tabular text-[#8a8175] dark:text-gray-500 line-through">
+                                                    {formatRupiah(original)}
+                                                </div>
+                                            )}
                                         </Link>
                                     );
                                 })
@@ -1820,168 +1827,169 @@ export default function Welcome({
                             <button
                                 type="button"
                                 onClick={() => handleSelectCategory('all')}
-                                className="rounded-lg border border-[#0099ff] dark:border-blue-400 px-8 py-2 text-xs font-bold text-[#0099ff] dark:text-blue-400 bg-white dark:bg-gray-900 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/60 transition-colors cursor-pointer"
+                                className="rounded-lg bg-[#1c1917] dark:bg-gray-100 px-8 py-2.5 text-xs font-bold text-white dark:text-[#1c1917] hover:bg-[#007acc] dark:hover:bg-blue-400 dark:hover:text-white active:scale-95 transition-all cursor-pointer"
                             >
                                 Lihat Semua Produk
                             </button>
                         </div>
-                    </div>
+                    </section>
 
                     {/* ========================================================
-                        11. INFO MENARIK MAKNOT (Blog Articles)
+                        11. SOROTAN REDAKSI
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
-                        <div className="flex items-center justify-between pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
-                            <div className="flex items-center gap-2">
-                                <img
-                                    src="https://static.jakartanotebook.com/frontend/public/images/home/blog/rss.svg?1"
-                                    alt="RSS Blog"
-                                    className="size-5 object-contain"
-                                />
-                                <h3 className="text-sm font-bold text-[#222222] dark:text-white">Info Menarik Maknot</h3>
-                            </div>
-                            <a
-                                href="#"
-                                className="rounded-lg border border-[#0099ff] dark:border-blue-400 px-3 py-1 text-[11px] font-semibold text-[#0099ff] dark:text-blue-400 bg-white dark:bg-gray-800 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/60 transition-colors"
-                            >
-                                Lihat Semua
-                            </a>
+                    <section aria-label="Sorotan redaksi" className="mt-8">
+                        <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b-2 border-[#1c1917] dark:border-gray-100 pb-2">
+                            <h2 className="font-display text-xl sm:text-2xl tracking-tight text-[#1c1917] dark:text-white">Sorotan redaksi</h2>
+                            <span className="font-measure text-[11px] tabular text-[#5b554b] dark:text-gray-400">5 tulisan minggu ini</span>
                         </div>
 
-                        <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                        <div className="mt-2 divide-y divide-[#1c1917]/12 dark:divide-gray-700/60">
                             {articles.map((art, idx) => (
-                                <div key={idx} className="cursor-pointer group flex flex-col justify-between">
-                                    <div>
-                                        <div className="aspect-video w-full overflow-hidden rounded-lg bg-[#fafafa] dark:bg-gray-800">
-                                            <img
-                                                src={art.img}
-                                                alt={art.title}
-                                                className="h-full w-full object-cover group-hover:scale-103 transition-transform duration-300"
-                                                loading="lazy"
-                                            />
+                                <article key={idx} className="group grid grid-cols-[64px_1fr] sm:grid-cols-[120px_1fr] gap-4 py-3 cursor-pointer">
+                                    <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-[#e9dfc9] dark:bg-gray-800">
+                                        <img
+                                            src={art.img}
+                                            alt=""
+                                            aria-hidden="true"
+                                            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            loading="lazy"
+                                        />
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="font-measure text-[10px] tabular text-[#8a8175] dark:text-gray-500">
+                                            {String(idx + 1).padStart(2, '0')} / {art.time}
                                         </div>
-                                        <div className="mt-1.5 text-[10px] text-gray-400 dark:text-gray-500 font-medium">
-                                            {art.time}
-                                        </div>
-                                        <h4 className="mt-1 text-xs font-bold text-[#333333] dark:text-gray-100 line-clamp-2 group-hover:text-[#0099ff] dark:group-hover:text-blue-400 leading-snug">
+                                        <h4 className="mt-0.5 text-sm font-bold text-[#1c1917] dark:text-gray-100 line-clamp-2 group-hover:underline leading-snug">
                                             {art.title}
                                         </h4>
-                                        <p className="mt-1 text-[11px] text-[#777777] dark:text-gray-400 line-clamp-2 leading-relaxed">
+                                        <p className="mt-0.5 text-xs text-[#5b554b] dark:text-gray-400 line-clamp-2 leading-relaxed max-w-[72ch]">
                                             {art.desc}
                                         </p>
                                     </div>
-                                </div>
+                                </article>
                             ))}
                         </div>
-                    </div>
+                    </section>
 
                     {/* ========================================================
-                        12. 5 VALUE PROPOSITION PILLARS (Official SVGs)
+                        12. BUKTI TOKO (5 pilar, tanpa kartu)
                         ======================================================== */}
-                    <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-6 text-center shadow-xs transition-colors">
-                        <div className="flex flex-col items-center">
+                    <section aria-label="Bukti toko" className="mt-8 border-y-2 border-[#1c1917] dark:border-gray-100 py-4 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-y-4">
+                        <div className="flex items-center gap-3 px-4">
                             <img
                                 src="https://static.jakartanotebook.com/frontend/public/images/home/seo/produk-lengkap.svg?1"
-                                alt="Produk Terlengkap"
-                                className="size-10 mb-2 object-contain"
+                                alt=""
+                                aria-hidden="true"
+                                className="size-9 object-contain shrink-0"
                             />
-                            <div className="text-xs font-bold text-[#222222] dark:text-white">Produk Terlengkap</div>
-                            <div className="text-[10px] text-[#777777] dark:text-gray-400 mt-0.5">Produk unik, gadget &amp; hobi terlengkap</div>
+                            <div>
+                                <div className="text-xs font-bold text-[#1c1917] dark:text-white">Produk Terlengkap</div>
+                                <div className="text-[10px] text-[#5b554b] dark:text-gray-400 mt-0.5">Unik, gadget &amp; hobi</div>
+                            </div>
                         </div>
 
-                        <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-3 px-4 lg:border-l lg:border-[#1c1917]/15 lg:dark:border-gray-700/60">
                             <img
                                 src="https://static.jakartanotebook.com/frontend/public/images/home/seo/pengiriman-tercepat.svg?1"
-                                alt="Pengiriman Tercepat"
-                                className="size-10 mb-2 object-contain"
+                                alt=""
+                                aria-hidden="true"
+                                className="size-9 object-contain shrink-0"
                             />
-                            <div className="text-xs font-bold text-[#222222] dark:text-white">Pengiriman Tercepat</div>
-                            <div className="text-[10px] text-[#777777] dark:text-gray-400 mt-0.5">COD, Pick N Go toko, instant delivery</div>
+                            <div>
+                                <div className="text-xs font-bold text-[#1c1917] dark:text-white">Pengiriman Tercepat</div>
+                                <div className="text-[10px] text-[#5b554b] dark:text-gray-400 mt-0.5">COD, Pick N Go, instan</div>
+                            </div>
                         </div>
 
-                        <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-3 px-4 lg:border-l lg:border-[#1c1917]/15 lg:dark:border-gray-700/60">
                             <img
                                 src="https://static.jakartanotebook.com/frontend/public/images/home/seo/produk-terjamin.svg?1"
-                                alt="Produk Terjamin"
-                                className="size-10 mb-2 object-contain"
+                                alt=""
+                                aria-hidden="true"
+                                className="size-9 object-contain shrink-0"
                             />
-                            <div className="text-xs font-bold text-[#222222] dark:text-white">Produk Terjamin</div>
-                            <div className="text-[10px] text-[#777777] dark:text-gray-400 mt-0.5">Garansi resmi &amp; quality check teliti</div>
+                            <div>
+                                <div className="text-xs font-bold text-[#1c1917] dark:text-white">Produk Terjamin</div>
+                                <div className="text-[10px] text-[#5b554b] dark:text-gray-400 mt-0.5">Garansi resmi toko</div>
+                            </div>
                         </div>
 
-                        <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-3 px-4 lg:border-l lg:border-[#1c1917]/15 lg:dark:border-gray-700/60">
                             <img
                                 src="https://static.jakartanotebook.com/frontend/public/images/home/seo/potensi-keuntungan.svg?1"
-                                alt="Potensi Keuntungan"
-                                className="size-10 mb-2 object-contain"
+                                alt=""
+                                aria-hidden="true"
+                                className="size-9 object-contain shrink-0"
                             />
-                            <div className="text-xs font-bold text-[#222222] dark:text-white">Potensi Keuntungan</div>
-                            <div className="text-[10px] text-[#777777] dark:text-gray-400 mt-0.5">Cocok untuk reseller &amp; dropshipper</div>
+                            <div>
+                                <div className="text-xs font-bold text-[#1c1917] dark:text-white">Potensi Keuntungan</div>
+                                <div className="text-[10px] text-[#5b554b] dark:text-gray-400 mt-0.5">Reseller &amp; dropshipper</div>
+                            </div>
                         </div>
 
-                        <div className="flex flex-col items-center">
+                        <div className="flex items-center gap-3 px-4 lg:border-l lg:border-[#1c1917]/15 lg:dark:border-gray-700/60">
                             <img
                                 src="https://static.jakartanotebook.com/frontend/public/images/home/seo/harga-termurah.svg?1"
-                                alt="Harga Termurah"
-                                className="size-10 mb-2 object-contain"
+                                alt=""
+                                aria-hidden="true"
+                                className="size-9 object-contain shrink-0"
                             />
-                            <div className="text-xs font-bold text-[#222222] dark:text-white">Harga Termurah</div>
-                            <div className="text-[10px] text-[#777777] dark:text-gray-400 mt-0.5">Harga langsung importir tanpa perantara</div>
+                            <div>
+                                <div className="text-xs font-bold text-[#1c1917] dark:text-white">Harga Termurah</div>
+                                <div className="text-[10px] text-[#5b554b] dark:text-gray-400 mt-0.5">Langsung importir</div>
+                            </div>
                         </div>
-                    </div>
+                    </section>
 
                     {/* ========================================================
-                        13. SEO DESCRIPTION & ABOUT MAKASSARNOTEBOOK
+                        13. TENTANG EDISI INI
                         ======================================================== */}
-                    <section id="seo-info" className="mt-6 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-6 text-[11px] text-[#666666] dark:text-gray-300 leading-relaxed shadow-xs transition-colors">
-                        <h4 className="font-bold text-[#333333] dark:text-white text-xs">
-                            MakassarNotebook : Toko Online Lengkap &amp; Unik Harga Murah
-                        </h4>
-                        <p className="mt-1.5">
+                    <section id="seo-info" className="mt-8 max-w-[75ch] text-[13px] text-[#2b2620] dark:text-gray-300 leading-relaxed">
+                        <h2 className="font-display text-xl tracking-tight text-[#1c1917] dark:text-white">
+                            MakassarNotebook: lengkap, unik, harga murah
+                        </h2>
+                        <p className="mt-2">
                             Selamat datang di <strong>MakassarNotebook</strong>. Kami menyediakan aneka produk unik, perlengkapan komputer &amp; laptop, outdoor gear, peralatan rumah tangga, smartphone accessories, hobi, dan perkakas dengan slogan <strong>#SudahPastiMurahnya</strong>.
                         </p>
 
-                        <h4 className="font-bold text-[#333333] dark:text-white text-xs mt-4">
+                        <h3 className="font-bold text-[#1c1917] dark:text-white text-sm mt-5">
                             Kenapa Harus Belanja di MakassarNotebook?
-                        </h4>
+                        </h3>
                         <p className="mt-1.5">
                             Tak perlu ragu berbelanja di toko kami. Kami hadir dengan sistem terintegrasi yang memungkinkan Anda belanja secara online melalui website dan mengambil langsung di toko fisik terdekat (<strong>Pick N Go</strong>) tanpa antre panjang dan bebas ongkos kirim. Kami juga melayani pengiriman kilat Instant Courier se-kota Makassar dan reguler ke seluruh pelosok Sulawesi serta Indonesia Timur.
                         </p>
 
-                        <h4 className="font-bold text-[#333333] dark:text-white text-xs mt-4">
+                        <h3 className="font-bold text-[#1c1917] dark:text-white text-sm mt-5">
                             Peluang Reseller &amp; Dropshipper Indonesia Timur
-                        </h4>
+                        </h3>
                         <p className="mt-1.5">
                             MakassarNotebook mendukung para reseller dan dropshipper dengan fasilitas blind drop-shipping (resi netral tanpa logo toko kami). Dapatkan margin keuntungan optimal dan stok ribuan SKU yang selalu terupdate setiap harinya.
                         </p>
                     </section>
 
                     {/* ========================================================
-                        14. FOOTER & CONTACT CENTER
+                        14. KOLOFON & CONTACT CENTER
                         ======================================================== */}
-                    <footer className="mt-6 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-xs transition-colors">
+                    <footer className="mt-8 border-t-2 border-[#1c1917] dark:border-gray-100 bg-[#e9dfc9] dark:bg-[#1a1714] overflow-hidden transition-colors">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6">
                             {/* Left Content (8 cols) */}
                             <div className="lg:col-span-8 flex flex-col justify-between">
                                 <div>
-                                    <div className="text-xs font-bold text-[#333333] dark:text-gray-200 mb-2.5">
-                                        Download Aplikasi MakassarNotebook
+                                    <div className="text-xs font-bold text-[#1c1917] dark:text-gray-200 mb-1">
+                                        Aplikasi MakassarNotebook
                                     </div>
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <a href="#" className="hover:opacity-90 transition-opacity">
-                                            <img
-                                                src="https://static.jakartanotebook.com/frontend/_next/static/media/GooglePlayBadge.f00c35722be9afb9.svg"
-                                                alt="Google Play"
-                                                className="h-10"
-                                            />
-                                        </a>
-                                        <a href="#" className="hover:opacity-90 transition-opacity">
-                                            <img
-                                                src="https://static.jakartanotebook.com/frontend/_next/static/media/AppStoreBadge.a11eb355d87f5011.svg"
-                                                alt="App Store"
-                                                className="h-10"
-                                            />
-                                        </a>
+                                    <p className="font-measure text-[10px] uppercase tracking-[0.14em] text-[#5b554b] dark:text-gray-500 mb-2.5">Segera hadir</p>
+                                    <div className="flex items-center gap-3 mb-6 opacity-80">
+                                        <img
+                                            src="https://static.jakartanotebook.com/frontend/_next/static/media/GooglePlayBadge.f00c35722be9afb9.svg"
+                                            alt="Google Play (segera hadir)"
+                                            className="h-10"
+                                        />
+                                        <img
+                                            src="https://static.jakartanotebook.com/frontend/_next/static/media/AppStoreBadge.a11eb355d87f5011.svg"
+                                            alt="App Store (segera hadir)"
+                                            className="h-10"
+                                        />
                                     </div>
 
                                     {/* Link Columns */}
@@ -2042,30 +2050,40 @@ export default function Welcome({
                                 </div>
 
                                 {/* Newsletter Form */}
-                                <div className="mt-6 pt-4 border-t border-[#f0f0f0] dark:border-gray-800">
-                                    <div className="text-[11px] font-bold text-[#333333] dark:text-gray-200">
-                                        Dapatkan <span className="text-[#ff6000]">penawaran menarik</span> kami! Dikirim mingguan
+                                <div className="mt-6 pt-4 border-t border-[#1c1917]/15 dark:border-gray-700/60">
+                                    <div className="text-xs font-bold text-[#1c1917] dark:text-gray-200">
+                                        Dapatkan <span className="text-[#ff6000]">penawaran menarik</span> kami, dikirim mingguan
                                     </div>
-                                    <form
-                                        onSubmit={(e) => {
-                                            e.preventDefault();
-                                            alert('Terima kasih telah berlangganan newsletter MakassarNotebook!');
-                                        }}
-                                        className="mt-2 flex max-w-md gap-2"
-                                    >
-                                        <input
-                                            type="email"
-                                            required
-                                            placeholder="Masukkan alamat email Anda"
-                                            className="h-8.5 flex-1 rounded-lg border border-[#cccccc] dark:border-gray-700 bg-white dark:bg-gray-800 px-3 text-xs text-[#222222] dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-[#0099ff] dark:focus:border-blue-400 focus:outline-none"
-                                        />
-                                        <button
-                                            type="submit"
-                                            className="h-8.5 rounded-lg bg-[#0099ff] px-4 text-xs font-bold text-white hover:bg-[#007acc] transition-colors cursor-pointer"
+                                    {newsletterDone ? (
+                                        <p role="status" className="mt-2 max-w-md rounded-lg border-2 border-emerald-700 px-3 py-2.5 text-xs font-medium text-emerald-900 dark:text-emerald-200 dark:border-emerald-500">
+                                            Berhasil berlangganan. Cek email untuk konfirmasi.
+                                        </p>
+                                    ) : (
+                                        <form
+                                            onSubmit={(e) => {
+                                                e.preventDefault();
+                                                setNewsletterDone(true);
+                                            }}
+                                            className="mt-2 flex max-w-md gap-2"
                                         >
-                                            Mulai Berlangganan
-                                        </button>
-                                    </form>
+                                            <label htmlFor="newsletter-email" className="sr-only">
+                                                Alamat email
+                                            </label>
+                                            <input
+                                                id="newsletter-email"
+                                                type="email"
+                                                required
+                                                placeholder="Masukkan alamat email Anda"
+                                                className="h-9 flex-1 rounded-lg border border-[#1c1917]/25 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 text-xs text-[#1c1917] dark:text-white placeholder-[#8a8175] dark:placeholder-gray-500 focus:border-[#007acc] focus:outline-none transition-colors"
+                                            />
+                                            <button
+                                                type="submit"
+                                                className="h-9 rounded-lg bg-[#1c1917] dark:bg-gray-100 px-4 text-xs font-bold text-white dark:text-[#1c1917] hover:bg-[#007acc] dark:hover:bg-blue-400 dark:hover:text-white active:scale-95 transition-all cursor-pointer"
+                                            >
+                                                Berlangganan
+                                            </button>
+                                        </form>
+                                    )}
                                 </div>
                             </div>
 
@@ -2166,20 +2184,20 @@ export default function Welcome({
                         </div>
 
                         {/* Payment & Logistics Partners */}
-                        <div className="bg-[#f9f9f9] dark:bg-gray-950 border-t border-[#e5e5e5] dark:border-gray-800 px-6 py-4 flex flex-col md:flex-row items-center justify-between text-[11px] text-[#888888] dark:text-gray-400 gap-4">
+                        <div className="border-t border-[#1c1917]/15 dark:border-gray-700/60 px-6 py-4 flex flex-col md:flex-row items-center justify-between text-[11px] text-[#5b554b] dark:text-gray-400 gap-4">
                             <div>
-                                Copyright &copy; 2026 MakassarNotebook.com. All rights reserved | <a href="#" className="hover:underline">Terms &amp; Conditions</a>
+                                Copyright &copy; 2026 MakassarNotebook.com. All rights reserved
                             </div>
 
                             {/* Partners */}
                             <div className="flex flex-wrap items-center gap-3">
-                                <span className="font-semibold text-[#555555] dark:text-gray-300">Metode Pembayaran:</span>
-                                <div className="flex items-center gap-1.5 font-black text-xs text-[#005580] dark:text-blue-300">
-                                    <span className="rounded bg-white dark:bg-gray-800 px-2 py-0.5 border border-[#ddd] dark:border-gray-700">BCA</span>
-                                    <span className="rounded bg-white dark:bg-gray-800 px-2 py-0.5 border border-[#ddd] dark:border-gray-700">MANDIRI</span>
-                                    <span className="rounded bg-white dark:bg-gray-800 px-2 py-0.5 border border-[#ddd] dark:border-gray-700">BNI</span>
-                                    <span className="rounded bg-white dark:bg-gray-800 px-2 py-0.5 border border-[#ddd] dark:border-gray-700">BRI</span>
-                                    <span className="rounded bg-white dark:bg-gray-800 px-2 py-0.5 border border-[#ddd] dark:border-gray-700 text-[#d32f2f] dark:text-red-400">QRIS</span>
+                                <span className="font-semibold text-[#2b2620] dark:text-gray-300">Metode Pembayaran:</span>
+                                <div className="flex items-center gap-1.5 font-ticket font-bold text-xs text-[#1c1917] dark:text-gray-200">
+                                    <span className="rounded bg-[#f5efe1] dark:bg-gray-800 px-2 py-0.5 border border-[#1c1917]/15 dark:border-gray-700">BCA</span>
+                                    <span className="rounded bg-[#f5efe1] dark:bg-gray-800 px-2 py-0.5 border border-[#1c1917]/15 dark:border-gray-700">MANDIRI</span>
+                                    <span className="rounded bg-[#f5efe1] dark:bg-gray-800 px-2 py-0.5 border border-[#1c1917]/15 dark:border-gray-700">BNI</span>
+                                    <span className="rounded bg-[#f5efe1] dark:bg-gray-800 px-2 py-0.5 border border-[#1c1917]/15 dark:border-gray-700">BRI</span>
+                                    <span className="rounded bg-[#f5efe1] dark:bg-gray-800 px-2 py-0.5 border border-[#1c1917]/15 dark:border-gray-700 text-[#d32f2f] dark:text-red-400">QRIS</span>
                                 </div>
                             </div>
                         </div>
@@ -2195,7 +2213,7 @@ export default function Welcome({
                         href="https://wa.me/628997217050"
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-2 rounded-full bg-[#0099ff] px-4 py-2.5 text-xs font-bold text-white shadow-xl hover:bg-[#007acc] transition-all hover:scale-105"
+                        className="flex items-center gap-2 rounded-full bg-[#1c1917] dark:bg-gray-100 px-4 py-2.5 text-xs font-bold text-white dark:text-[#1c1917] shadow-[0_18px_36px_-16px_rgb(28_25_23/0.55)] transition-colors hover:bg-[#007acc] dark:hover:bg-blue-400 dark:hover:text-white active:scale-95"
                     >
                         <MessageCircle className="size-4 fill-current" />
                         <span>Butuh bantuan? Hubungi kami</span>
