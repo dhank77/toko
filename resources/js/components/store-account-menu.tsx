@@ -28,23 +28,24 @@ export function StoreAccountMenu() {
     const user = auth?.user;
 
     const handleLogout = () => {
-        router.post(logout());
+        router.post(logout.url());
     };
 
     if (!user) {
         return (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                 <Link
                     href={login()}
-                    className="flex items-center gap-1.5 text-[#333333] hover:text-[#0099FF] text-xs font-semibold transition-colors"
+                    className="flex items-center gap-1 sm:gap-1.5 text-[#333333] hover:text-[#0099FF] text-xs font-semibold py-1 px-1.5 sm:px-0 rounded transition-colors"
+                    title="Masuk ke Akun"
                 >
                     <User className="size-3.5 text-gray-500" />
                     <span>Masuk</span>
                 </Link>
-                <span className="text-gray-300">/</span>
+                <span className="text-gray-300 hidden sm:inline">/</span>
                 <Link
                     href={register()}
-                    className="rounded-md bg-[#0099FF] px-2.5 py-1 text-xs font-bold text-white hover:bg-[#007ACC] transition-colors"
+                    className="hidden sm:inline-block rounded-md bg-[#0099FF] px-2.5 py-1 text-xs font-bold text-white hover:bg-[#007ACC] transition-colors"
                 >
                     Daftar
                 </Link>
@@ -59,15 +60,21 @@ export function StoreAccountMenu() {
             <DropdownMenuTrigger asChild>
                 <button
                     type="button"
-                    className="flex items-center gap-1.5 rounded-lg bg-[#0099FF] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#007ACC] transition-all shadow-xs active:scale-98"
+                    className="flex items-center gap-1.5 rounded-lg bg-[#0099FF] px-2 sm:px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#007ACC] transition-all shadow-xs active:scale-98 cursor-pointer shrink-0"
+                    aria-label="Menu Akun Saya"
                 >
                     <User className="size-3.5" />
-                    <span>Akun Saya</span>
-                    <ChevronDown className="size-3 opacity-70" />
+                    <span className="hidden sm:inline">Akun Saya</span>
+                    <ChevronDown className="size-3 opacity-70 hidden sm:inline" />
                 </button>
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="w-56" align="end" sideOffset={6}>
+            <DropdownMenuContent
+                className="w-56 max-w-[calc(100vw-24px)] z-50 bg-white shadow-xl"
+                align="end"
+                sideOffset={8}
+                collisionPadding={12}
+            >
                 {/* User Greeting Header */}
                 <DropdownMenuLabel className="font-normal p-2.5">
                     <div className="flex flex-col space-y-1">

@@ -234,6 +234,17 @@ export default function Welcome({
     const [isCategoryDrawerOpen, setIsCategoryDrawerOpen] = useState(false);
     const [tickerIndex, setTickerIndex] = useState(0);
 
+    // Prevent background page horizontal/vertical scrolling when drawer or modal is open
+    useEffect(() => {
+        if (isCategoryDrawerOpen || isBranchModalOpen) {
+            const originalOverflow = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+            return () => {
+                document.body.style.overflow = originalOverflow;
+            };
+        }
+    }, [isCategoryDrawerOpen, isBranchModalOpen]);
+
     const currentBranch = branchOptions[selectedBranch];
 
     // Auto rotate the top ticker bar
@@ -660,14 +671,43 @@ export default function Welcome({
     ];
 
     // --- Category Mega-Menu Departments (dynamic from DB, fallback to static) ---
-    const departments = categories.length > 0
-        ? categories.map(cat => ({
-            name: `${cat.icon ?? ''} ${cat.name}`.trim(),
-            items: cat.sub_categories.map(sub => sub.name),
+    interface MenuCategoryItem {
+        id?: number;
+        name: string;
+        slug: string;
+        icon?: string | null;
+        sub_categories: Array<{ id?: number; name: string; slug: string }>;
+    }
+
+    const toSlug = (text: string) =>
+        text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+
+    const menuCategories: MenuCategoryItem[] = categories.length > 0
+        ? categories.map((cat) => ({
+            id: cat.id,
+            name: cat.name,
+            slug: cat.slug,
+            icon: cat.icon,
+            sub_categories: (cat.sub_categories ?? []).map((sub) => ({
+                id: sub.id,
+                name: sub.name,
+                slug: sub.slug,
+            })),
           }))
-        : STATIC_DEPARTMENTS;
+        : STATIC_DEPARTMENTS.map((dept, idx) => ({
+            id: idx + 1,
+            name: dept.name,
+            slug: toSlug(dept.name),
+            icon: null,
+            sub_categories: dept.items.map((it, sIdx) => ({
+                id: sIdx + 1,
+                name: it,
+                slug: toSlug(it),
+            })),
+          }));
 
     const [activeDepartment, setActiveDepartment] = useState(0);
+    const [drawerSearchQuery, setDrawerSearchQuery] = useState('');
 
     return (
         <>
@@ -677,7 +717,7 @@ export default function Welcome({
                 <link rel="icon" href="/images/logo-top.png" />
             </Head>
 
-            <div className="min-h-screen bg-[#f7f7f7] font-sans text-xs text-[#333333] antialiased">
+            <div className="min-h-screen bg-[#f7f7f7] font-sans text-xs text-[#333333] antialiased overflow-x-hidden w-full max-w-full">
                 {/* --- TOAST NOTIFICATION --- */}
                 {cartToast && (
                     <div className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-[#222222] px-4 py-3 text-xs font-semibold text-white shadow-xl animate-fade-in border border-[#0099ff]">
@@ -741,12 +781,12 @@ export default function Welcome({
                     2. MAIN HEADER (Logo, Category, Search, Cart, Account)
                     ======================================================== */}
                 <header className="sticky top-0 z-40 border-b border-[#e5e5e5] bg-white shadow-xs">
-                    <div className="mx-auto flex h-16 max-w-[1200px] xl:max-w-[1400px] 2xl:max-w-[1620px] items-center justify-between gap-4 px-3 sm:px-4 2xl:px-6">
+                    <div className="mx-auto flex h-16 max-w-[1200px] xl:max-w-[1400px] 2xl:max-w-[1620px] items-center justify-between gap-2 sm:gap-4 px-2.5 sm:px-4 2xl:px-6">
                         {/* Kategori Button */}
                         <button
                             type="button"
                             onClick={() => setIsCategoryDrawerOpen(true)}
-                            className="flex items-center gap-2 rounded-lg border border-[#cccccc] bg-[#fafafa] px-3.5 py-2 text-xs font-semibold text-[#444444] hover:bg-[#f0f0f0] hover:border-[#999999] transition-all cursor-pointer shrink-0"
+                            className="flex items-center gap-1.5 sm:gap-2 rounded-lg border border-[#cccccc] bg-[#fafafa] px-2.5 sm:px-3.5 py-2 text-xs font-semibold text-[#444444] hover:bg-[#f0f0f0] hover:border-[#999999] transition-all cursor-pointer shrink-0"
                             aria-label="Buka Kategori"
                         >
                             <Menu className="size-4 text-[#ff6000]" />
@@ -754,10 +794,10 @@ export default function Welcome({
                         </button>
 
                         {/* Brand Logo MakassarNotebook */}
-                        <Link href="/" className="flex items-center gap-2 shrink-0">
-                            <div className="flex items-center gap-2">
-                                {/* SVG Brand Icon MakassarNotebook (diadaptasi dari desain referensi) */}
-                                <svg viewBox="0 0 24 24" className="size-8">
+                        <Link href="/" className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                            <div className="flex items-center gap-1.5 sm:gap-2">
+                                {/* SVG Brand Icon MakassarNotebook */}
+                                <svg viewBox="0 0 24 24" className="size-7 sm:size-8 shrink-0">
                                     <path d="M 12.0331 20.0119 C 10.2264 19.9492 8.51686 19.5975 6.86925 18.9462 C 5.40864 18.3688 4.05164 17.5578 2.8514 16.5448 C 2.69483 16.4131 2.51397 16.2957 2.49023 16.0603 C 2.48123 15.9716 2.47059 15.8835 2.5587 15.834 C 2.64054 15.7873 2.69809 15.8565 2.75811 15.9005 C 3.93354 16.7556 5.25518 17.3044 6.63165 17.7298 C 7.80462 18.0922 9.00979 18.323 10.2294 18.4663 C 11.0922 18.5669 11.9585 18.6389 12.829 18.5868 C 14.5189 18.4859 16.1919 18.2829 17.807 17.7412 C 18.2814 17.5806 18.7435 17.3858 19.1899 17.1585 C 19.2978 17.0999 19.4104 17.0507 19.5268 17.0112 C 19.6955 16.9602 19.8227 17.0137 19.8922 17.1428 C 19.9664 17.2791 19.9468 17.3882 19.8022 17.5162 C 19.5245 17.7617 19.21 17.9548 18.8914 18.1387 C 17.4367 18.9786 15.8714 19.5056 14.2188 19.788 C 13.4959 19.9097 12.7658 19.9845 12.0331 20.0119 " fill="#0099FF"></path>
                                     <path d="M 18.0337 16.4889 C 18.0528 16.3667 18.1317 16.3202 18.2045 16.2897 C 19.0408 15.9392 19.8783 15.5903 20.8142 15.635 C 20.9933 15.6456 21.1696 15.6844 21.3366 15.7499 C 21.5077 15.814 21.5821 15.9214 21.5788 16.1138 C 21.5688 16.6433 21.4577 17.166 21.2515 17.6539 C 21.0398 18.1648 20.7229 18.6108 20.3898 19.0467 C 20.3729 19.0693 20.354 19.0903 20.3333 19.1095 C 20.296 19.1435 20.2499 19.1619 20.2045 19.1345 C 20.1593 19.1073 20.153 19.0601 20.1759 19.011 C 20.1959 18.9682 20.2171 18.9259 20.234 18.882 C 20.4522 18.3173 20.6475 17.7472 20.6953 17.1378 C 20.7028 17.1008 20.7075 17.0634 20.7098 17.0257 C 20.6787 16.5585 20.5718 16.4318 20.1219 16.3901 C 19.6981 16.3532 19.2716 16.3594 18.849 16.4087 C 18.5809 16.4381 18.3128 16.4616 18.0337 16.4889 Z" fill="#0099FF"></path>
                                     <path d="M 10.8112 5.97367 C 9.49198 4.28487 7.74508 3.70328 5.67818 4.13919 C 3.56029 4.58574 1.35236 6.81112 2.17699 9.9471 C 2.71928 12.0085 4.63205 13.4386 6.90762 13.466 C 7.05029 13.4562 7.27697 13.4469 7.50229 13.4226 C 7.66133 13.4056 7.81872 13.3713 7.97557 13.3391 C 9.71649 12.9845 11.4994 11.3167 11.6781 9.17506 C 11.7763 7.99773 11.5441 6.91205 10.8112 5.97367 Z M 6.86234 11.9092 C 5.22864 11.9654 3.6773 10.56 3.67621 8.72225 C 3.67629 7.88138 4.0103 7.07496 4.60481 6.4803 C 5.19931 5.88563 6.00565 5.55141 6.84652 5.55112 C 8.6128 5.54867 10.0026 6.94751 10.0294 8.70778 C 10.0555 10.4411 8.57189 11.9547 6.86234 11.9092 Z" fill="#FF8500"></path>
@@ -765,10 +805,10 @@ export default function Welcome({
                                 </svg>
 
                                 <div className="flex flex-col">
-                                    <div className="text-xl sm:text-2xl font-black tracking-tight text-[#222222] leading-none">
+                                    <div className="text-base sm:text-xl md:text-2xl font-black tracking-tight text-[#222222] leading-none">
                                         makassar<span className="text-[#0099ff]">notebook</span>
                                     </div>
-                                    <span className="text-[10px] font-bold text-[#ff6000] tracking-tight mt-0.5">
+                                    <span className="text-[10px] font-bold text-[#ff6000] tracking-tight mt-0.5 hidden sm:block">
                                         #SudahPastiMurahnya
                                     </span>
                                 </div>
@@ -776,7 +816,7 @@ export default function Welcome({
                         </Link>
 
                         {/* Search Bar with Autocomplete Dropdown */}
-                        <div className="relative flex-1 max-w-2xl">
+                        <div className="relative flex-1 min-w-0 max-w-2xl">
                             <div className="relative">
                                 <input
                                     type="text"
@@ -784,14 +824,14 @@ export default function Welcome({
                                     onChange={(e) => setSearchKeyword(e.target.value)}
                                     onFocus={() => setIsSearchFocused(true)}
                                     onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
-                                    placeholder="senter kepala, kabel charger, holder hp, kursi lipat..."
-                                    className="h-10 w-full rounded-lg border border-[#cccccc] bg-[#f0f0f0] pr-10 pl-3.5 text-xs text-[#333333] placeholder-[#999999] focus:bg-white focus:border-[#0099ff] focus:outline-none transition-all shadow-inner"
+                                    placeholder="Cari produk di toko..."
+                                    className="h-9 sm:h-10 w-full rounded-lg border border-[#cccccc] bg-[#f0f0f0] pr-8 sm:pr-10 pl-3 sm:pl-3.5 text-xs text-[#333333] placeholder-[#999999] focus:bg-white focus:border-[#0099ff] focus:outline-none transition-all shadow-inner"
                                 />
                                 <button
                                     type="button"
-                                    className="absolute right-0 top-0 flex h-10 w-10 items-center justify-center text-[#777777] hover:text-[#0099ff] transition-colors"
+                                    className="absolute right-0 top-0 flex h-9 sm:h-10 w-8 sm:w-10 items-center justify-center text-[#777777] hover:text-[#0099ff] transition-colors"
                                 >
-                                    <Search className="size-4.5" />
+                                    <Search className="size-4 sm:size-4.5" />
                                 </button>
                             </div>
 
@@ -816,11 +856,11 @@ export default function Welcome({
                         </div>
 
                         {/* Right: Cart & User Account */}
-                        <div className="flex items-center gap-4 text-xs font-semibold shrink-0">
+                        <div className="flex items-center gap-2 sm:gap-4 text-xs font-semibold shrink-0">
                             {/* Shopping Cart Button */}
                             <Link
                                 href="/client?tab=cart"
-                                className="flex items-center gap-2 text-[#333333] hover:text-[#ff6000] transition-colors cursor-pointer"
+                                className="flex items-center gap-1.5 sm:gap-2 text-[#333333] hover:text-[#ff6000] transition-colors cursor-pointer"
                             >
                                 <div className="relative">
                                     <ShoppingCart className="size-5 text-[#ff6000]" />
@@ -845,96 +885,244 @@ export default function Welcome({
                     CATEGORY DRAWER / MEGA-MENU MODAL
                     ======================================================== */}
                 {isCategoryDrawerOpen && (
-                    <div className="fixed inset-0 z-50 flex">
+                    <div className="fixed inset-0 z-50 flex overflow-hidden">
                         {/* Backdrop */}
                         <div
                             className="fixed inset-0 bg-black/50 transition-opacity"
-                            onClick={() => setIsCategoryDrawerOpen(false)}
+                            onClick={() => {
+                                setIsCategoryDrawerOpen(false);
+                                setDrawerSearchQuery('');
+                            }}
                         />
 
                         {/* Drawer content */}
-                        <div className="relative z-50 w-full max-w-2xl bg-white shadow-2xl flex flex-col h-full overflow-hidden">
+                        <div className="relative z-50 w-full max-w-full sm:max-w-xl md:max-w-2xl bg-white shadow-2xl flex flex-col h-full overflow-hidden animate-in slide-in-from-left duration-200">
                             {/* Drawer Header */}
-                            <div className="flex items-center justify-between border-b border-[#e5e5e5] px-6 py-4 bg-[#fafafa]">
-                                <div className="flex items-center gap-2">
-                                    <Menu className="size-5 text-[#ff6000]" />
-                                    <span className="text-base font-bold text-[#222222]">Semua Kategori</span>
-                                </div>
-                                <button
-                                    onClick={() => setIsCategoryDrawerOpen(false)}
-                                    className="rounded p-1 text-gray-400 hover:text-black hover:bg-gray-100 cursor-pointer"
-                                >
-                                    <X className="size-5" />
-                                </button>
-                            </div>
-
-                            {/* Split Layout: Department Sidebar + Subcategories */}
-                            <div className="grid grid-cols-12 flex-1 overflow-hidden">
-                                {/* Left Departments */}
-                                <div className="col-span-5 border-r border-[#e5e5e5] bg-[#fafafa] overflow-y-auto">
-                                    {departments.map((dept, index) => (
-                                        <button
-                                            key={index}
-                                            type="button"
-                                            onClick={() => setActiveDepartment(index)}
-                                            className={`w-full text-left px-4 py-3 text-xs font-semibold flex items-center justify-between transition-colors border-l-4 ${
-                                                activeDepartment === index
-                                                    ? 'bg-white text-[#0099ff] border-[#0099ff]'
-                                                    : 'text-[#444444] border-transparent hover:bg-white/60'
-                                            }`}
-                                        >
-                                            <span>{dept.name}</span>
-                                            <ChevronRight className="size-3.5 text-gray-400" />
-                                        </button>
-                                    ))}
-                                </div>
-
-                                {/* Right Subcategories Grid */}
-                                <div className="col-span-7 p-6 overflow-y-auto bg-white">
-                                    <div className="flex items-center justify-between border-b border-[#f0f0f0] pb-2 mb-4">
-                                        <span className="text-sm font-bold text-[#222222]">
-                                            {departments[activeDepartment].name}
+                            <div className="border-b border-[#e5e5e5] px-3.5 sm:px-6 py-3 sm:py-3.5 bg-[#fafafa] shrink-0">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-2">
+                                        <Menu className="size-4.5 sm:size-5 text-[#ff6000]" />
+                                        <span className="text-sm sm:text-base font-bold text-[#222222]">Semua Kategori</span>
+                                        <span className="rounded-full bg-[#0099ff]/10 px-2 py-0.5 text-[10px] font-bold text-[#0099ff]">
+                                            {menuCategories.length}
                                         </span>
-                                        {categories[activeDepartment] && (
-                                            <Link
-                                                href={`/categories/${categories[activeDepartment].slug}`}
-                                                onClick={() => setIsCategoryDrawerOpen(false)}
-                                                className="text-xs font-semibold text-[#0099ff] hover:underline"
-                                            >
-                                                Lihat Semua &rarr;
-                                            </Link>
-                                        )}
                                     </div>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {categories[activeDepartment]?.sub_categories && categories[activeDepartment].sub_categories.length > 0 ? (
-                                            categories[activeDepartment].sub_categories.map((sub) => (
-                                                <Link
-                                                    key={sub.id}
-                                                    href={`/categories/${categories[activeDepartment].slug}?sub_category=${sub.slug}`}
-                                                    onClick={() => setIsCategoryDrawerOpen(false)}
-                                                    className="text-left text-xs text-[#555555] hover:text-[#0099ff] hover:underline p-1.5 rounded transition-colors"
-                                                >
-                                                    {sub.name}
-                                                </Link>
-                                            ))
-                                        ) : (
-                                            departments[activeDepartment].items.map((sub, sIdx) => (
-                                                <button
-                                                    key={sIdx}
-                                                    type="button"
-                                                    onClick={() => {
-                                                        setSearchKeyword(sub);
-                                                        setIsCategoryDrawerOpen(false);
-                                                    }}
-                                                    className="text-left text-xs text-[#555555] hover:text-[#0099ff] hover:underline p-1.5 rounded transition-colors"
-                                                >
-                                                    {sub}
-                                                </button>
-                                            ))
-                                        )}
-                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setIsCategoryDrawerOpen(false);
+                                            setDrawerSearchQuery('');
+                                        }}
+                                        className="rounded-full p-1.5 text-gray-400 hover:text-black hover:bg-gray-200 transition-colors cursor-pointer"
+                                        aria-label="Tutup kategori"
+                                    >
+                                        <X className="size-5" />
+                                    </button>
+                                </div>
+
+                                {/* Quick Search inside Drawer */}
+                                <div className="mt-2.5 relative">
+                                    <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <input
+                                        type="text"
+                                        value={drawerSearchQuery}
+                                        onChange={(e) => setDrawerSearchQuery(e.target.value)}
+                                        placeholder="Cari kategori atau subkategori..."
+                                        className="w-full h-8.5 rounded-lg border border-[#e0e0e0] bg-white pl-8 pr-8 text-xs text-[#222222] placeholder-gray-400 focus:border-[#0099ff] focus:outline-none transition-colors"
+                                    />
+                                    {drawerSearchQuery && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setDrawerSearchQuery('')}
+                                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                            aria-label="Hapus pencarian kategori"
+                                        >
+                                            <X className="size-3.5" />
+                                        </button>
+                                    )}
                                 </div>
                             </div>
+
+                            {/* Drawer Body */}
+                            {drawerSearchQuery.trim() ? (
+                                /* Search Results View */
+                                <div className="flex-1 p-3.5 sm:p-5 overflow-y-auto overflow-x-hidden bg-white">
+                                    <div className="text-[11px] font-semibold text-gray-500 mb-2.5">
+                                        Hasil pencarian untuk "{drawerSearchQuery}":
+                                    </div>
+                                    {(() => {
+                                        const searchTrimmed = drawerSearchQuery.trim().toLowerCase();
+                                        const searchResults = menuCategories.flatMap((cat) =>
+                                            cat.sub_categories
+                                                .filter(
+                                                    (sub) =>
+                                                        sub.name.toLowerCase().includes(searchTrimmed) ||
+                                                        cat.name.toLowerCase().includes(searchTrimmed)
+                                                )
+                                                .map((sub) => ({
+                                                    ...sub,
+                                                    categoryName: cat.name,
+                                                    categorySlug: cat.slug,
+                                                    categoryIcon: cat.icon,
+                                                }))
+                                        );
+
+                                        if (searchResults.length === 0) {
+                                            return (
+                                                <div className="py-12 text-center">
+                                                    <Package className="size-8 text-gray-300 mx-auto mb-2" />
+                                                    <p className="text-xs text-gray-500">
+                                                        Tidak ada kategori atau subkategori yang cocok dengan "{drawerSearchQuery}"
+                                                    </p>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setDrawerSearchQuery('')}
+                                                        className="mt-3 text-xs text-[#0099ff] font-semibold hover:underline cursor-pointer"
+                                                    >
+                                                        Reset Pencarian
+                                                    </button>
+                                                </div>
+                                            );
+                                        }
+
+                                        return (
+                                            <div className="space-y-1.5">
+                                                {searchResults.map((item, idx) => (
+                                                    <Link
+                                                        key={idx}
+                                                        href={`/categories/${item.categorySlug}?sub_category=${item.slug}`}
+                                                        onClick={() => {
+                                                            setIsCategoryDrawerOpen(false);
+                                                            setDrawerSearchQuery('');
+                                                        }}
+                                                        className="group flex items-center justify-between p-2.5 rounded-lg border border-[#f0f0f0] hover:border-[#0099ff]/40 bg-[#fafafa] hover:bg-[#e6f5ff] transition-all"
+                                                    >
+                                                        <div className="min-w-0 pr-2">
+                                                            <div className="text-xs font-semibold text-[#222222] group-hover:text-[#0099ff] truncate">
+                                                                {item.name}
+                                                            </div>
+                                                            <div className="text-[10px] text-gray-500 flex items-center gap-1 mt-0.5">
+                                                                {item.categoryIcon && <span>{item.categoryIcon}</span>}
+                                                                <span className="truncate">{item.categoryName}</span>
+                                                            </div>
+                                                        </div>
+                                                        <ChevronRight className="size-3.5 text-gray-400 group-hover:text-[#0099ff] group-hover:translate-x-0.5 transition-transform shrink-0" />
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
+                            ) : (
+                                /* Split Layout: Responsive Master-Detail */
+                                <div className="flex flex-1 overflow-hidden">
+                                    {/* Left Category Departments */}
+                                    <div className="w-[120px] xs:w-[135px] sm:w-[190px] md:w-[220px] shrink-0 border-r border-[#e5e5e5] bg-[#fafafa] overflow-y-auto overflow-x-hidden">
+                                        {menuCategories.map((cat, index) => {
+                                            const safeActiveIndex = activeDepartment >= menuCategories.length ? 0 : activeDepartment;
+                                            const isActive = safeActiveIndex === index;
+                                            return (
+                                                <button
+                                                    key={cat.id ?? index}
+                                                    type="button"
+                                                    onClick={() => setActiveDepartment(index)}
+                                                    className={`w-full text-left px-2 sm:px-3.5 py-2.5 sm:py-3 text-xs font-semibold flex items-center justify-between gap-1 transition-all border-l-3 cursor-pointer ${
+                                                        isActive
+                                                            ? 'bg-white text-[#0099ff] border-[#0099ff] shadow-xs'
+                                                            : 'text-[#444444] border-transparent hover:bg-white/70 hover:text-[#222222]'
+                                                    }`}
+                                                >
+                                                    <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                                                        {cat.icon ? (
+                                                            <span className="text-sm sm:text-base shrink-0 leading-none">{cat.icon}</span>
+                                                        ) : (
+                                                            <Package className="size-3.5 shrink-0 text-gray-400" />
+                                                        )}
+                                                        <span className="text-[11px] sm:text-xs leading-tight line-clamp-2">{cat.name}</span>
+                                                    </div>
+                                                    <ChevronRight
+                                                        className={`size-3 shrink-0 hidden sm:inline transition-transform ${
+                                                            isActive ? 'text-[#0099ff] translate-x-0.5' : 'text-gray-300'
+                                                        }`}
+                                                    />
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+
+                                    {/* Right Subcategories Content */}
+                                    {(() => {
+                                        const safeActiveIndex = activeDepartment >= menuCategories.length ? 0 : activeDepartment;
+                                        const currentCategory = menuCategories[safeActiveIndex];
+
+                                        if (!currentCategory) return null;
+
+                                        return (
+                                            <div className="flex-1 min-w-0 p-3 sm:p-5 md:p-6 overflow-y-auto overflow-x-hidden bg-white flex flex-col">
+                                                <div className="flex items-center justify-between border-b border-[#f0f0f0] pb-2.5 mb-3 gap-2">
+                                                    <div className="min-w-0">
+                                                        <h4 className="text-xs sm:text-sm font-bold text-[#222222] truncate flex items-center gap-1.5">
+                                                            {currentCategory.icon && <span className="text-sm shrink-0">{currentCategory.icon}</span>}
+                                                            <span className="truncate">{currentCategory.name}</span>
+                                                        </h4>
+                                                        <span className="text-[10px] text-gray-400">
+                                                            {currentCategory.sub_categories?.length ?? 0} subkategori
+                                                        </span>
+                                                    </div>
+                                                    <Link
+                                                        href={`/categories/${currentCategory.slug}`}
+                                                        onClick={() => {
+                                                            setIsCategoryDrawerOpen(false);
+                                                            setDrawerSearchQuery('');
+                                                        }}
+                                                        className="text-[11px] font-bold text-[#0099ff] hover:text-[#007acc] flex items-center gap-0.5 shrink-0 bg-[#e6f5ff] hover:bg-[#d5eeff] px-2 py-1 rounded-md transition-colors"
+                                                    >
+                                                        <span>Lihat Semua</span>
+                                                        <ChevronRight className="size-3" />
+                                                    </Link>
+                                                </div>
+
+                                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5 sm:gap-2">
+                                                    {currentCategory.sub_categories && currentCategory.sub_categories.length > 0 ? (
+                                                        currentCategory.sub_categories.map((sub) => (
+                                                            <Link
+                                                                key={sub.id ?? sub.slug}
+                                                                href={`/categories/${currentCategory.slug}?sub_category=${sub.slug}`}
+                                                                onClick={() => {
+                                                                    setIsCategoryDrawerOpen(false);
+                                                                    setDrawerSearchQuery('');
+                                                                }}
+                                                                className="group flex items-center justify-between p-2 sm:p-2.5 rounded-lg border border-transparent hover:border-[#0099ff]/30 bg-[#f9f9f9] hover:bg-[#e6f5ff] transition-all cursor-pointer text-left"
+                                                            >
+                                                                <span className="text-xs text-[#444444] group-hover:text-[#0099ff] font-medium leading-snug line-clamp-2">
+                                                                    {sub.name}
+                                                                </span>
+                                                                <ChevronRight className="size-3 text-gray-300 group-hover:text-[#0099ff] shrink-0 ml-1.5 group-hover:translate-x-0.5 transition-transform" />
+                                                            </Link>
+                                                        ))
+                                                    ) : (
+                                                        <div className="col-span-full py-8 text-center">
+                                                            <Package className="size-8 text-gray-300 mx-auto mb-2" />
+                                                            <p className="text-xs text-gray-500 mb-3">Belum ada subkategori</p>
+                                                            <Link
+                                                                href={`/categories/${currentCategory.slug}`}
+                                                                onClick={() => {
+                                                                    setIsCategoryDrawerOpen(false);
+                                                                    setDrawerSearchQuery('');
+                                                                }}
+                                                                className="inline-flex items-center gap-1 text-xs font-semibold text-white bg-[#0099ff] hover:bg-[#007acc] px-3.5 py-2 rounded-lg transition-colors"
+                                                            >
+                                                                <span>Lihat Produk di Kategori Ini</span>
+                                                                <ChevronRight className="size-3.5" />
+                                                            </Link>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        );
+                                    })()}
+                                </div>
+                            )}
                         </div>
                     </div>
                 )}
