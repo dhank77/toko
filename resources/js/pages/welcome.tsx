@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { StoreAccountMenu } from '@/components/store-account-menu';
+import { ThemeToggle } from '@/components/theme-toggle';
 import { formatRupiah } from '@/lib/utils';
 import { dashboard, login, register } from '@/routes';
 
@@ -717,10 +718,10 @@ export default function Welcome({
                 <link rel="icon" href="/images/logo-top.png" />
             </Head>
 
-            <div className="min-h-screen bg-[#f7f7f7] font-sans text-xs text-[#333333] antialiased overflow-x-hidden w-full max-w-full">
+            <div className="min-h-screen bg-[#f7f7f7] dark:bg-slate-950 font-sans text-xs text-[#333333] dark:text-gray-200 antialiased overflow-x-hidden w-full max-w-full transition-colors duration-150">
                 {/* --- TOAST NOTIFICATION --- */}
                 {cartToast && (
-                    <div className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-[#222222] px-4 py-3 text-xs font-semibold text-white shadow-xl animate-fade-in border border-[#0099ff]">
+                    <div className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-lg bg-[#222222] dark:bg-gray-800 px-4 py-3 text-xs font-semibold text-white shadow-xl animate-fade-in border border-[#0099ff]">
                         <ShoppingCart className="size-4 text-[#0099ff]" />
                         <span>{cartToast}</span>
                     </div>
@@ -729,29 +730,29 @@ export default function Welcome({
                 {/* ========================================================
                     1. TOP BAR (Ticker Branches, Opening Hours, Support)
                     ======================================================== */}
-                <div className="border-b border-[#e5e5e5] bg-white py-1.5 text-[11px] text-[#666666]">
+                <div className="border-b border-[#e5e5e5] dark:border-gray-800/80 bg-white dark:bg-gray-900 py-1.5 text-[11px] text-[#666666] dark:text-gray-400 transition-colors">
                     <div className="mx-auto flex max-w-[1200px] xl:max-w-[1400px] 2xl:max-w-[1620px] items-center justify-between px-3 sm:px-4 2xl:px-6">
                         {/* Left: Location & Branch Ticker */}
                         <div className="flex items-center gap-2 truncate">
                             <button
                                 type="button"
                                 onClick={() => setIsBranchModalOpen(true)}
-                                className="flex items-center gap-1 font-semibold text-[#222222] hover:text-[#0099ff] transition-colors cursor-pointer"
+                                className="flex items-center gap-1 font-semibold text-[#222222] dark:text-gray-200 hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors cursor-pointer"
                             >
                                 <MapPin className="size-3.5 text-[#ff6000]" />
                                 <span>{currentBranch.region}</span>
-                                <span className="text-[#0099ff] font-normal hover:underline ml-0.5">ganti</span>
+                                <span className="text-[#0099ff] dark:text-blue-400 font-normal hover:underline ml-0.5">ganti</span>
                             </button>
 
-                            <span className="text-gray-300">|</span>
+                            <span className="text-gray-300 dark:text-gray-700">|</span>
 
                             {/* Rotating Branch Status */}
                             <div className="flex items-center gap-1.5 truncate">
-                                <Clock className="size-3 text-gray-400 shrink-0" />
-                                <span className="font-medium text-[#444444] truncate">
+                                <Clock className="size-3 text-gray-400 dark:text-gray-500 shrink-0" />
+                                <span className="font-medium text-[#444444] dark:text-gray-300 truncate">
                                     {activeTickerBranch.name}
                                 </span>
-                                <span className="text-gray-400 hidden md:inline truncate">
+                                <span className="text-gray-400 dark:text-gray-500 hidden md:inline truncate">
                                     — {activeTickerBranch.hoursWeekday}
                                 </span>
                                 <button
@@ -761,18 +762,20 @@ export default function Welcome({
                                         const el = document.getElementById('toko-kami');
                                         if (el) el.scrollIntoView({ behavior: 'smooth' });
                                     }}
-                                    className="text-[#0099ff] hover:underline shrink-0 ml-1 cursor-pointer"
+                                    className="text-[#0099ff] dark:text-blue-400 hover:underline shrink-0 ml-1 cursor-pointer"
                                 >
                                     Selengkapnya
                                 </button>
                             </div>
                         </div>
 
-                        {/* Right: Informational Links */}
-                        <div className="hidden items-center gap-4 sm:flex text-[#555555]">
-                            <a href="#toko-kami" className="hover:text-[#0099ff] transition-colors">Service Center</a>
-                            <a href="#seo-info" className="hover:text-[#0099ff] transition-colors">How to buy</a>
-                            <a href="#seo-info" className="hover:text-[#0099ff] transition-colors">Order Tracking</a>
+                        {/* Right: Informational Links & Theme Toggle */}
+                        <div className="hidden items-center gap-3.5 sm:flex text-[#555555] dark:text-gray-400">
+                            <a href="#toko-kami" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Service Center</a>
+                            <a href="#seo-info" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">How to buy</a>
+                            <a href="#seo-info" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Order Tracking</a>
+                            <span className="text-gray-300 dark:text-gray-700">|</span>
+                            <ThemeToggle variant="topbar" />
                         </div>
                     </div>
                 </div>
@@ -780,13 +783,13 @@ export default function Welcome({
                 {/* ========================================================
                     2. MAIN HEADER (Logo, Category, Search, Cart, Account)
                     ======================================================== */}
-                <header className="sticky top-0 z-40 border-b border-[#e5e5e5] bg-white shadow-xs">
+                <header className="sticky top-0 z-40 border-b border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 shadow-xs transition-colors">
                     <div className="mx-auto flex h-16 max-w-[1200px] xl:max-w-[1400px] 2xl:max-w-[1620px] items-center justify-between gap-2 sm:gap-4 px-2.5 sm:px-4 2xl:px-6">
                         {/* Kategori Button */}
                         <button
                             type="button"
                             onClick={() => setIsCategoryDrawerOpen(true)}
-                            className="flex items-center gap-1.5 sm:gap-2 rounded-lg border border-[#cccccc] bg-[#fafafa] px-2.5 sm:px-3.5 py-2 text-xs font-semibold text-[#444444] hover:bg-[#f0f0f0] hover:border-[#999999] transition-all cursor-pointer shrink-0"
+                            className="flex items-center gap-1.5 sm:gap-2 rounded-lg border border-[#cccccc] dark:border-gray-700 bg-[#fafafa] dark:bg-gray-800 px-2.5 sm:px-3.5 py-2 text-xs font-semibold text-[#444444] dark:text-gray-200 hover:bg-[#f0f0f0] dark:hover:bg-gray-700 hover:border-[#999999] dark:hover:border-gray-600 transition-all cursor-pointer shrink-0"
                             aria-label="Buka Kategori"
                         >
                             <Menu className="size-4 text-[#ff6000]" />
@@ -805,7 +808,7 @@ export default function Welcome({
                                 </svg>
 
                                 <div className="flex flex-col">
-                                    <div className="text-base sm:text-xl md:text-2xl font-black tracking-tight text-[#222222] leading-none">
+                                    <div className="text-base sm:text-xl md:text-2xl font-black tracking-tight text-[#222222] dark:text-white leading-none">
                                         makassar<span className="text-[#0099ff]">notebook</span>
                                     </div>
                                     <span className="text-[10px] font-bold text-[#ff6000] tracking-tight mt-0.5 hidden sm:block">
@@ -825,11 +828,11 @@ export default function Welcome({
                                     onFocus={() => setIsSearchFocused(true)}
                                     onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                                     placeholder="Cari produk di toko..."
-                                    className="h-9 sm:h-10 w-full rounded-lg border border-[#cccccc] bg-[#f0f0f0] pr-8 sm:pr-10 pl-3 sm:pl-3.5 text-xs text-[#333333] placeholder-[#999999] focus:bg-white focus:border-[#0099ff] focus:outline-none transition-all shadow-inner"
+                                    className="h-9 sm:h-10 w-full rounded-lg border border-[#cccccc] dark:border-gray-700 bg-[#f0f0f0] dark:bg-gray-800 pr-8 sm:pr-10 pl-3 sm:pl-3.5 text-xs text-[#333333] dark:text-gray-100 placeholder-[#999999] dark:placeholder-gray-400 focus:bg-white dark:focus:bg-gray-800 focus:border-[#0099ff] dark:focus:border-blue-400 focus:outline-none transition-all shadow-inner"
                                 />
                                 <button
                                     type="button"
-                                    className="absolute right-0 top-0 flex h-9 sm:h-10 w-8 sm:w-10 items-center justify-center text-[#777777] hover:text-[#0099ff] transition-colors"
+                                    className="absolute right-0 top-0 flex h-9 sm:h-10 w-8 sm:w-10 items-center justify-center text-[#777777] dark:text-gray-400 hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors"
                                 >
                                     <Search className="size-4 sm:size-4.5" />
                                 </button>
@@ -837,15 +840,15 @@ export default function Welcome({
 
                             {/* Autocomplete Dropdown */}
                             {isSearchFocused && (
-                                <div className="absolute left-0 right-0 top-11 z-50 rounded-lg border border-[#e5e5e5] bg-white p-3 shadow-xl">
-                                    <div className="text-[11px] font-bold text-[#666666] mb-2">Paling Sering Dicari</div>
+                                <div className="absolute left-0 right-0 top-11 z-50 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-3 shadow-xl">
+                                    <div className="text-[11px] font-bold text-[#666666] dark:text-gray-400 mb-2">Paling Sering Dicari</div>
                                     <div className="flex flex-wrap gap-1.5">
                                         {popularSearchKeywords.map((kw, idx) => (
                                             <button
                                                 key={idx}
                                                 type="button"
                                                 onClick={() => setSearchKeyword(kw)}
-                                                className="rounded-full bg-[#f2f2f2] px-3 py-1 text-[11px] text-[#444444] hover:bg-[#e6f5ff] hover:text-[#0099ff] transition-colors cursor-pointer"
+                                                className="rounded-full bg-[#f2f2f2] dark:bg-gray-800 px-3 py-1 text-[11px] text-[#444444] dark:text-gray-300 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/60 hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors cursor-pointer"
                                             >
                                                 {kw}
                                             </button>
@@ -855,12 +858,17 @@ export default function Welcome({
                             )}
                         </div>
 
-                        {/* Right: Cart & User Account */}
-                        <div className="flex items-center gap-2 sm:gap-4 text-xs font-semibold shrink-0">
+                        {/* Right: Theme Toggle, Cart & User Account */}
+                        <div className="flex items-center gap-2 sm:gap-3 text-xs font-semibold shrink-0">
+                            {/* Theme Toggle Button in Header */}
+                            <ThemeToggle variant="header" />
+
+                            <span className="text-gray-300 dark:text-gray-700 hidden sm:inline">|</span>
+
                             {/* Shopping Cart Button */}
                             <Link
                                 href="/client?tab=cart"
-                                className="flex items-center gap-1.5 sm:gap-2 text-[#333333] hover:text-[#ff6000] transition-colors cursor-pointer"
+                                className="flex items-center gap-1.5 sm:gap-2 text-[#333333] dark:text-gray-200 hover:text-[#ff6000] dark:hover:text-[#ff6000] transition-colors cursor-pointer"
                             >
                                 <div className="relative">
                                     <ShoppingCart className="size-5 text-[#ff6000]" />
@@ -873,7 +881,7 @@ export default function Welcome({
                                 <span className="hidden lg:inline text-xs font-medium">Keranjang Belanja</span>
                             </Link>
 
-                            <span className="text-gray-300 hidden sm:inline">|</span>
+                            <span className="text-gray-300 dark:text-gray-700 hidden sm:inline">|</span>
 
                             {/* Akun Saya Dropdown / Login */}
                             <StoreAccountMenu />
@@ -888,7 +896,7 @@ export default function Welcome({
                     <div className="fixed inset-0 z-50 flex overflow-hidden">
                         {/* Backdrop */}
                         <div
-                            className="fixed inset-0 bg-black/50 transition-opacity"
+                            className="fixed inset-0 bg-black/60 transition-opacity backdrop-blur-xs"
                             onClick={() => {
                                 setIsCategoryDrawerOpen(false);
                                 setDrawerSearchQuery('');
@@ -896,45 +904,48 @@ export default function Welcome({
                         />
 
                         {/* Drawer content */}
-                        <div className="relative z-50 w-full max-w-full sm:max-w-xl md:max-w-2xl bg-white shadow-2xl flex flex-col h-full overflow-hidden animate-in slide-in-from-left duration-200">
+                        <div className="relative z-50 w-full max-w-full sm:max-w-xl md:max-w-2xl bg-white dark:bg-gray-900 border-r border-[#e5e5e5] dark:border-gray-800 shadow-2xl flex flex-col h-full overflow-hidden animate-in slide-in-from-left duration-200">
                             {/* Drawer Header */}
-                            <div className="border-b border-[#e5e5e5] px-3.5 sm:px-6 py-3 sm:py-3.5 bg-[#fafafa] shrink-0">
+                            <div className="border-b border-[#e5e5e5] dark:border-gray-800 px-3.5 sm:px-6 py-3 sm:py-3.5 bg-[#fafafa] dark:bg-gray-900/90 shrink-0">
                                 <div className="flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <Menu className="size-4.5 sm:size-5 text-[#ff6000]" />
-                                        <span className="text-sm sm:text-base font-bold text-[#222222]">Semua Kategori</span>
-                                        <span className="rounded-full bg-[#0099ff]/10 px-2 py-0.5 text-[10px] font-bold text-[#0099ff]">
+                                        <span className="text-sm sm:text-base font-bold text-[#222222] dark:text-white">Semua Kategori</span>
+                                        <span className="rounded-full bg-[#0099ff]/10 dark:bg-blue-950/60 px-2 py-0.5 text-[10px] font-bold text-[#0099ff] dark:text-blue-400">
                                             {menuCategories.length}
                                         </span>
                                     </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setIsCategoryDrawerOpen(false);
-                                            setDrawerSearchQuery('');
-                                        }}
-                                        className="rounded-full p-1.5 text-gray-400 hover:text-black hover:bg-gray-200 transition-colors cursor-pointer"
-                                        aria-label="Tutup kategori"
-                                    >
-                                        <X className="size-5" />
-                                    </button>
+                                    <div className="flex items-center gap-1.5">
+                                        <ThemeToggle variant="compact" />
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setIsCategoryDrawerOpen(false);
+                                                setDrawerSearchQuery('');
+                                            }}
+                                            className="rounded-full p-1.5 text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-200 dark:hover:bg-gray-800 transition-colors cursor-pointer"
+                                            aria-label="Tutup kategori"
+                                        >
+                                            <X className="size-5" />
+                                        </button>
+                                    </div>
                                 </div>
 
                                 {/* Quick Search inside Drawer */}
                                 <div className="mt-2.5 relative">
-                                    <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                    <Search className="size-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
                                     <input
                                         type="text"
                                         value={drawerSearchQuery}
                                         onChange={(e) => setDrawerSearchQuery(e.target.value)}
                                         placeholder="Cari kategori atau subkategori..."
-                                        className="w-full h-8.5 rounded-lg border border-[#e0e0e0] bg-white pl-8 pr-8 text-xs text-[#222222] placeholder-gray-400 focus:border-[#0099ff] focus:outline-none transition-colors"
+                                        className="w-full h-8.5 rounded-lg border border-[#e0e0e0] dark:border-gray-700 bg-white dark:bg-gray-800 pl-8 pr-8 text-xs text-[#222222] dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-[#0099ff] dark:focus:border-blue-400 focus:outline-none transition-colors"
                                     />
                                     {drawerSearchQuery && (
                                         <button
                                             type="button"
                                             onClick={() => setDrawerSearchQuery('')}
-                                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
                                             aria-label="Hapus pencarian kategori"
                                         >
                                             <X className="size-3.5" />
@@ -946,8 +957,8 @@ export default function Welcome({
                             {/* Drawer Body */}
                             {drawerSearchQuery.trim() ? (
                                 /* Search Results View */
-                                <div className="flex-1 p-3.5 sm:p-5 overflow-y-auto overflow-x-hidden bg-white">
-                                    <div className="text-[11px] font-semibold text-gray-500 mb-2.5">
+                                <div className="flex-1 p-3.5 sm:p-5 overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-900">
+                                    <div className="text-[11px] font-semibold text-gray-500 dark:text-gray-400 mb-2.5">
                                         Hasil pencarian untuk "{drawerSearchQuery}":
                                     </div>
                                     {(() => {
@@ -970,14 +981,14 @@ export default function Welcome({
                                         if (searchResults.length === 0) {
                                             return (
                                                 <div className="py-12 text-center">
-                                                    <Package className="size-8 text-gray-300 mx-auto mb-2" />
-                                                    <p className="text-xs text-gray-500">
+                                                    <Package className="size-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
                                                         Tidak ada kategori atau subkategori yang cocok dengan "{drawerSearchQuery}"
                                                     </p>
                                                     <button
                                                         type="button"
                                                         onClick={() => setDrawerSearchQuery('')}
-                                                        className="mt-3 text-xs text-[#0099ff] font-semibold hover:underline cursor-pointer"
+                                                        className="mt-3 text-xs text-[#0099ff] dark:text-blue-400 font-semibold hover:underline cursor-pointer"
                                                     >
                                                         Reset Pencarian
                                                     </button>
@@ -992,21 +1003,21 @@ export default function Welcome({
                                                         key={idx}
                                                         href={`/categories/${item.categorySlug}?sub_category=${item.slug}`}
                                                         onClick={() => {
-                                                            setIsCategoryDrawerOpen(false);
-                                                            setDrawerSearchQuery('');
+                                                             setIsCategoryDrawerOpen(false);
+                                                             setDrawerSearchQuery('');
                                                         }}
-                                                        className="group flex items-center justify-between p-2.5 rounded-lg border border-[#f0f0f0] hover:border-[#0099ff]/40 bg-[#fafafa] hover:bg-[#e6f5ff] transition-all"
+                                                        className="group flex items-center justify-between p-2.5 rounded-lg border border-[#f0f0f0] dark:border-gray-800 hover:border-[#0099ff]/40 dark:hover:border-blue-400/40 bg-[#fafafa] dark:bg-gray-800/60 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/40 transition-all"
                                                     >
                                                         <div className="min-w-0 pr-2">
-                                                            <div className="text-xs font-semibold text-[#222222] group-hover:text-[#0099ff] truncate">
+                                                            <div className="text-xs font-semibold text-[#222222] dark:text-gray-100 group-hover:text-[#0099ff] dark:group-hover:text-blue-400 truncate">
                                                                 {item.name}
                                                             </div>
-                                                            <div className="text-[10px] text-gray-500 flex items-center gap-1 mt-0.5">
+                                                            <div className="text-[10px] text-gray-500 dark:text-gray-400 flex items-center gap-1 mt-0.5">
                                                                 {item.categoryIcon && <span>{item.categoryIcon}</span>}
                                                                 <span className="truncate">{item.categoryName}</span>
                                                             </div>
                                                         </div>
-                                                        <ChevronRight className="size-3.5 text-gray-400 group-hover:text-[#0099ff] group-hover:translate-x-0.5 transition-transform shrink-0" />
+                                                        <ChevronRight className="size-3.5 text-gray-400 dark:text-gray-500 group-hover:text-[#0099ff] dark:group-hover:text-blue-400 group-hover:translate-x-0.5 transition-transform shrink-0" />
                                                     </Link>
                                                 ))}
                                             </div>
@@ -1017,7 +1028,7 @@ export default function Welcome({
                                 /* Split Layout: Responsive Master-Detail */
                                 <div className="flex flex-1 overflow-hidden">
                                     {/* Left Category Departments */}
-                                    <div className="w-[120px] xs:w-[135px] sm:w-[190px] md:w-[220px] shrink-0 border-r border-[#e5e5e5] bg-[#fafafa] overflow-y-auto overflow-x-hidden">
+                                    <div className="w-[120px] xs:w-[135px] sm:w-[190px] md:w-[220px] shrink-0 border-r border-[#e5e5e5] dark:border-gray-800 bg-[#fafafa] dark:bg-gray-950 overflow-y-auto overflow-x-hidden">
                                         {menuCategories.map((cat, index) => {
                                             const safeActiveIndex = activeDepartment >= menuCategories.length ? 0 : activeDepartment;
                                             const isActive = safeActiveIndex === index;
@@ -1028,21 +1039,21 @@ export default function Welcome({
                                                     onClick={() => setActiveDepartment(index)}
                                                     className={`w-full text-left px-2 sm:px-3.5 py-2.5 sm:py-3 text-xs font-semibold flex items-center justify-between gap-1 transition-all border-l-3 cursor-pointer ${
                                                         isActive
-                                                            ? 'bg-white text-[#0099ff] border-[#0099ff] shadow-xs'
-                                                            : 'text-[#444444] border-transparent hover:bg-white/70 hover:text-[#222222]'
+                                                            ? 'bg-white dark:bg-gray-900 text-[#0099ff] dark:text-blue-400 border-[#0099ff] shadow-xs'
+                                                            : 'text-[#444444] dark:text-gray-300 border-transparent hover:bg-white/70 dark:hover:bg-gray-900/60 hover:text-[#222222] dark:hover:text-white'
                                                     }`}
                                                 >
                                                     <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
                                                         {cat.icon ? (
                                                             <span className="text-sm sm:text-base shrink-0 leading-none">{cat.icon}</span>
                                                         ) : (
-                                                            <Package className="size-3.5 shrink-0 text-gray-400" />
+                                                            <Package className="size-3.5 shrink-0 text-gray-400 dark:text-gray-500" />
                                                         )}
                                                         <span className="text-[11px] sm:text-xs leading-tight line-clamp-2">{cat.name}</span>
                                                     </div>
                                                     <ChevronRight
                                                         className={`size-3 shrink-0 hidden sm:inline transition-transform ${
-                                                            isActive ? 'text-[#0099ff] translate-x-0.5' : 'text-gray-300'
+                                                            isActive ? 'text-[#0099ff] dark:text-blue-400 translate-x-0.5' : 'text-gray-300 dark:text-gray-600'
                                                         }`}
                                                     />
                                                 </button>
@@ -1058,14 +1069,14 @@ export default function Welcome({
                                         if (!currentCategory) return null;
 
                                         return (
-                                            <div className="flex-1 min-w-0 p-3 sm:p-5 md:p-6 overflow-y-auto overflow-x-hidden bg-white flex flex-col">
-                                                <div className="flex items-center justify-between border-b border-[#f0f0f0] pb-2.5 mb-3 gap-2">
+                                            <div className="flex-1 min-w-0 p-3 sm:p-5 md:p-6 overflow-y-auto overflow-x-hidden bg-white dark:bg-gray-900 flex flex-col">
+                                                <div className="flex items-center justify-between border-b border-[#f0f0f0] dark:border-gray-800 pb-2.5 mb-3 gap-2">
                                                     <div className="min-w-0">
-                                                        <h4 className="text-xs sm:text-sm font-bold text-[#222222] truncate flex items-center gap-1.5">
+                                                        <h4 className="text-xs sm:text-sm font-bold text-[#222222] dark:text-white truncate flex items-center gap-1.5">
                                                             {currentCategory.icon && <span className="text-sm shrink-0">{currentCategory.icon}</span>}
                                                             <span className="truncate">{currentCategory.name}</span>
                                                         </h4>
-                                                        <span className="text-[10px] text-gray-400">
+                                                        <span className="text-[10px] text-gray-400 dark:text-gray-500">
                                                             {currentCategory.sub_categories?.length ?? 0} subkategori
                                                         </span>
                                                     </div>
@@ -1075,7 +1086,7 @@ export default function Welcome({
                                                             setIsCategoryDrawerOpen(false);
                                                             setDrawerSearchQuery('');
                                                         }}
-                                                        className="text-[11px] font-bold text-[#0099ff] hover:text-[#007acc] flex items-center gap-0.5 shrink-0 bg-[#e6f5ff] hover:bg-[#d5eeff] px-2 py-1 rounded-md transition-colors"
+                                                        className="text-[11px] font-bold text-[#0099ff] dark:text-blue-400 hover:text-[#007acc] dark:hover:text-blue-300 flex items-center gap-0.5 shrink-0 bg-[#e6f5ff] dark:bg-blue-950/60 hover:bg-[#d5eeff] dark:hover:bg-blue-900/60 px-2 py-1 rounded-md transition-colors"
                                                     >
                                                         <span>Lihat Semua</span>
                                                         <ChevronRight className="size-3" />
@@ -1092,18 +1103,18 @@ export default function Welcome({
                                                                     setIsCategoryDrawerOpen(false);
                                                                     setDrawerSearchQuery('');
                                                                 }}
-                                                                className="group flex items-center justify-between p-2 sm:p-2.5 rounded-lg border border-transparent hover:border-[#0099ff]/30 bg-[#f9f9f9] hover:bg-[#e6f5ff] transition-all cursor-pointer text-left"
+                                                                className="group flex items-center justify-between p-2 sm:p-2.5 rounded-lg border border-transparent hover:border-[#0099ff]/30 dark:hover:border-blue-400/30 bg-[#f9f9f9] dark:bg-gray-800/60 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/40 transition-all cursor-pointer text-left"
                                                             >
-                                                                <span className="text-xs text-[#444444] group-hover:text-[#0099ff] font-medium leading-snug line-clamp-2">
+                                                                <span className="text-xs text-[#444444] dark:text-gray-300 group-hover:text-[#0099ff] dark:group-hover:text-blue-400 font-medium leading-snug line-clamp-2">
                                                                     {sub.name}
                                                                 </span>
-                                                                <ChevronRight className="size-3 text-gray-300 group-hover:text-[#0099ff] shrink-0 ml-1.5 group-hover:translate-x-0.5 transition-transform" />
+                                                                <ChevronRight className="size-3 text-gray-300 dark:text-gray-600 group-hover:text-[#0099ff] dark:group-hover:text-blue-400 shrink-0 ml-1.5 group-hover:translate-x-0.5 transition-transform" />
                                                             </Link>
                                                         ))
                                                     ) : (
                                                         <div className="col-span-full py-8 text-center">
-                                                            <Package className="size-8 text-gray-300 mx-auto mb-2" />
-                                                            <p className="text-xs text-gray-500 mb-3">Belum ada subkategori</p>
+                                                            <Package className="size-8 text-gray-300 dark:text-gray-600 mx-auto mb-2" />
+                                                            <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Belum ada subkategori</p>
                                                             <Link
                                                                 href={`/categories/${currentCategory.slug}`}
                                                                 onClick={() => {
@@ -1133,24 +1144,25 @@ export default function Welcome({
                 {isBranchModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                         <div
-                            className="fixed inset-0 bg-black/50"
+                            className="fixed inset-0 bg-black/60 backdrop-blur-xs"
                             onClick={() => setIsBranchModalOpen(false)}
                         />
-                        <div className="relative z-50 w-full max-w-lg rounded-xl bg-white p-6 shadow-2xl">
-                            <div className="flex items-center justify-between border-b border-[#e5e5e5] pb-3 mb-4">
+                        <div className="relative z-50 w-full max-w-lg rounded-xl bg-white dark:bg-gray-900 border border-[#e5e5e5] dark:border-gray-800 p-6 shadow-2xl">
+                            <div className="flex items-center justify-between border-b border-[#e5e5e5] dark:border-gray-800 pb-3 mb-4">
                                 <div className="flex items-center gap-2">
-                                    <Store className="size-5 text-[#0099ff]" />
-                                    <h3 className="text-base font-bold text-[#222222]">Pilih Lokasi &amp; Toko Cabang</h3>
+                                    <Store className="size-5 text-[#0099ff] dark:text-blue-400" />
+                                    <h3 className="text-base font-bold text-[#222222] dark:text-white">Pilih Lokasi &amp; Toko Cabang</h3>
                                 </div>
                                 <button
                                     onClick={() => setIsBranchModalOpen(false)}
-                                    className="rounded p-1 text-gray-400 hover:text-black hover:bg-gray-100 cursor-pointer"
+                                    className="rounded p-1 text-gray-400 hover:text-black dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer"
+                                    aria-label="Tutup modal cabang"
                                 >
                                     <X className="size-5" />
                                 </button>
                             </div>
 
-                            <p className="text-xs text-[#666666] mb-4">
+                            <p className="text-xs text-[#666666] dark:text-gray-400 mb-4">
                                 Pilih cabang toko offline untuk melihat ketersediaan stok fisik secara real-time dan opsi layanan <strong>Pick N Go (Ambil di Toko)</strong>.
                             </p>
 
@@ -1167,19 +1179,19 @@ export default function Welcome({
                                             }}
                                             className={`cursor-pointer rounded-lg border p-3 transition-all ${
                                                 isSelected
-                                                    ? 'border-[#0099ff] bg-[#e6f5ff]'
-                                                    : 'border-[#e5e5e5] hover:border-[#0099ff] hover:bg-[#fafafa]'
+                                                    ? 'border-[#0099ff] dark:border-blue-400 bg-[#e6f5ff] dark:bg-blue-950/40'
+                                                    : 'border-[#e5e5e5] dark:border-gray-800 hover:border-[#0099ff] dark:hover:border-blue-400/60 hover:bg-[#fafafa] dark:hover:bg-gray-800/60'
                                             }`}
                                         >
                                             <div className="flex items-center justify-between">
-                                                <div className="font-bold text-[#222222]">{b.name}</div>
-                                                <span className="rounded bg-white px-2 py-0.5 text-[10px] font-semibold text-[#0099ff] border border-[#0099ff]/30">
+                                                <div className="font-bold text-[#222222] dark:text-white">{b.name}</div>
+                                                <span className="rounded bg-white dark:bg-gray-800 px-2 py-0.5 text-[10px] font-semibold text-[#0099ff] dark:text-blue-400 border border-[#0099ff]/30 dark:border-blue-400/30">
                                                     {b.region}
                                                 </span>
                                             </div>
-                                            <div className="text-[11px] text-[#666666] mt-1">{b.address}</div>
-                                            <div className="text-[10px] text-[#888888] mt-1 flex items-center gap-2">
-                                                <Clock className="size-3 text-gray-400" />
+                                            <div className="text-[11px] text-[#666666] dark:text-gray-400 mt-1">{b.address}</div>
+                                            <div className="text-[10px] text-[#888888] dark:text-gray-500 mt-1 flex items-center gap-2">
+                                                <Clock className="size-3 text-gray-400 dark:text-gray-500" />
                                                 <span>{b.hoursWeekday}</span>
                                             </div>
                                         </div>
@@ -1344,21 +1356,23 @@ export default function Welcome({
                     {/* ========================================================
                         4. #SudahPastiMurahnya VALUE BUBBLES
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] bg-white p-3 shadow-xs">
+                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-3 shadow-xs transition-colors">
                         <div className="flex items-center justify-between mb-2">
                             <span className="text-xs font-bold text-[#ff6000]">#SudahPastiMurahnya</span>
                             <div className="flex items-center gap-1">
                                 <button
                                     type="button"
                                     onClick={() => scrollValues('left')}
-                                    className="flex size-6 items-center justify-center rounded-full border border-[#dddddd] text-gray-400 hover:text-black hover:border-black cursor-pointer"
+                                    className="flex size-6 items-center justify-center rounded-full border border-[#dddddd] dark:border-gray-700 text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white cursor-pointer"
+                                    aria-label="Scroll kiri value"
                                 >
                                     <ChevronLeft className="size-3.5" />
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => scrollValues('right')}
-                                    className="flex size-6 items-center justify-center rounded-full border border-[#dddddd] text-gray-400 hover:text-black hover:border-black cursor-pointer"
+                                    className="flex size-6 items-center justify-center rounded-full border border-[#dddddd] dark:border-gray-700 text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white cursor-pointer"
+                                    aria-label="Scroll kanan value"
                                 >
                                     <ChevronRight className="size-3.5" />
                                 </button>
@@ -1374,9 +1388,9 @@ export default function Welcome({
                                     key={idx}
                                     type="button"
                                     onClick={() => setSearchKeyword(val.label)}
-                                    className="flex flex-col items-center justify-center min-w-[96px] p-2 hover:bg-[#fafafa] rounded-lg transition-colors group cursor-pointer shrink-0"
+                                    className="flex flex-col items-center justify-center min-w-[96px] p-2 hover:bg-[#fafafa] dark:hover:bg-gray-800 rounded-lg transition-colors group cursor-pointer shrink-0"
                                 >
-                                    <div className="relative size-12 rounded-xl bg-[#fafafa] p-1 flex items-center justify-center group-hover:scale-105 transition-transform">
+                                    <div className="relative size-12 rounded-xl bg-[#fafafa] dark:bg-gray-800 p-1 flex items-center justify-center group-hover:scale-105 transition-transform">
                                         <img
                                             src={val.img}
                                             alt={val.label}
@@ -1384,7 +1398,7 @@ export default function Welcome({
                                             loading="lazy"
                                         />
                                     </div>
-                                    <span className="mt-2 text-[11px] font-medium text-[#444444] line-clamp-1">
+                                    <span className="mt-2 text-[11px] font-medium text-[#444444] dark:text-gray-300 line-clamp-1">
                                         {val.label}
                                     </span>
                                 </button>
@@ -1395,23 +1409,23 @@ export default function Welcome({
                     {/* ========================================================
                         5. FLASH SALE (HomeParade with Countdown & 8 Products)
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] bg-white p-4 shadow-xs">
-                        <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#f0f0f0]">
+                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
+                        <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
                             <div className="flex items-center gap-2">
                                 <img
                                     src="https://static.jakartanotebook.com/frontend/public/images/home/parade/flash-sale.svg?1"
                                     alt="Flash Sale"
                                     className="size-6 object-contain"
                                 />
-                                <h3 className="text-sm font-bold text-[#222222]">Flash Sale</h3>
-                                <span className="rounded bg-[#ffe6e6] px-2 py-0.5 text-[11px] font-bold text-[#d32f2f]">
+                                <h3 className="text-sm font-bold text-[#222222] dark:text-white">Flash Sale</h3>
+                                <span className="rounded bg-[#ffe6e6] dark:bg-red-950/60 px-2 py-0.5 text-[11px] font-bold text-[#d32f2f] dark:text-red-400">
                                     Mainan
                                 </span>
                             </div>
 
                             {/* Red Countdown Timer */}
                             <div className="flex items-center gap-1.5 font-mono text-xs font-bold">
-                                <span className="text-[11px] font-sans text-[#666666] mr-1">Berakhir dalam</span>
+                                <span className="text-[11px] font-sans text-[#666666] dark:text-gray-400 mr-1">Berakhir dalam</span>
                                 <span className="rounded bg-[#d32f2f] px-2 py-0.5 text-white shadow-xs">
                                     {String(timer.hours).padStart(2, '0')}
                                 </span>
@@ -1440,10 +1454,10 @@ export default function Welcome({
                                     <Link
                                         key={p.id}
                                         href={productHref}
-                                        className="group flex flex-col justify-between rounded-lg border border-transparent p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white cursor-pointer"
+                                        className="group flex flex-col justify-between rounded-lg border border-transparent p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white dark:bg-gray-800/80 hover:dark:bg-gray-800 cursor-pointer"
                                     >
                                         <div>
-                                            <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-[#fafafa]">
+                                            <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-[#fafafa] dark:bg-gray-900/60">
                                                 <img
                                                     src={displayImg}
                                                     alt={displayName}
@@ -1457,23 +1471,23 @@ export default function Welcome({
                                                 )}
                                             </div>
 
-                                            <h4 className="mt-2 text-[11px] font-medium text-[#222222] line-clamp-2 leading-snug group-hover:text-[#ff6000]">
+                                            <h4 className="mt-2 text-[11px] font-medium text-[#222222] dark:text-gray-100 line-clamp-2 leading-snug group-hover:text-[#ff6000]">
                                                 {displayName}
                                             </h4>
                                         </div>
 
-                                        <div className="mt-2 pt-1 border-t border-[#f5f5f5]">
-                                            <div className="text-xs font-bold text-[#222222]">
+                                        <div className="mt-2 pt-1 border-t border-[#f5f5f5] dark:border-gray-700/60">
+                                            <div className="text-xs font-bold text-[#222222] dark:text-white">
                                                 {formatRupiah(p.price)}
                                             </div>
                                             <div className="flex items-center gap-1.5 text-[10px]">
                                                 {original && (
-                                                    <span className="text-[#999999] line-through">
+                                                    <span className="text-[#999999] dark:text-gray-400 line-through">
                                                         {formatRupiah(original)}
                                                     </span>
                                                 )}
                                                 {discountVal && (
-                                                    <span className="font-bold text-[#d32f2f]">
+                                                    <span className="font-bold text-[#d32f2f] dark:text-red-400">
                                                         {discountVal}%
                                                     </span>
                                                 )}
@@ -1500,28 +1514,30 @@ export default function Welcome({
                     {/* ========================================================
                         7. KATEGORI POPULER (17 items, 10 columns on desktop)
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] bg-white p-4 shadow-xs">
-                        <div className="flex items-center justify-between pb-3 border-b border-[#f0f0f0]">
+                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
+                        <div className="flex items-center justify-between pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
                             <div className="flex items-center gap-2">
                                 <img
                                     src="https://static.jakartanotebook.com/frontend/public/images/home/category-popular/chart.png"
                                     alt="Kategori Populer"
                                     className="size-5 object-contain"
                                 />
-                                <h3 className="text-sm font-bold text-[#222222]">Kategori Populer</h3>
+                                <h3 className="text-sm font-bold text-[#222222] dark:text-white">Kategori Populer</h3>
                             </div>
                             <div className="flex items-center gap-1">
                                 <button
                                     type="button"
                                     onClick={() => scrollCategories('left')}
-                                    className="flex size-6 items-center justify-center rounded border border-[#e0e0e0] text-gray-400 hover:text-black cursor-pointer"
+                                    className="flex size-6 items-center justify-center rounded border border-[#e0e0e0] dark:border-gray-700 text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white cursor-pointer"
+                                    aria-label="Scroll kiri kategori"
                                 >
                                     <ChevronLeft className="size-3.5" />
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => scrollCategories('right')}
-                                    className="flex size-6 items-center justify-center rounded border border-[#e0e0e0] text-gray-400 hover:text-black cursor-pointer"
+                                    className="flex size-6 items-center justify-center rounded border border-[#e0e0e0] dark:border-gray-700 text-gray-400 hover:text-black dark:hover:text-white hover:border-black dark:hover:border-white cursor-pointer"
+                                    aria-label="Scroll kanan kategori"
                                 >
                                     <ChevronRight className="size-3.5" />
                                 </button>
@@ -1550,9 +1566,9 @@ export default function Welcome({
                                             if (el) el.scrollIntoView({ behavior: 'smooth' });
                                         }
                                     }}
-                                    className="flex flex-col items-center justify-center min-w-[92px] p-2 rounded-lg border border-[#efefef] hover:border-[#0099ff] hover:shadow-xs transition-all text-center group cursor-pointer shrink-0"
+                                    className="flex flex-col items-center justify-center min-w-[92px] p-2 rounded-lg border border-[#efefef] dark:border-gray-800 bg-white dark:bg-gray-800/50 hover:dark:bg-gray-800 hover:border-[#0099ff] dark:hover:border-blue-400 hover:shadow-xs transition-all text-center group cursor-pointer shrink-0"
                                 >
-                                    <div className="relative size-14 rounded-full bg-[#fafafa] p-1 flex items-center justify-center group-hover:scale-105 transition-transform">
+                                    <div className="relative size-14 rounded-full bg-[#fafafa] dark:bg-gray-900/80 p-1 flex items-center justify-center group-hover:scale-105 transition-transform">
                                         <img
                                             src={cat.img}
                                             alt={cat.name}
@@ -1560,7 +1576,7 @@ export default function Welcome({
                                             loading="lazy"
                                         />
                                     </div>
-                                    <span className="mt-2 text-[11px] font-semibold text-[#444444] line-clamp-1">
+                                    <span className="mt-2 text-[11px] font-semibold text-[#444444] dark:text-gray-300 line-clamp-1">
                                         {cat.name}
                                     </span>
                                 </button>
@@ -1571,20 +1587,20 @@ export default function Welcome({
                     {/* ========================================================
                         8. VIDEO SHOPPING (Produk Viral Reels)
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] bg-white p-4 shadow-xs">
-                        <div className="flex items-center justify-between pb-3 border-b border-[#f0f0f0]">
+                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
+                        <div className="flex items-center justify-between pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
                             <div className="flex items-center gap-2">
                                 <img
                                     src="https://static.jakartanotebook.com/frontend/public/images/home/video-shopping/video.svg?1"
                                     alt="Video Shopping"
                                     className="size-5 object-contain"
                                 />
-                                <h3 className="text-sm font-bold text-[#222222]">Video Shopping</h3>
+                                <h3 className="text-sm font-bold text-[#222222] dark:text-white">Video Shopping</h3>
                             </div>
                             <button
                                 type="button"
                                 onClick={() => setActiveVideo(videoReels[0])}
-                                className="rounded-lg border border-[#0099ff] px-3 py-1 text-[11px] font-semibold text-[#0099ff] bg-white hover:bg-[#e6f5ff] transition-colors cursor-pointer"
+                                className="rounded-lg border border-[#0099ff] dark:border-blue-400 px-3 py-1 text-[11px] font-semibold text-[#0099ff] dark:text-blue-400 bg-white dark:bg-gray-800 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/60 transition-colors cursor-pointer"
                             >
                                 Lihat Semua
                             </button>
@@ -1604,8 +1620,8 @@ export default function Welcome({
                                         loading="lazy"
                                     />
                                     {/* Play icon badge */}
-                                    <div className="absolute top-3 left-3 flex size-7 items-center justify-center rounded-full bg-white/80 text-black shadow-md">
-                                        <Play className="size-3.5 fill-current ml-0.5 text-[#222222]" />
+                                    <div className="absolute top-3 left-3 flex size-7 items-center justify-center rounded-full bg-white/80 dark:bg-black/60 text-black dark:text-white shadow-md">
+                                        <Play className="size-3.5 fill-current ml-0.5 text-[#222222] dark:text-white" />
                                     </div>
 
                                     {/* Bottom gradient & label */}
@@ -1625,14 +1641,14 @@ export default function Welcome({
                     {/* ========================================================
                         9. LAGI BANYAK DICARI (10 Top Keyword Cards)
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] bg-white p-4 shadow-xs">
-                        <div className="flex items-center gap-2 pb-3 border-b border-[#f0f0f0]">
+                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
+                        <div className="flex items-center gap-2 pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
                             <img
                                 src="https://static.jakartanotebook.com/frontend/public/images/home/most-search/search.svg"
                                 alt="Lagi Banyak Dicari"
                                 className="size-5 object-contain"
                             />
-                            <h3 className="text-sm font-bold text-[#222222]">Lagi Banyak Dicari</h3>
+                            <h3 className="text-sm font-bold text-[#222222] dark:text-white">Lagi Banyak Dicari</h3>
                         </div>
 
                         <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -1640,19 +1656,19 @@ export default function Welcome({
                                 <div
                                     key={idx}
                                     onClick={() => setSearchKeyword(item.title)}
-                                    className="flex items-center gap-2.5 p-2 rounded-lg border border-[#eeeeee] hover:border-[#0099ff] cursor-pointer bg-[#fafafa] hover:bg-white transition-all group"
+                                    className="flex items-center gap-2.5 p-2 rounded-lg border border-[#eeeeee] dark:border-gray-800 hover:border-[#0099ff] dark:hover:border-blue-400 cursor-pointer bg-[#fafafa] dark:bg-gray-800/60 hover:bg-white dark:hover:bg-gray-800 transition-all group"
                                 >
                                     <img
                                         src={item.img}
                                         alt={item.title}
-                                        className="size-11 rounded-lg object-contain bg-white p-0.5 border border-[#eaeaea]"
+                                        className="size-11 rounded-lg object-contain bg-white dark:bg-gray-900 p-0.5 border border-[#eaeaea] dark:border-gray-700"
                                         loading="lazy"
                                     />
                                     <div className="overflow-hidden">
-                                        <div className="text-xs font-bold text-[#333333] group-hover:text-[#0099ff] truncate">
+                                        <div className="text-xs font-bold text-[#333333] dark:text-gray-200 group-hover:text-[#0099ff] dark:group-hover:text-blue-400 truncate">
                                             {item.title}
                                         </div>
-                                        <div className="text-[10px] text-[#888888]">{item.count}</div>
+                                        <div className="text-[10px] text-[#888888] dark:text-gray-400">{item.count}</div>
                                     </div>
                                 </div>
                             ))}
@@ -1662,15 +1678,15 @@ export default function Welcome({
                     {/* ========================================================
                         10. REKOMENDASI UNTUKMU (8-Column High-Density Grid)
                         ======================================================== */}
-                    <div id="rekomendasi-section" className="mt-4 rounded-lg border border-[#e5e5e5] bg-white p-4 shadow-xs">
-                        <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#f0f0f0]">
+                    <div id="rekomendasi-section" className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
+                        <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
                             <div className="flex items-center gap-2">
                                 <img
                                     src="https://static.jakartanotebook.com/frontend/public/images/home/product-recommended/badge.svg"
                                     alt="Rekomendasi Untukmu"
                                     className="size-5 object-contain"
                                 />
-                                <h3 className="text-sm font-bold text-[#222222]">Rekomendasi Untukmu</h3>
+                                <h3 className="text-sm font-bold text-[#222222] dark:text-white">Rekomendasi Untukmu</h3>
                             </div>
 
                             {/* Department category tabs */}
@@ -1681,7 +1697,7 @@ export default function Welcome({
                                     className={`rounded-full px-3 py-1 font-semibold transition-all cursor-pointer whitespace-nowrap ${
                                         activeCategoryTab === 'all'
                                             ? 'bg-[#0099ff] text-white shadow-xs'
-                                            : 'bg-[#f0f0f0] text-[#555555] hover:bg-[#e6f5ff] hover:text-[#0099ff]'
+                                            : 'bg-[#f0f0f0] dark:bg-gray-800 text-[#555555] dark:text-gray-300 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/60 hover:text-[#0099ff] dark:hover:text-blue-400'
                                     }`}
                                 >
                                     Semua
@@ -1698,7 +1714,7 @@ export default function Welcome({
                                             className={`rounded-full px-3 py-1 font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 ${
                                                 isSelected
                                                     ? 'bg-[#0099ff] text-white shadow-xs'
-                                                    : 'bg-[#f0f0f0] text-[#555555] hover:bg-[#e6f5ff] hover:text-[#0099ff]'
+                                                    : 'bg-[#f0f0f0] dark:bg-gray-800 text-[#555555] dark:text-gray-300 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/60 hover:text-[#0099ff] dark:hover:text-blue-400'
                                             }`}
                                         >
                                             {cat.icon && <span>{cat.icon}</span>}
@@ -1710,7 +1726,7 @@ export default function Welcome({
                                 {activeCategoryTab !== 'all' && (
                                     <Link
                                         href={`/categories/${activeCategoryTab}`}
-                                        className="rounded-full px-3 py-1 font-semibold text-[#0099ff] bg-[#e6f5ff] hover:bg-[#d0ebff] transition-all whitespace-nowrap flex items-center gap-1 shrink-0"
+                                        className="rounded-full px-3 py-1 font-semibold text-[#0099ff] dark:text-blue-400 bg-[#e6f5ff] dark:bg-blue-950/60 hover:bg-[#d0ebff] dark:hover:bg-blue-900/60 transition-all whitespace-nowrap flex items-center gap-1 shrink-0"
                                     >
                                         <span>Buka Halaman Kategori</span>
                                         <ChevronRight className="size-3" />
@@ -1736,10 +1752,10 @@ export default function Welcome({
                                         <Link
                                             key={item.id}
                                             href={productHref}
-                                            className="cursor-pointer group flex flex-col justify-between rounded-lg border border-[#e9e9e9] p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white"
+                                            className="cursor-pointer group flex flex-col justify-between rounded-lg border border-[#e9e9e9] dark:border-gray-800 p-2 hover:border-[#ff6000] hover:shadow-xs transition-all bg-white dark:bg-gray-800/80 hover:dark:bg-gray-800"
                                         >
                                             <div>
-                                                <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-[#fafafa]">
+                                                <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-[#fafafa] dark:bg-gray-900/60">
                                                     <img
                                                         src={displayImg}
                                                         alt={displayName}
@@ -1753,29 +1769,29 @@ export default function Welcome({
                                                     )}
                                                 </div>
 
-                                                <h4 className="mt-2 text-[11px] font-medium text-[#222222] line-clamp-2 leading-snug group-hover:text-[#ff6000]">
+                                                <h4 className="mt-2 text-[11px] font-medium text-[#222222] dark:text-gray-100 line-clamp-2 leading-snug group-hover:text-[#ff6000]">
                                                     {displayName}
                                                 </h4>
 
                                                 {displayVariant && (
-                                                    <span className="mt-1 inline-block rounded bg-[#f2f2f2] px-1.5 py-0.5 text-[9px] text-[#666666]">
+                                                    <span className="mt-1 inline-block rounded bg-[#f2f2f2] dark:bg-gray-700/60 px-1.5 py-0.5 text-[9px] text-[#666666] dark:text-gray-300">
                                                         {displayVariant}
                                                     </span>
                                                 )}
                                             </div>
 
-                                            <div className="mt-2 pt-1 border-t border-[#f5f5f5]">
-                                                <div className="text-xs font-bold text-[#222222]">
+                                            <div className="mt-2 pt-1 border-t border-[#f5f5f5] dark:border-gray-700/60">
+                                                <div className="text-xs font-bold text-[#222222] dark:text-white">
                                                     {formatRupiah(item.price)}
                                                 </div>
                                                 <div className="flex items-center gap-1 text-[10px]">
                                                     {original && (
-                                                        <span className="text-[#999999] line-through">
+                                                        <span className="text-[#999999] dark:text-gray-400 line-through">
                                                             {formatRupiah(original)}
                                                         </span>
                                                     )}
                                                     {discountVal && (
-                                                        <span className="font-bold text-[#d32f2f]">
+                                                        <span className="font-bold text-[#d32f2f] dark:text-red-400">
                                                             {discountVal}%
                                                         </span>
                                                     )}
@@ -1786,12 +1802,12 @@ export default function Welcome({
                                 })
                             ) : (
                                 <div className="col-span-full py-12 flex flex-col items-center justify-center text-center">
-                                    <Package className="size-10 text-gray-300 mb-2" />
-                                    <p className="text-xs font-semibold text-[#555555]">Belum ada produk di kategori ini</p>
+                                    <Package className="size-10 text-gray-300 dark:text-gray-600 mb-2" />
+                                    <p className="text-xs font-semibold text-[#555555] dark:text-gray-400">Belum ada produk di kategori ini</p>
                                     <button
                                         type="button"
                                         onClick={() => handleSelectCategory('all')}
-                                        className="mt-2 text-xs text-[#0099ff] hover:underline font-medium cursor-pointer"
+                                        className="mt-2 text-xs text-[#0099ff] dark:text-blue-400 hover:underline font-medium cursor-pointer"
                                     >
                                         Lihat semua produk
                                     </button>
@@ -1804,7 +1820,7 @@ export default function Welcome({
                             <button
                                 type="button"
                                 onClick={() => handleSelectCategory('all')}
-                                className="rounded-lg border border-[#0099ff] px-8 py-2 text-xs font-bold text-[#0099ff] bg-white hover:bg-[#e6f5ff] transition-colors cursor-pointer"
+                                className="rounded-lg border border-[#0099ff] dark:border-blue-400 px-8 py-2 text-xs font-bold text-[#0099ff] dark:text-blue-400 bg-white dark:bg-gray-900 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/60 transition-colors cursor-pointer"
                             >
                                 Lihat Semua Produk
                             </button>
@@ -1814,19 +1830,19 @@ export default function Welcome({
                     {/* ========================================================
                         11. INFO MENARIK MAKNOT (Blog Articles)
                         ======================================================== */}
-                    <div className="mt-4 rounded-lg border border-[#e5e5e5] bg-white p-4 shadow-xs">
-                        <div className="flex items-center justify-between pb-3 border-b border-[#f0f0f0]">
+                    <div className="mt-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-4 shadow-xs transition-colors">
+                        <div className="flex items-center justify-between pb-3 border-b border-[#f0f0f0] dark:border-gray-800">
                             <div className="flex items-center gap-2">
                                 <img
                                     src="https://static.jakartanotebook.com/frontend/public/images/home/blog/rss.svg?1"
                                     alt="RSS Blog"
                                     className="size-5 object-contain"
                                 />
-                                <h3 className="text-sm font-bold text-[#222222]">Info Menarik Maknot</h3>
+                                <h3 className="text-sm font-bold text-[#222222] dark:text-white">Info Menarik Maknot</h3>
                             </div>
                             <a
                                 href="#"
-                                className="rounded-lg border border-[#0099ff] px-3 py-1 text-[11px] font-semibold text-[#0099ff] bg-white hover:bg-[#e6f5ff] transition-colors"
+                                className="rounded-lg border border-[#0099ff] dark:border-blue-400 px-3 py-1 text-[11px] font-semibold text-[#0099ff] dark:text-blue-400 bg-white dark:bg-gray-800 hover:bg-[#e6f5ff] dark:hover:bg-blue-950/60 transition-colors"
                             >
                                 Lihat Semua
                             </a>
@@ -1836,7 +1852,7 @@ export default function Welcome({
                             {articles.map((art, idx) => (
                                 <div key={idx} className="cursor-pointer group flex flex-col justify-between">
                                     <div>
-                                        <div className="aspect-video w-full overflow-hidden rounded-lg bg-[#fafafa]">
+                                        <div className="aspect-video w-full overflow-hidden rounded-lg bg-[#fafafa] dark:bg-gray-800">
                                             <img
                                                 src={art.img}
                                                 alt={art.title}
@@ -1844,13 +1860,13 @@ export default function Welcome({
                                                 loading="lazy"
                                             />
                                         </div>
-                                        <div className="mt-1.5 text-[10px] text-gray-400 font-medium">
+                                        <div className="mt-1.5 text-[10px] text-gray-400 dark:text-gray-500 font-medium">
                                             {art.time}
                                         </div>
-                                        <h4 className="mt-1 text-xs font-bold text-[#333333] line-clamp-2 group-hover:text-[#0099ff] leading-snug">
+                                        <h4 className="mt-1 text-xs font-bold text-[#333333] dark:text-gray-100 line-clamp-2 group-hover:text-[#0099ff] dark:group-hover:text-blue-400 leading-snug">
                                             {art.title}
                                         </h4>
-                                        <p className="mt-1 text-[11px] text-[#777777] line-clamp-2 leading-relaxed">
+                                        <p className="mt-1 text-[11px] text-[#777777] dark:text-gray-400 line-clamp-2 leading-relaxed">
                                             {art.desc}
                                         </p>
                                     </div>
@@ -1862,15 +1878,15 @@ export default function Welcome({
                     {/* ========================================================
                         12. 5 VALUE PROPOSITION PILLARS (Official SVGs)
                         ======================================================== */}
-                    <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 rounded-lg border border-[#e5e5e5] bg-white p-6 text-center shadow-xs">
+                    <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-6 text-center shadow-xs transition-colors">
                         <div className="flex flex-col items-center">
                             <img
                                 src="https://static.jakartanotebook.com/frontend/public/images/home/seo/produk-lengkap.svg?1"
                                 alt="Produk Terlengkap"
                                 className="size-10 mb-2 object-contain"
                             />
-                            <div className="text-xs font-bold text-[#222222]">Produk Terlengkap</div>
-                            <div className="text-[10px] text-[#777777] mt-0.5">Produk unik, gadget &amp; hobi terlengkap</div>
+                            <div className="text-xs font-bold text-[#222222] dark:text-white">Produk Terlengkap</div>
+                            <div className="text-[10px] text-[#777777] dark:text-gray-400 mt-0.5">Produk unik, gadget &amp; hobi terlengkap</div>
                         </div>
 
                         <div className="flex flex-col items-center">
@@ -1879,8 +1895,8 @@ export default function Welcome({
                                 alt="Pengiriman Tercepat"
                                 className="size-10 mb-2 object-contain"
                             />
-                            <div className="text-xs font-bold text-[#222222]">Pengiriman Tercepat</div>
-                            <div className="text-[10px] text-[#777777] mt-0.5">COD, Pick N Go toko, instant delivery</div>
+                            <div className="text-xs font-bold text-[#222222] dark:text-white">Pengiriman Tercepat</div>
+                            <div className="text-[10px] text-[#777777] dark:text-gray-400 mt-0.5">COD, Pick N Go toko, instant delivery</div>
                         </div>
 
                         <div className="flex flex-col items-center">
@@ -1889,8 +1905,8 @@ export default function Welcome({
                                 alt="Produk Terjamin"
                                 className="size-10 mb-2 object-contain"
                             />
-                            <div className="text-xs font-bold text-[#222222]">Produk Terjamin</div>
-                            <div className="text-[10px] text-[#777777] mt-0.5">Garansi resmi &amp; quality check teliti</div>
+                            <div className="text-xs font-bold text-[#222222] dark:text-white">Produk Terjamin</div>
+                            <div className="text-[10px] text-[#777777] dark:text-gray-400 mt-0.5">Garansi resmi &amp; quality check teliti</div>
                         </div>
 
                         <div className="flex flex-col items-center">
@@ -1899,8 +1915,8 @@ export default function Welcome({
                                 alt="Potensi Keuntungan"
                                 className="size-10 mb-2 object-contain"
                             />
-                            <div className="text-xs font-bold text-[#222222]">Potensi Keuntungan</div>
-                            <div className="text-[10px] text-[#777777] mt-0.5">Cocok untuk reseller &amp; dropshipper</div>
+                            <div className="text-xs font-bold text-[#222222] dark:text-white">Potensi Keuntungan</div>
+                            <div className="text-[10px] text-[#777777] dark:text-gray-400 mt-0.5">Cocok untuk reseller &amp; dropshipper</div>
                         </div>
 
                         <div className="flex flex-col items-center">
@@ -1909,30 +1925,30 @@ export default function Welcome({
                                 alt="Harga Termurah"
                                 className="size-10 mb-2 object-contain"
                             />
-                            <div className="text-xs font-bold text-[#222222]">Harga Termurah</div>
-                            <div className="text-[10px] text-[#777777] mt-0.5">Harga langsung importir tanpa perantara</div>
+                            <div className="text-xs font-bold text-[#222222] dark:text-white">Harga Termurah</div>
+                            <div className="text-[10px] text-[#777777] dark:text-gray-400 mt-0.5">Harga langsung importir tanpa perantara</div>
                         </div>
                     </div>
 
                     {/* ========================================================
                         13. SEO DESCRIPTION & ABOUT MAKASSARNOTEBOOK
                         ======================================================== */}
-                    <section id="seo-info" className="mt-6 rounded-lg border border-[#e5e5e5] bg-white p-6 text-[11px] text-[#666666] leading-relaxed shadow-xs">
-                        <h4 className="font-bold text-[#333333] text-xs">
+                    <section id="seo-info" className="mt-6 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 p-6 text-[11px] text-[#666666] dark:text-gray-300 leading-relaxed shadow-xs transition-colors">
+                        <h4 className="font-bold text-[#333333] dark:text-white text-xs">
                             MakassarNotebook : Toko Online Lengkap &amp; Unik Harga Murah
                         </h4>
                         <p className="mt-1.5">
                             Selamat datang di <strong>MakassarNotebook</strong>. Kami menyediakan aneka produk unik, perlengkapan komputer &amp; laptop, outdoor gear, peralatan rumah tangga, smartphone accessories, hobi, dan perkakas dengan slogan <strong>#SudahPastiMurahnya</strong>.
                         </p>
 
-                        <h4 className="font-bold text-[#333333] text-xs mt-4">
+                        <h4 className="font-bold text-[#333333] dark:text-white text-xs mt-4">
                             Kenapa Harus Belanja di MakassarNotebook?
                         </h4>
                         <p className="mt-1.5">
                             Tak perlu ragu berbelanja di toko kami. Kami hadir dengan sistem terintegrasi yang memungkinkan Anda belanja secara online melalui website dan mengambil langsung di toko fisik terdekat (<strong>Pick N Go</strong>) tanpa antre panjang dan bebas ongkos kirim. Kami juga melayani pengiriman kilat Instant Courier se-kota Makassar dan reguler ke seluruh pelosok Sulawesi serta Indonesia Timur.
                         </p>
 
-                        <h4 className="font-bold text-[#333333] text-xs mt-4">
+                        <h4 className="font-bold text-[#333333] dark:text-white text-xs mt-4">
                             Peluang Reseller &amp; Dropshipper Indonesia Timur
                         </h4>
                         <p className="mt-1.5">
@@ -1943,12 +1959,12 @@ export default function Welcome({
                     {/* ========================================================
                         14. FOOTER & CONTACT CENTER
                         ======================================================== */}
-                    <footer className="mt-6 rounded-lg border border-[#e5e5e5] bg-white overflow-hidden shadow-xs">
+                    <footer className="mt-6 rounded-lg border border-[#e5e5e5] dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-xs transition-colors">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6">
                             {/* Left Content (8 cols) */}
                             <div className="lg:col-span-8 flex flex-col justify-between">
                                 <div>
-                                    <div className="text-xs font-bold text-[#333333] mb-2.5">
+                                    <div className="text-xs font-bold text-[#333333] dark:text-gray-200 mb-2.5">
                                         Download Aplikasi MakassarNotebook
                                     </div>
                                     <div className="flex items-center gap-3 mb-6">
@@ -1971,51 +1987,51 @@ export default function Welcome({
                                     {/* Link Columns */}
                                     <div className="grid grid-cols-3 gap-6 text-[11px]">
                                         <div>
-                                            <h5 className="font-bold text-[#222222] mb-2.5">Layanan Pelanggan</h5>
-                                            <ul className="space-y-1.5 text-[#666666]">
-                                                <li><a href="#" className="hover:text-[#0099ff]">Bantuan</a></li>
-                                                <li><a href="#" className="hover:text-[#0099ff]">Klaim Garansi Produk</a></li>
-                                                <li><a href="#" className="hover:text-[#0099ff]">Biaya Pengiriman</a></li>
-                                                <li><a href="#" className="hover:text-[#0099ff]">Indeks Produk</a></li>
-                                                <li><a href="#" className="hover:text-[#0099ff]">Konfirmasi Pembayaran</a></li>
-                                                <li><a href="#" className="hover:text-[#0099ff]">Lacak Pesanan</a></li>
+                                            <h5 className="font-bold text-[#222222] dark:text-white mb-2.5">Layanan Pelanggan</h5>
+                                            <ul className="space-y-1.5 text-[#666666] dark:text-gray-400">
+                                                <li><a href="#" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Bantuan</a></li>
+                                                <li><a href="#" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Klaim Garansi Produk</a></li>
+                                                <li><a href="#" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Biaya Pengiriman</a></li>
+                                                <li><a href="#" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Indeks Produk</a></li>
+                                                <li><a href="#" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Konfirmasi Pembayaran</a></li>
+                                                <li><a href="#" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Lacak Pesanan</a></li>
                                             </ul>
                                         </div>
 
                                         <div>
-                                            <h5 className="font-bold text-[#222222] mb-2.5">MakassarNotebook</h5>
-                                            <ul className="space-y-1.5 text-[#666666]">
-                                                <li><a href="#" className="hover:text-[#0099ff]">Tentang Kami</a></li>
-                                                <li><a href="#" className="hover:text-[#0099ff]">Kontak Kami</a></li>
-                                                <li><a href="#" className="hover:text-[#0099ff]">Karir</a></li>
-                                                <li><a href="#" className="hover:text-[#0099ff]">Blog Edukasi</a></li>
-                                                <li><a href="#" className="hover:text-[#0099ff]">Kebijakan Privasi</a></li>
+                                            <h5 className="font-bold text-[#222222] dark:text-white mb-2.5">MakassarNotebook</h5>
+                                            <ul className="space-y-1.5 text-[#666666] dark:text-gray-400">
+                                                <li><a href="#" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Tentang Kami</a></li>
+                                                <li><a href="#" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Kontak Kami</a></li>
+                                                <li><a href="#" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Karir</a></li>
+                                                <li><a href="#" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Blog Edukasi</a></li>
+                                                <li><a href="#" className="hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">Kebijakan Privasi</a></li>
                                             </ul>
                                         </div>
 
                                         <div>
-                                            <h5 className="font-bold text-[#222222] mb-2.5">Ikuti Kami</h5>
-                                            <ul className="space-y-2 text-[#666666]">
+                                            <h5 className="font-bold text-[#222222] dark:text-white mb-2.5">Ikuti Kami</h5>
+                                            <ul className="space-y-2 text-[#666666] dark:text-gray-400">
                                                 <li>
-                                                    <a href="https://tiktok.com/@jakartanotebook" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-[#0099ff]">
+                                                    <a href="https://tiktok.com/@jakartanotebook" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">
                                                         <img src="/images/social-media/tiktok-logo.png" alt="TikTok" className="size-4" onError={(e)=>{ (e.target as HTMLElement).style.display='none'; }} />
                                                         <span>TikTok</span>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="https://instagram.com/jakartanotebook" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-[#0099ff]">
+                                                    <a href="https://instagram.com/jakartanotebook" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">
                                                         <img src="/images/social-media/instagram-logo.png?2" alt="Instagram" className="size-4" onError={(e)=>{ (e.target as HTMLElement).style.display='none'; }} />
                                                         <span>Instagram</span>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="https://facebook.com/jakartanotebook" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-[#0099ff]">
+                                                    <a href="https://facebook.com/jakartanotebook" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">
                                                         <img src="/images/social-media/facebook-logo.png?2" alt="Facebook" className="size-4" onError={(e)=>{ (e.target as HTMLElement).style.display='none'; }} />
                                                         <span>Facebook</span>
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="https://twitter.com/jakartanotebook" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-[#0099ff]">
+                                                    <a href="https://twitter.com/jakartanotebook" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:text-[#0099ff] dark:hover:text-blue-400 transition-colors">
                                                         <img src="/images/social-media/twitter-logo.png?2" alt="Twitter" className="size-4" onError={(e)=>{ (e.target as HTMLElement).style.display='none'; }} />
                                                         <span>X (Twitter)</span>
                                                     </a>
@@ -2026,8 +2042,8 @@ export default function Welcome({
                                 </div>
 
                                 {/* Newsletter Form */}
-                                <div className="mt-6 pt-4 border-t border-[#f0f0f0]">
-                                    <div className="text-[11px] font-bold text-[#333333]">
+                                <div className="mt-6 pt-4 border-t border-[#f0f0f0] dark:border-gray-800">
+                                    <div className="text-[11px] font-bold text-[#333333] dark:text-gray-200">
                                         Dapatkan <span className="text-[#ff6000]">penawaran menarik</span> kami! Dikirim mingguan
                                     </div>
                                     <form
@@ -2041,7 +2057,7 @@ export default function Welcome({
                                             type="email"
                                             required
                                             placeholder="Masukkan alamat email Anda"
-                                            className="h-8.5 flex-1 rounded-lg border border-[#cccccc] px-3 text-xs placeholder-gray-400 focus:border-[#0099ff] focus:outline-none"
+                                            className="h-8.5 flex-1 rounded-lg border border-[#cccccc] dark:border-gray-700 bg-white dark:bg-gray-800 px-3 text-xs text-[#222222] dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:border-[#0099ff] dark:focus:border-blue-400 focus:outline-none"
                                         />
                                         <button
                                             type="submit"
@@ -2054,8 +2070,8 @@ export default function Welcome({
                             </div>
 
                             {/* Right Contact Center Box (Authentic Deep Navy Header) */}
-                            <div id="toko-kami" className="lg:col-span-4 rounded-xl border border-[#166397]/40 bg-white overflow-hidden shadow-xs">
-                                <div className="bg-[#166397] p-3.5 text-white font-bold text-sm flex items-center justify-between">
+                            <div id="toko-kami" className="lg:col-span-4 rounded-xl border border-[#166397]/40 dark:border-blue-900/40 bg-white dark:bg-gray-900 overflow-hidden shadow-xs">
+                                <div className="bg-[#166397] dark:bg-[#124b73] p-3.5 text-white font-bold text-sm flex items-center justify-between">
                                     <div className="flex items-center gap-2">
                                         <Store className="size-4 text-[#FF6000]" />
                                         <span>Contact Center</span>
@@ -2066,27 +2082,27 @@ export default function Welcome({
                                 <div className="p-4 space-y-4 text-[11px]">
                                     {/* Online Contact */}
                                     <div>
-                                        <div className="font-bold text-[#222222]">Pembelian Online</div>
-                                        <div className="text-[#666666] mt-0.5">Telp : (0411) 39 700 200</div>
-                                        <div className="text-[#666666]">
-                                            Customer Service (WA) : <strong className="text-[#0099ff]">0899 721 7050</strong>
+                                        <div className="font-bold text-[#222222] dark:text-white">Pembelian Online</div>
+                                        <div className="text-[#666666] dark:text-gray-400 mt-0.5">Telp : (0411) 39 700 200</div>
+                                        <div className="text-[#666666] dark:text-gray-400">
+                                            Customer Service (WA) : <strong className="text-[#0099ff] dark:text-blue-400">0899 721 7050</strong>
                                         </div>
                                     </div>
 
                                     {/* Offline Store Information */}
-                                    <div className="border-t border-[#f0f0f0] pt-3">
-                                        <div className="flex items-center justify-between font-bold text-[#222222]">
+                                    <div className="border-t border-[#f0f0f0] dark:border-gray-800 pt-3">
+                                        <div className="flex items-center justify-between font-bold text-[#222222] dark:text-white">
                                             <span>Toko Kami</span>
                                             <button
                                                 type="button"
                                                 onClick={() => setIsBranchModalOpen(true)}
-                                                className="text-[#0099ff] text-[10px] cursor-pointer hover:underline"
+                                                className="text-[#0099ff] dark:text-blue-400 text-[10px] cursor-pointer hover:underline"
                                             >
                                                 Ganti
                                             </button>
                                         </div>
 
-                                        <div className="mt-1 font-semibold text-[#0099ff]">
+                                        <div className="mt-1 font-semibold text-[#0099ff] dark:text-blue-400">
                                             {currentBranch.region}
                                         </div>
 
@@ -2094,53 +2110,53 @@ export default function Welcome({
                                         <select
                                             value={selectedBranch}
                                             onChange={(e) => setSelectedBranch(e.target.value as BranchKey)}
-                                            className="mt-1.5 w-full rounded-lg border border-[#cccccc] bg-[#fafafa] p-2 text-xs text-[#333333] focus:border-[#0099ff] focus:outline-none transition-colors cursor-pointer"
+                                            className="mt-1.5 w-full rounded-lg border border-[#cccccc] dark:border-gray-700 bg-[#fafafa] dark:bg-gray-800 p-2 text-xs text-[#333333] dark:text-gray-200 focus:border-[#0099ff] dark:focus:border-blue-400 focus:outline-none transition-colors cursor-pointer"
                                         >
                                             {branchKeys.map((key) => (
-                                                <option key={key} value={key}>
+                                                <option key={key} value={key} className="dark:bg-gray-800 dark:text-white">
                                                     {branchOptions[key].label}
                                                 </option>
                                             ))}
                                         </select>
 
                                         {/* Active Branch Full Address */}
-                                        <div className="mt-2.5 text-[#666666] leading-relaxed">
-                                            <div className="font-bold text-[#222222]">{currentBranch.name}</div>
+                                        <div className="mt-2.5 text-[#666666] dark:text-gray-400 leading-relaxed">
+                                            <div className="font-bold text-[#222222] dark:text-white">{currentBranch.name}</div>
                                             <div className="mt-0.5">{currentBranch.address}</div>
                                             <a
                                                 href={currentBranch.mapUrl}
                                                 target="_blank"
                                                 rel="noreferrer"
-                                                className="inline-flex items-center gap-1 text-[#0099ff] font-semibold mt-1 hover:underline"
+                                                className="inline-flex items-center gap-1 text-[#0099ff] dark:text-blue-400 font-semibold mt-1 hover:underline"
                                             >
                                                 <MapPin className="size-3" /> Lihat google maps
                                             </a>
                                         </div>
 
                                         {/* Contact Sales / COD */}
-                                        <div className="mt-2.5 text-[#666666]">
+                                        <div className="mt-2.5 text-[#666666] dark:text-gray-400">
                                             <div>Telp : {currentBranch.phone}</div>
                                             <div>
-                                                Whatsapp Sales / COD : <strong className="text-[#0099ff]">{currentBranch.waSales}</strong>
+                                                Whatsapp Sales / COD : <strong className="text-[#0099ff] dark:text-blue-400">{currentBranch.waSales}</strong>
                                             </div>
                                         </div>
 
                                         {/* Store Operating Hours */}
-                                        <div className="mt-2.5 text-[#666666] space-y-0.5">
-                                            <div className="font-semibold text-[#333333]">Jam Buka:</div>
+                                        <div className="mt-2.5 text-[#666666] dark:text-gray-400 space-y-0.5">
+                                            <div className="font-semibold text-[#333333] dark:text-gray-200">Jam Buka:</div>
                                             <div>{currentBranch.hoursWeekday}</div>
                                             <div>{currentBranch.hoursWeekend}</div>
-                                            <div className="text-[#d32f2f] text-[10px] font-medium">*Tutup pada Hari Raya Idul Fitri</div>
+                                            <div className="text-[#d32f2f] dark:text-red-400 text-[10px] font-medium">*Tutup pada Hari Raya Idul Fitri</div>
                                         </div>
                                     </div>
 
                                     {/* Bottom Info Strip */}
-                                    <div className="bg-[#f2f2f2] p-2.5 rounded-lg text-[10px] text-[#555555] flex justify-between items-center">
+                                    <div className="bg-[#f2f2f2] dark:bg-gray-800 p-2.5 rounded-lg text-[10px] text-[#555555] dark:text-gray-300 flex justify-between items-center">
                                         <span>Beli langsung / Pick N Go di kota lain</span>
                                         <button
                                             type="button"
                                             onClick={() => setIsBranchModalOpen(true)}
-                                            className="text-[#0099ff] font-bold hover:underline cursor-pointer"
+                                            className="text-[#0099ff] dark:text-blue-400 font-bold hover:underline cursor-pointer"
                                         >
                                             Selengkapnya
                                         </button>
@@ -2150,20 +2166,20 @@ export default function Welcome({
                         </div>
 
                         {/* Payment & Logistics Partners */}
-                        <div className="bg-[#f9f9f9] border-t border-[#e5e5e5] px-6 py-4 flex flex-col md:flex-row items-center justify-between text-[11px] text-[#888888] gap-4">
+                        <div className="bg-[#f9f9f9] dark:bg-gray-950 border-t border-[#e5e5e5] dark:border-gray-800 px-6 py-4 flex flex-col md:flex-row items-center justify-between text-[11px] text-[#888888] dark:text-gray-400 gap-4">
                             <div>
                                 Copyright &copy; 2026 MakassarNotebook.com. All rights reserved | <a href="#" className="hover:underline">Terms &amp; Conditions</a>
                             </div>
 
                             {/* Partners */}
                             <div className="flex flex-wrap items-center gap-3">
-                                <span className="font-semibold text-[#555555]">Metode Pembayaran:</span>
-                                <div className="flex items-center gap-1.5 font-black text-xs text-[#005580]">
-                                    <span className="rounded bg-white px-2 py-0.5 border border-[#ddd]">BCA</span>
-                                    <span className="rounded bg-white px-2 py-0.5 border border-[#ddd]">MANDIRI</span>
-                                    <span className="rounded bg-white px-2 py-0.5 border border-[#ddd]">BNI</span>
-                                    <span className="rounded bg-white px-2 py-0.5 border border-[#ddd]">BRI</span>
-                                    <span className="rounded bg-white px-2 py-0.5 border border-[#ddd] text-[#d32f2f]">QRIS</span>
+                                <span className="font-semibold text-[#555555] dark:text-gray-300">Metode Pembayaran:</span>
+                                <div className="flex items-center gap-1.5 font-black text-xs text-[#005580] dark:text-blue-300">
+                                    <span className="rounded bg-white dark:bg-gray-800 px-2 py-0.5 border border-[#ddd] dark:border-gray-700">BCA</span>
+                                    <span className="rounded bg-white dark:bg-gray-800 px-2 py-0.5 border border-[#ddd] dark:border-gray-700">MANDIRI</span>
+                                    <span className="rounded bg-white dark:bg-gray-800 px-2 py-0.5 border border-[#ddd] dark:border-gray-700">BNI</span>
+                                    <span className="rounded bg-white dark:bg-gray-800 px-2 py-0.5 border border-[#ddd] dark:border-gray-700">BRI</span>
+                                    <span className="rounded bg-white dark:bg-gray-800 px-2 py-0.5 border border-[#ddd] dark:border-gray-700 text-[#d32f2f] dark:text-red-400">QRIS</span>
                                 </div>
                             </div>
                         </div>
