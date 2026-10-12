@@ -17,17 +17,7 @@ type Props = {
 export default function Register({ passwordRules }: Props) {
     return (
         <>
-            <Head title="Daftar Akun Pembeli (Client)" />
-
-            <div className="mb-2 flex items-center justify-between rounded-lg border border-[#0099FF]/30 bg-[#E6F5FF] px-3.5 py-2.5 text-xs text-[#007ACC]">
-                <div className="flex items-center gap-2 font-medium">
-                    <UserCheck className="size-4 shrink-0 text-[#0099FF]" />
-                    <span>Daftar sebagai <strong>Pembeli / Client Resmi</strong></span>
-                </div>
-                <span className="hidden sm:inline-block rounded bg-[#0099FF] px-2 py-0.5 text-[10px] font-bold text-white uppercase tracking-wider">
-                    Client
-                </span>
-            </div>
+            <Head title="Daftar Akun Pembeli" />
 
             <Form
                 {...store.form()}
@@ -133,6 +123,6 @@ export default function Register({ passwordRules }: Props) {
 }
 
 Register.layout = {
-    title: 'Daftar Akun Pembeli (Client)',
+    title: 'Daftar Akun Pembeli',
     description: 'Daftar untuk menikmati belanja Pick N Go dan harga terbaik #SudahPastiMurahnya',
 };

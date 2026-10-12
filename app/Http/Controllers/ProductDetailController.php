@@ -11,6 +11,7 @@ class ProductDetailController extends Controller
 {
     public function show(string $slug): Response
     {
+        dd('testing');
         $product = Product::where('slug', $slug)
             ->where('is_active', true)
             ->with(['category', 'subCategory'])
