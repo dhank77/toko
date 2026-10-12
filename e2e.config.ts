@@ -7,7 +7,7 @@ export default {
   agents: {
     default: {
       model: gateway('openai/gpt-6-luna-fast'),
-      system: 'You are a thorough QA agent. Verify every outcome.',
+      system: 'You are a thorough QA agent. Verify every outcome testinggg.',
     },
   },
   targets: [{
